@@ -1,0 +1,20 @@
+#Tuples
+Tuples/
+
+#Plots
+plots/
+
+#Examples
+examples/
+
+#Packages
+DaVinciDev*
+UraniaDev*
+
+#Compilation stuff
+*.so
+*.d
+*.pcm
+
+#Emacs shit
+*~
