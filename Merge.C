@@ -7,7 +7,7 @@
 #include "TCanvas.h"
 #include "TLeaf.h"
 #include <sstream>
-include "TMath.h"
+#include "TMath.h"
 #include "Functions/misc.h"
 using namespace std;
 void Merge(string outfile, string filename = "Variables/VariablesUsed.txt", string tupledir = "Directories/Bu2KstG_tuples.dir")
