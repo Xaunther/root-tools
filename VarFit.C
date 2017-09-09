@@ -29,7 +29,7 @@ void VarFit(string variablename, string fitopt, string filedir, string cutfile =
     }
 
   //Cut chain into new TChain in a temp root file
-  tempfile = new TFile("Tuples/cuttree2.root", "recreate");
+  tempfile = new TFile("Tuples/temp.root", "recreate");
   temptree = (TTree*)chain->CopyTree(cuts.c_str());
   tempfile->Write();
 

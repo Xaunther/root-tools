@@ -20,6 +20,7 @@ void CutTree(string outputfile = "Tuples/cuttree.root", string cutsfilename = "V
 
   //Data chain
   string treename = GetTreeName(tupledir);
+  cout << "Reading Tree " << treename << endl;
   TChain* chain = new TChain(treename.c_str());
 
   //Add to chain and get N of entries
