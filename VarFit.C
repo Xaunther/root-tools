@@ -17,6 +17,7 @@ void VarFit(string variablename, string fitopt, string filedir, string cutfile =
   //Load TChain
   string cuts = GetCuts(cutfile);
   string treename = GetTreeName(filedir); 
+  int N_part = GetNPart(filedir);
   //If not a common opt, add manually here
   //treename=""
 
@@ -36,7 +37,7 @@ void VarFit(string variablename, string fitopt, string filedir, string cutfile =
   //Do fit depending on request
   if(fitopt=="Gauss-exp") //Gaussian signal with exp bkg
     {
-      FitGauss_Exp(variablename, temptree);      
+      FitGauss_Exp(variablename, temptree, N_part);
     }
   else if(fitopt=="CB") //CB 1 sided
     {
