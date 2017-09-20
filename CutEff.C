@@ -37,18 +37,23 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
       chain->Add(filenames[i].c_str());
     }
 
-  //Cut chain into new TChain in a temp root file
-  TFile* cutfile = new TFile("Tuples/tmp.root", "recreate");
-  TTree* cuttree = (TTree*)chain->CopyTree(allprecuts.c_str());
-  cutfile->Write();
-  
+  //Cut chain into new TChain in a temp root file, if precuts have been given!
+  TFile* cuttedfile = new TFile("Tuples/tmp.root", "recreate");
+  TTree* cuttree;
+  TChain** treepointer = &chain;
+  if(allprecuts == ""){}else
+    {
+      cuttree = (TTree*)chain->CopyTree(allprecuts.c_str());
+      cuttedfile->Write();
+      treepointer = &cuttree;
+    }
   //Simply compute #of evts before and after
-  N0 = cuttree->GetEntries();
+  N0 = (*treepointer)->GetEntries();
   for(int i=0;i<N_cuts;i++)
     {
-      N_final[i] = cuttree->GetEntries(cuts[i].c_str());
+      N_final[i] = (*treepointer)->GetEntries(cuts[i].c_str());
     }
-  N_final[N_cuts] = cuttree->GetEntries(allcuts.c_str());
+  N_final[N_cuts] = (*treepointer)->GetEntries(allcuts.c_str());
 
   //Now, produce a gorgeous output #4dalulz
   ofstream fout;
@@ -63,10 +68,14 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
   fout << endl;
   fout << "          Efficiency for each cut, and global          " << endl;
   fout << "-------------------------------------------------------" << endl;
+
+  int maxL = GetMaxLength(cuts, N_cuts);
   for(int i=0;i<N_cuts;i++)
     {
-      fout << setw(80) << cuts[i] << N_final[i]/double(N0) << endl;
+      fout << setw(maxL) << cuts[i] << "  |  " << N_final[i]/double(N0) << endl;
     }
-  fout << setw(80) << "Global: " << N_final[N_cuts]/double(N0) << endl;
+  fout << setw(maxL) << "Global: " << "  |  " << N_final[N_cuts]/double(N0) << endl;
   fout.close();
+
+  cuttedfile->Close();
 }
