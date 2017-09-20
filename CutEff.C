@@ -74,7 +74,7 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
     {
       fout << setw(maxL) << cuts[i] << "  |  " << N_final[i]/double(N0) << endl;
     }
-  fout << setw(maxL) << "Global: " << "  |  " << N_final[N_cuts]/double(N0) << endl;
+  fout << setw(maxL) << "Global" << "  |  " << N_final[N_cuts]/double(N0) << endl;
   fout.close();
 
   cuttedfile->Close();
