@@ -57,7 +57,7 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
   int N_TIS, N_TOS, N_TISTOS, N_TISorTOS;
 
   fout.open(outfile.c_str());
-
+  fout << "TISTOS method applied on tuples defined at " << dirfile << ":" << endl << endl;
   //L0
   fout << "         L0 lines used         " << endl;
   fout << "-------------------------------" << endl;
@@ -72,10 +72,7 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
   N_TISorTOS = cuttree->GetEntries(L0_TISorTOS.c_str());
   N_TOS = cuttree->GetEntries(L0_TOS.c_str());
 
-  //fout << "TISTOS eff: " << N_TISTOS/double(N) << endl;
-  //fout << "TIS eff: " << N_TIS/double(N) << endl;
-  //fout << "TOS eff: " << N_TOS/double(N) << endl;
-  fout << "Trigger eff: " << double(N_TISorTOS*N_TISTOS)/(N_TIS*N_TOS) << endl;
+  fout << "Trigger eff: " << double(N_TISTOS)/N_TIS << endl;
   fout << endl;
   //Hlt1
   fout << "        Hlt1 lines used        " << endl;
@@ -91,10 +88,7 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
   N_TISorTOS = cuttree->GetEntries(("("+L0_TISorTOS+") && ("+Hlt1_TISorTOS+")").c_str());
   N_TOS = cuttree->GetEntries(("("+L0_TOS+") && ("+Hlt1_TOS+")").c_str());
 
-  //fout << "TISTOS eff: " << N_TISTOS/double(N) << endl;
-  //fout << "TIS eff: " << N_TIS/double(N) << endl;
-  //fout << "TOS eff: " << N_TOS/double(N) << endl;
-  fout << "Trigger eff: " << double(N_TISorTOS*N_TISTOS)/(N_TIS*N_TOS) << endl;
+  fout << "Trigger eff: " << double(N_TISTOS)/N_TIS << endl;
   fout << endl;
   //Hlt2
   fout << "        Hlt2 lines used        " << endl;
@@ -110,10 +104,7 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
   N_TISorTOS = cuttree->GetEntries(("("+L0_TISorTOS+") && ("+Hlt1_TISorTOS+") && ("+Hlt2_TISorTOS+")").c_str());
   N_TOS = cuttree->GetEntries(("("+L0_TOS+") && ("+Hlt1_TOS+") && ("+Hlt2_TOS+")").c_str());
 
-  //fout << "TISTOS eff: " << N_TISTOS/double(N) << endl;
-  //fout << "TIS eff: " << N_TIS/double(N) << endl;
-  //fout << "TOS eff: " << N_TOS/double(N) << endl;
-  fout << "Trigger eff: " << double(N_TISorTOS*N_TISTOS)/(N_TIS*N_TOS) << endl;
+  fout << "Trigger eff: " << double(N_TISTOS)/N_TIS << endl;
   fout << endl;
 
   fout.close();

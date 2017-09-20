@@ -5,10 +5,10 @@
 #include "Functions/misc.h"
 using namespace std;
 
-void MakeVarList()
+void MakeVarList(string infile = "temp.txt", int col = 3, string outfile = "temp2.txt")
 {
   int N_vars = 0;
   //Read the variable names
-  string* varnames = ReadVariablesWord(N_vars, "temp.txt", 3);
-  SaveVariables(varnames, N_vars, "temp2.txt");
+  string* varnames = ReadVariablesWord(N_vars, infile, col);
+  SaveVariables(varnames, N_vars, outfile);
 }
