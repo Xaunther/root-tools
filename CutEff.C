@@ -20,7 +20,7 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
   int N_precuts = 0;
   string* precuts = ReadVariables(N_precuts, cutfile);
 
-  int* N_final = int[N_cuts+1];
+  int* N_final = new int[N_cuts+1];
   int N0;
 
   int N_files = 0;
