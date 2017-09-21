@@ -18,7 +18,7 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
   int N_cuts = 0;
   string* cuts = ReadVariables(N_cuts, cutfile);
   int N_precuts = 0;
-  string* precuts = ReadVariables(N_precuts, cutfile);
+  string* precuts = ReadVariables(N_precuts, precutfile);
 
   int* N_final = new int[N_cuts+1];
   int N0;
@@ -41,11 +41,14 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
   TFile* cuttedfile = new TFile("Tuples/tmp.root", "recreate");
   TTree* cuttree;
   TChain** treepointer = &chain;
-  if(allprecuts == ""){}else
+  TChain* chain2 = new TChain("DecayTree");
+  if(allprecuts == "caca"){}else
     {
       cuttree = (TTree*)chain->CopyTree(allprecuts.c_str());
       cuttedfile->Write();
-      treepointer = &cuttree;
+      cuttedfile->Close();
+      chain2->Add("Tuples/tmp.root");
+      treepointer = &chain2;
     }
   //Simply compute #of evts before and after
   N0 = (*treepointer)->GetEntries();
@@ -72,9 +75,9 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
   int maxL = GetMaxLength(cuts, N_cuts);
   for(int i=0;i<N_cuts;i++)
     {
-      fout << setw(maxL) << cuts[i] << "  |  " << N_final[i]/double(N0) << endl;
+      fout << cuts[i] << setw(maxL+5-int(cuts[i].size())) << "  |  " << N_final[i]/double(N0) << endl;
     }
-  fout << setw(maxL) << "Global" << "  |  " << N_final[N_cuts]/double(N0) << endl;
+  fout << "Global" << setw(maxL+5-6) << "  |  " << N_final[N_cuts]/double(N0) << endl;
   fout.close();
 
   cuttedfile->Close();
