@@ -7,7 +7,6 @@
 #include "TCanvas.h"
 #include "TLeaf.h"
 #include <sstream>
-#include "Functions/misc.h"
 using namespace std;
 
 void BDTMerit(double init_value, double final_value, int steps = 100)
