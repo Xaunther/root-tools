@@ -18,6 +18,7 @@ void VarFit(string variablename, string fitopt, string filedir, string cutfile =
   string cuts = GetCuts(cutfile);
   string treename = GetTreeName(filedir); 
   int N_part = GetNPart(filedir);
+  int N_part_plot = GetNPartPlot(variablename);
   //If not a common opt, add manually here
   //treename=""
 
@@ -37,7 +38,7 @@ void VarFit(string variablename, string fitopt, string filedir, string cutfile =
   //Do fit depending on request
   if(fitopt=="Gauss-exp") //Gaussian signal with exp bkg
     {
-      FitGauss_Exp(variablename, temptree, N_part);
+      FitGauss_Exp(variablename, temptree, N_part, N_part_plot);
     }
   else if(fitopt=="CB") //CB 1 sided
     {
@@ -53,6 +54,6 @@ void VarFit(string variablename, string fitopt, string filedir, string cutfile =
     }
   else
     {
-      FitNothing(variablename, temptree);
+      FitNothing(variablename, temptree, N_part, N_part_plot);
     }
 }
