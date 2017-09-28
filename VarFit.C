@@ -19,6 +19,10 @@ void VarFit(string variablename, string fitopt, string filedir, string cutfile =
   string treename = GetTreeName(filedir); 
   int N_part = GetNPart(filedir);
   int N_part_plot = GetNPartPlot(variablename);
+  if(N_part_plot==0)
+    {
+      N_part_plot = N_part;
+    }
   //If not a common opt, add manually here
   //treename=""
 
