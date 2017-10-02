@@ -42,7 +42,7 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
   TTree* cuttree;
   TChain** treepointer = &chain;
   TChain* chain2 = new TChain("DecayTree");
-  if(allprecuts == "caca"){}else
+  if(N_precuts == 0){}else
     {
       cuttree = (TTree*)chain->CopyTree(allprecuts.c_str());
       cuttedfile->Write();
@@ -55,6 +55,7 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
   for(int i=0;i<N_cuts;i++)
     {
       N_final[i] = (*treepointer)->GetEntries(cuts[i].c_str());
+      cout << N_final[i] << endl;
     }
   N_final[N_cuts] = (*treepointer)->GetEntries(allcuts.c_str());
 
