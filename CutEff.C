@@ -37,27 +37,14 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
       chain->Add(filenames[i].c_str());
     }
 
-  //Cut chain into new TChain in a temp root file, if precuts have been given!
-  TFile* cuttedfile = new TFile("Tuples/tmp.root", "recreate");
-  TTree* cuttree;
-  TChain** treepointer = &chain;
-  TChain* chain2 = new TChain("DecayTree");
-  if(N_precuts == 0){}else
-    {
-      cuttree = (TTree*)chain->CopyTree(allprecuts.c_str());
-      cuttedfile->Write();
-      cuttedfile->Close();
-      chain2->Add("Tuples/tmp.root");
-      treepointer = &chain2;
-    }
   //Simply compute #of evts before and after
-  N0 = (*treepointer)->GetEntries();
+  N0 = chain->GetEntries(allprecuts.c_str());
   for(int i=0;i<N_cuts;i++)
     {
-      N_final[i] = (*treepointer)->GetEntries(cuts[i].c_str());
+      N_final[i] = chain->GetEntries((allprecuts+cuts[i]).c_str());
       cout << N_final[i] << endl;
     }
-  N_final[N_cuts] = (*treepointer)->GetEntries(allcuts.c_str());
+  N_final[N_cuts] = chain->GetEntries((allprecuts+allcuts).c_str());
 
   //Now, produce a gorgeous output #4dalulz
   ofstream fout;
@@ -81,5 +68,4 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
   fout << "Global" << setw(maxL+5-6) << "  |  " << N_final[N_cuts]/double(N0) << endl;
   fout.close();
 
-  cuttedfile->Close();
 }
