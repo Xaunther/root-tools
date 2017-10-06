@@ -60,4 +60,5 @@ void VarFit(string variablename, string fitopt, string filedir, string cutfile =
     {
       FitNothing(variablename, temptree, N_part, N_part_plot);
     }
+  cout << temptree->GetEntries() << " events plotted" << endl;
 }
