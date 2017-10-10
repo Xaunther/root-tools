@@ -10,7 +10,7 @@
 #include "Functions/misc.h"
 using namespace std;
 
-void BDTApply(string varapplied, string fileapplied, bool logdira = false)
+void BDTApply(string varapplied, string fileapplied, string outputfilename, bool logdira = false)
 {
   int N_variables = 0;
   string filename = "Variables/BDTVariables.txt";
@@ -20,7 +20,7 @@ void BDTApply(string varapplied, string fileapplied, bool logdira = false)
   TTree* datatree = (TTree*)data->Get("DecayTree");
 
   //BDT Output
-  TFile* target = new TFile("Tuples/data-mva_output.root", "RECREATE");
+  TFile* target = new TFile(outputfilename.c_str(), "RECREATE");
   TTree* tree = new TTree("tree", "treelibrated tree");
 
   TMVA::Tools::Instance();

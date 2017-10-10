@@ -13,39 +13,42 @@ void BDTMerit(double init_value, double final_value, int steps = 100)
 {
   //Going to plot 1 variable and then extend it with a loop
   
-  TFile* tuplefile = new TFile("Tuples/data-mva_output.root");
-  TTree* tree = (TTree*)tuplefile->Get("tree"); //Get Tree from corresponding directory
-  //2012 Data
-  double* merit = new double[steps+1];
-  double* cutx = new double[steps+1];
-  double* fsigarray = new double[steps+1];
-  //Cut the trees
-  TFile* cutfile = TFile::Open("Tuples/BDToutputtree.root", "RECREATE");
+  TFile* datafile = new TFile("Tuples/data-mva_output.root");
+  TTree* datatree = (TTree*)datafile->Get("tree"); //Get Tree from corresponding directory
+  TFile* MCfile = new TFile("Tuples/data-mva_outputMC.root");
+  TTree* MCtree = (TTree*)MCfile->Get("tree");
+  string HMcut = "B_M > 5600";
+  string LMcut = "B_M < 5000";
+  int N0_MC = MCtree->GetEntries();
+  int N_HM, N_LM;
+  int xmin = 4300, xmax = 6300, xlow = 5000, xhigh = 5600;
+  int* N_bkg = new int[steps+1];
+  int* N_MC  = new int[steps+1];
+  double* sig= new double[steps+1];
+  string cut;
+  stringstream ss_HM;
+  stringstream ss_LM;
+  stringstream ss;
   for(int i=0;i<=steps;i++)
     {
-      stringstream ss;
-      cutx[i] = init_value + double(i)*(final_value-init_value)/steps;
-      ss << "BDT_response > " << cutx[i];
-      TTree* cuttree = tree->CopyTree(ss.str().c_str());
-      //Initialize all the stuff needed for the fit
-      RooRealVar B_M("B_M", "B_M", 4300, 6300);
-      RooRealVar mean("mean", "mean", 5288, 5200, 5400);
-      RooRealVar width("width","width", 100, 10, 200);
-      RooGaussian signal("signal","signal",B_M,mean,width);
-      RooRealVar tau("tau", "tau", -0.00027, -0.004, -0.0001);
-      RooExponential bkg("bkg","bkg", B_M, tau);
-      RooRealVar fsig("fsig","fsig",0.1, 0 ,1);
-      RooAddPdf model("model", "model", RooArgList(signal,bkg),fsig);
-      RooDataSet data("data", "data", cuttree, RooArgSet(B_M));
-      model.fitTo(data);
-      merit[i] = fsig.getValV()*TMath::Sqrt(cuttree->GetEntries());
-      fsigarray[i] = fsig.getValV();
+      ss_HM << HMcut << " && BDT_response > " << init_value+double(i*(final_value-init_value))/double(steps);
+      ss_LM << LMcut << " && BDT_response > " << init_value+double(i*(final_value-init_value))/double(steps);
+      ss << "BDT_response > " << init_value+double(i*(final_value-init_value))/double(steps);
+      N_HM = datatree->GetEntries(ss_HM.str().c_str());
+      N_LM = datatree->GetEntries(ss_LM.str().c_str());
+      N_bkg[i] = N_LM*(1-TMath::Power(double(N_LM)/double(N_HM),double(xmin-xmax)/double(xhigh-xmin)))/(1-TMath::Power(double(N_LM)/double(N_HM),double(xmin-xlow)/double(xhigh-xmin)));
+      N_MC[i] = 86.18781*double(MCtree->GetEntries(ss.str().c_str()))/double(N0_MC);
+      sig[i] = double(N_MC[i])/TMath::Sqrt(double(N_MC[i]+N_bkg[i]));
+      ss_HM.str("");
+      ss_LM.str("");
+      ss.str("");
     }
-  //Before making a plot, output the values
-  cout << "  Cut       Merit           Frac     " << endl;
-  cout << "-------|--------------|--------------" << endl;
+  
+  //Output the values
+  cout << "  Cut       Merit     " << endl;
+  cout << "-------|--------------" << endl;
   for(int i=0;i<=steps;i++)
     {
-      cout << setfill(' ') << setw(7) << cutx[i] << "|" << setw(14) << merit[i] << "|" << setw(14) << fsigarray[i] << endl;
+      cout << setfill(' ') << setw(7) << init_value+double(i*(final_value-init_value))/double(steps) << "|" << setw(14) << sig[i] << endl;
     }
 }
