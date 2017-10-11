@@ -32,6 +32,9 @@ void BDTTrain(bool logdira = false, string cutsfilename = "Variables/BDTCuts.txt
 
   TFile* data = new TFile("Tuples/BDTcuttreebkg.root");
   TTree* datatree = (TTree*)data->Get("DecayTree");
+  cout << "----------------------------------------------------------------------------" << endl;
+  cout << "Starting training with " << sigtree->GetEntries() << " signal events and " << datatree->GetEntries() << " background events" << endl;
+  cout << "----------------------------------------------------------------------------" << endl;
 
   factory->AddSignalTree(sigtree,signalW);
   factory->AddBackgroundTree(datatree, backgroundW);

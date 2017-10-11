@@ -24,6 +24,8 @@ void BDTMerit(double init_value, double final_value, int steps = 100)
   int xmin = 4300, xmax = 6300, xlow = 5000, xhigh = 5600;
   int* N_bkg = new int[steps+1];
   int* N_MC  = new int[steps+1];
+  int* N_MC_raw = new int[steps+1];
+  double* eff= new double[steps+1];
   double* sig= new double[steps+1];
   string cut;
   stringstream ss_HM;
@@ -39,16 +41,18 @@ void BDTMerit(double init_value, double final_value, int steps = 100)
       N_bkg[i] = N_LM*(1-TMath::Power(double(N_LM)/double(N_HM),double(xmin-xmax)/double(xhigh-xmin)))/(1-TMath::Power(double(N_LM)/double(N_HM),double(xmin-xlow)/double(xhigh-xmin)));
       N_MC[i] = 86.18781*double(MCtree->GetEntries(ss.str().c_str()))/double(N0_MC);
       sig[i] = double(N_MC[i])/TMath::Sqrt(double(N_MC[i]+N_bkg[i]));
+      eff[i] = double(MCtree->GetEntries(ss.str().c_str()))/double(N0_MC);
+      N_MC_raw[i] = MCtree->GetEntries(ss.str().c_str());
       ss_HM.str("");
       ss_LM.str("");
       ss.str("");
     }
   
   //Output the values
-  cout << "  Cut       Merit     " << endl;
-  cout << "-------|--------------" << endl;
+  cout << "  Cut       Merit         Eff     N_sig " << endl;
+  cout << "-------|--------------|---------|-------" << endl;
   for(int i=0;i<=steps;i++)
     {
-      cout << setfill(' ') << setw(7) << init_value+double(i*(final_value-init_value))/double(steps) << "|" << setw(14) << sig[i] << endl;
+      cout << setfill(' ') << setw(7) << init_value+double(i*(final_value-init_value))/double(steps) << "|" << setw(14) << sig[i] << "|" << setw(9) << eff[i] << "|" << setw(7) << N_MC_raw[i] << endl;
     }
 }
