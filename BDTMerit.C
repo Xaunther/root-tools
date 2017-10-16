@@ -50,10 +50,10 @@ void BDTMerit(double init_value, double final_value, int steps = 100)
     }
   
   //Output the values
-  cout << "  Cut       Merit         Eff     N_sig " << endl;
-  cout << "-------|--------------|---------|-------" << endl;
+  cout << "  Cut       Merit         Eff     N_sig   N_bkg " << endl;
+  cout << "-------|--------------|---------|-------|-------" << endl;
   for(int i=0;i<=steps;i++)
     {
-      cout << setfill(' ') << setw(7) << init_value+double(i*(final_value-init_value))/double(steps) << "|" << setw(14) << sig[i] << "|" << setw(9) << eff[i] << "|" << setw(7) << N_MC_raw[i] << endl;
+      cout << setfill(' ') << setw(7) << init_value+double(i*(final_value-init_value))/double(steps) << "|" << setw(14) << sig[i] << "|" << setw(9) << eff[i] << "|" << setw(7) << N_MC_raw[i] << "|" << setw(7) << N_bkg[i] << endl;
     }
 }
