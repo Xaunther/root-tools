@@ -7,5 +7,6 @@ void rootinit()
   //Miscellaneous functions, must be loaded in top of all personal functions
   gROOT->ProcessLine(".L ./Functions/misc.cxx+");  
   //Personal codes
+  gROOT->ProcessLine(".L ./Constants/Constants.cxx+");
   gROOT->ProcessLine(".L ./Functions/Fits.cxx+");
 }
