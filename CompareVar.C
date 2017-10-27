@@ -1,52 +1,57 @@
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <sstream>
 #include "TTree.h"
 #include "TH1F.h"
 #include "TFile.h"
-#include <string>
 #include "TCanvas.h"
 #include "TLeaf.h"
-#include <sstream>
-#include "TMath.h"
-#include "Functions/misc.h"
+#include "TChain.h"
 using namespace std;
-void CompareVar(string plotvar, string plotopt = "", string tupledir1 = "Directories/tuples.dir", string tupledir2 = "Directories/tuples2016.dir", string cutfile="Variables/Cuts.txt")
+
+void CompareVar(string variablename, string filedir1, string filedir2, string cutfile1 = "", string cutfile2 = "")
 {
   int N_files1 = 0;
   int N_files2 = 0;
-  string* filenames1 = ReadVariables(N_files1, tupledir1);
-  string* filenames2 = ReadVariables(N_files2, tupledir2);
-      
-  string cuts = GetCuts(cutfile);
-  //Data chain
-  string treename1 = GetTreeName(tupledir1);
-  string treename2 = GetTreeName(tupledir2);
-  
+  string* filenames1 = ReadVariables(N_files1, filedir1);
+  string* filenames2 = ReadVariables(N_files2, filedir2);
+  //Load TChain
+  string cuts1 = GetCuts(cutfile1);
+  string cuts2 = GetCuts(cutfile2);
+  string treename1 = GetTreeName(filedir1); 
+  string treename2 = GetTreeName(filedir2); 
+  int N_part = GetNPart(filedir1);
+  int N_part_plot = GetNPartPlot(variablename);
+  if(N_part_plot==0)
+    {
+      N_part_plot = N_part;
+    }
+  //If not a common opt, add manually here
+  //treename=""
+
   TChain* chain1 = new TChain(treename1.c_str());
   TChain* chain2 = new TChain(treename2.c_str());
-
   //Add to chain and get N of entries
   for(int i=0;i<N_files1;i++)
     {
       chain1->Add(filenames1[i].c_str());
       cout << i+1 << " file(s) chained" << endl;
     }
-  cout << chain1->GetEntries() << endl;
-  //Add to chain and get N of entries
   for(int i=0;i<N_files2;i++)
     {
       chain2->Add(filenames2[i].c_str());
       cout << i+1 << " file(s) chained" << endl;
     }
-  cout << chain2->GetEntries() << endl;
+  //Cut chain into new TChain in a temp root file
+  TFile* tempfile1 = new TFile("Tuples/temp1.root", "recreate");
+  TTree* temptree1 = (TTree*)chain1->CopyTree(cuts1.c_str());
 
-  //Plot and save bro
-  TCanvas* c1 = new TCanvas();
-  cout << "Plotting..." << endl;
-  chain1->SetLineColor(kRed);
-  chain1->Draw(plotvar.c_str(), cuts.c_str(), plotopt.c_str());
-  chain2->SetLineColor(kBlue);
-  chain2->Draw(plotvar.c_str(), cuts.c_str(), (plotopt + " same").c_str());
-  c1->SaveAs(("plots/"+plotvar+".pdf").c_str());
-  //cout << htemp->GetEntries() << endl;
+  TFile* tempfile2 = new TFile("Tuples/temp2.root", "recreate");
+  TTree* temptree2 = (TTree*)chain2->CopyTree(cuts2.c_str());
+
+  //Do fit depending on request
+  MultiPlot(variablename, temptree1, temptree2, N_part, N_part_plot);
+  cout << temptree1->GetEntries() << " events plotted" << endl;
+  cout << temptree2->GetEntries() << " events plotted" << endl;
 }
