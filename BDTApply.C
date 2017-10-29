@@ -21,7 +21,7 @@ void BDTApply(string varapplied, string fileapplied, string outputfilename, bool
 
   //BDT Output
   TFile* target = new TFile(outputfilename.c_str(), "RECREATE");
-  TTree* tree = new TTree("tree", "treelibrated tree");
+  TTree* tree = new TTree("DecayTree", "treelibrated tree");
 
   TMVA::Tools::Instance();
   TMVA::Reader* reader =  new TMVA::Reader("V:Color:!Silent");
