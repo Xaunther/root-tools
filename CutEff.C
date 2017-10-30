@@ -20,6 +20,10 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
   int N_precuts = 0;
   string* precuts = ReadVariables(N_precuts, precutfile);
 
+  if(N_precuts == 0)
+    {
+      allprecuts = "1";
+    }
   int* N_final = new int[N_cuts+1];
   int N0;
 
@@ -44,7 +48,6 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
       N_final[i] = chain->GetEntries((allprecuts+" && "+cuts[i]).c_str());
       cout << N_final[i] << endl;
     }
-  N_final[N_cuts] = chain->GetEntries((allprecuts+" && "+allcuts).c_str());
 
   //Now, produce a gorgeous output #4dalulz
   ofstream fout;
