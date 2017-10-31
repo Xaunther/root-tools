@@ -48,7 +48,7 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
       N_final[i] = chain->GetEntries((allprecuts+" && "+cuts[i]).c_str());
       cout << N_final[i] << endl;
     }
-
+  N_final[N_cuts] =chain->GetEntries((allprecuts+" && "+allcuts).c_str());
   //Now, produce a gorgeous output #4dalulz
   ofstream fout;
   fout.open(outfile.c_str());
