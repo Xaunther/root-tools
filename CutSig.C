@@ -110,7 +110,7 @@ void CutSig(string dirfile_data, string dirfile_MC, string cutfiledir, double MC
 	    }
 	  else
 	    {
-	      significances[j] = (double(MC_exp_0*N_LM)/double(N0))/sqrt(double(MC_exp_0*N_LM)/double(N0)+N_bkg);
+	      significances[j] = (double(MC_exp_0*N_MC)/double(N0))/sqrt(double(MC_exp_0*N_MC)/double(N0)+N_bkg);
 	    }
 	  int maxL = GetMaxLength(cuts,N_cuts);
 	  //Output
