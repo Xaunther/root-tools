@@ -114,7 +114,7 @@ void CutSig(string dirfile_data, string dirfile_MC, string cutfiledir, double MC
 	    }
 	  int maxL = GetMaxLength(cuts,N_cuts);
 	  //Output
-	  fout << cuts[j] << setw(maxL+2-int(cuts[j].size())) << "  |  " << setw(8) << N_MC/double(N0) << " | " << setw(8) << N_LM << " | " << setw(8) << N_HM << " | " << setw(8) << N_bkg << " | " << setw(8) << significances[j] << endl;
+	  fout << setw(maxL) << cuts[j] << "  |  " << setw(8) << N_MC/double(N0) << " | " << setw(8) << N_LM << " | " << setw(8) << N_HM << " | " << setw(8) << N_bkg << " | " << setw(8) << significances[j] << endl;
 	}
       fout.close();
       int best = GetMaxPos(significances, N_cuts);
