@@ -123,6 +123,7 @@ void CutSig(string dirfile_data, string dirfile_MC, string cutfiledir, double MC
       allprecuts_HM += (" && ("+cuts[best]+")").c_str();
       allprecuts_MC += (" && ("+cuts[best]+")").c_str();
       //Update expected signal events
-      MC_exp_0 = double(MC_exp_0*N_MC)/double(N0);
+      MC_exp_0 = double(MC_exp_0*chain_MC->GetEntries(allprecuts_MC.c_str()))/double(N0);
+
     }
 }
