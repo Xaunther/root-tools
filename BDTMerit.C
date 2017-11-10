@@ -14,9 +14,9 @@ void BDTMerit(double init_value, double final_value, int steps = 100)
   //Going to plot 1 variable and then extend it with a loop
   
   TFile* datafile = new TFile("Tuples/data-mva_output.root");
-  TTree* datatree = (TTree*)datafile->Get("tree"); //Get Tree from corresponding directory
+  TTree* datatree = (TTree*)datafile->Get("DecayTree"); //Get Tree from corresponding directory
   TFile* MCfile = new TFile("Tuples/data-mva_outputMC.root");
-  TTree* MCtree = (TTree*)MCfile->Get("tree");
+  TTree* MCtree = (TTree*)MCfile->Get("DecayTree");
   string HMcut = "B_M > 5600";
   string LMcut = "B_M < 5000";
   int N0_MC = MCtree->GetEntries();
@@ -39,8 +39,9 @@ void BDTMerit(double init_value, double final_value, int steps = 100)
       N_HM = datatree->GetEntries(ss_HM.str().c_str());
       N_LM = datatree->GetEntries(ss_LM.str().c_str());
       N_bkg[i] = N_LM*(1-TMath::Power(double(N_LM)/double(N_HM),double(xmin-xmax)/double(xhigh-xmin)))/(1-TMath::Power(double(N_LM)/double(N_HM),double(xmin-xlow)/double(xhigh-xmin)));
-      N_MC[i] = 975.863316563*double(MCtree->GetEntries(ss.str().c_str()))/1740.0;
-      //N_MC[i] = 483.103294757*double(MCtree->GetEntries(ss.str().c_str()))/6546.0;
+      //N_MC[i] = 975.863316563*double(MCtree->GetEntries(ss.str().c_str()))/1740.0; //LL R-II
+      //N_MC[i] = 483.103294757*double(MCtree->GetEntries(ss.str().c_str()))/6546.0; //LL R-I
+      N_MC[i] = 645.4811*double(MCtree->GetEntries(ss.str().c_str()))/1722.0; //DD R-I
       sig[i] = double(N_MC[i])/TMath::Sqrt(double(N_MC[i]+N_bkg[i]));
       eff[i] = double(MCtree->GetEntries(ss.str().c_str()))/double(N0_MC);
       N_MC_raw[i] = MCtree->GetEntries(ss.str().c_str());
