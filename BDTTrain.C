@@ -10,7 +10,7 @@
 #include "Functions/misc.h"
 using namespace std;
 
-void BDTTrain(bool logdira = false, string cutsfilename = "Variables/BDTCuts.txt")
+void BDTTrain(string extracuts = "", bool logdira = false)
 {
   int N_variables = 0;
   string filename = "Variables/BDTVariables.txt";
@@ -36,7 +36,7 @@ void BDTTrain(bool logdira = false, string cutsfilename = "Variables/BDTCuts.txt
   cout << "Starting training with " << sigtree->GetEntries() << " signal events and " << datatree->GetEntries() << " background events" << endl;
   cout << "----------------------------------------------------------------------------" << endl;
 
-  factory->AddSignalTree(sigtree,signalW);
+  factory->AddTree(sigtree, "Signal", signalW, TCut(extracuts.c_str()), TMVA::Types::kMaxTreeType);
   factory->AddBackgroundTree(datatree, backgroundW);
 
   //Add Variables
