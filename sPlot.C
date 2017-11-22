@@ -28,13 +28,9 @@ void sPlot(string wVarname, string pVarname, string tupledir)
       cout << i+1 << " file(s) chained" << endl;
     }
 
-  //Cut chain into new TChain in a temp root file
-  tempfile = new TFile("Tuples/temp.root", "recreate");
-  temptree = (TTree*)chain->CopyTree("");
-
   // ---------------RooFit Start!---------------
   //Define the pdf (linear + gaussian)
-  int entries = temptree->GetEntries();
+  int entries = chain->GetEntries();
   RooRealVar wVar(wVarname.c_str(), wVarname.c_str(), Constants::xmin, Constants::xmax);
   RooRealVar pVar(pVarname.c_str(), pVarname.c_str(), Constants::xmin2, Constants::xmax2);
   RooRealVar fsig("fsig","fsig", entries/10, 0, entries);
@@ -52,7 +48,7 @@ void sPlot(string wVarname, string pVarname, string tupledir)
   RooAddPdf model("model", "model", RooArgList(signal,bkg), RooArgList(fsig,fbkg));
   
   //Define DataSet
-  RooDataSet data("data", "data", temptree, RooArgSet(wVar, pVar));
+  RooDataSet data("data", "data", chain, RooArgSet(wVar, pVar));
 
   // fit the model to the data.
   model.fitTo(data);
@@ -99,16 +95,35 @@ void sPlot(string wVarname, string pVarname, string tupledir)
   // import this new dataset with sWeights
   std::cout << "import new dataset with sWeights" << std::endl;
   
-  //Plot check
-  RooPlot* xframe = pVar.frame();
-  data.plotOn(xframe);
-  TCanvas* c = new TCanvas();
-  xframe->Draw();
-  
-  RooDataSet* dataw = new RooDataSet(data.GetName(), data.GetTitle(), &data, *data.get(), 0, "fsig_sw");
+  //I should plot 4 things:
+  //Var 1 normal and sWeighted (2 contributions)
+  //Var 2 normal and sWeighted (2 contributions)
+  RooPlot* pframe = pVar.frame();
+  RooPlot* pframeW = pVar.frame();
+  RooPlot* wframe = wVar.frame();
+  RooPlot* wframeW = wVar.frame();  
 
-  RooPlot* xframew = pVar.frame();
-  dataw->plotOn(xframew);
+  RooDataSet* sigdata = new RooDataSet(data.GetName(), data.GetTitle(), &data, *data.get(), 0, "fsig_sw");
+  RooDataSet* bkgdata = new RooDataSet(data.GetName(), data.GetTitle(), &data, *data.get(), 0, "fbkg_sw");
+
+  data.plotOn(pframe); //Plot raw pVar
+  data.plotOn(wframe); //Plot raw wVar
+  sigdata->plotOn(pframeW, RooFit::MarkerColor(kRed));
+  bkgdata->plotOn(pframeW, RooFit::MarkerColor(kBlue)); //Plot both contributions in pVar
+  sigdata->plotOn(wframeW, RooFit::MarkerColor(kRed));
+  bkgdata->plotOn(wframeW, RooFit::MarkerColor(kBlue)); //Plot both contributions in wVar
+
+  TCanvas* c1 = new TCanvas();
+  pframe->Draw();
   TCanvas* c2 = new TCanvas();
-  xframew->Draw();
+  pframeW->Draw();
+  TCanvas* c3 = new TCanvas();
+  wframe->Draw();
+  TCanvas* c4 = new TCanvas();
+  wframeW->Draw();
+  //Save plots
+  c1->SaveAs(("plots/"+pVarname+"_orig.pdf").c_str());
+  c2->SaveAs(("plots/"+pVarname+"_sWeight.pdf").c_str());
+  c3->SaveAs(("plots/"+wVarname+"_orig.pdf").c_str());
+  c4->SaveAs(("plots/"+wVarname+"_sWeight.pdf").c_str());
 }
