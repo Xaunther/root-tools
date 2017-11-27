@@ -89,6 +89,7 @@ void sPlot(string wVarname, string pVarname, string tupledir)
 		<< "   Total Weight       " << sData.GetSumOfEventSWeight(i)
 		<< std::endl;
     }
+
   
   std::cout << std::endl;
   
