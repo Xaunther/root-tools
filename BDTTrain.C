@@ -10,7 +10,7 @@
 #include "Functions/misc.h"
 using namespace std;
 
-void BDTTrain(string extracuts = "", bool logdira = false)
+void BDTTrain(string massvar, string extracuts_sig = "", bool logdira = false)
 {
   int N_variables = 0;
   string filename = "Variables/BDTVariables.txt";
@@ -32,12 +32,19 @@ void BDTTrain(string extracuts = "", bool logdira = false)
 
   TFile* data = new TFile("Tuples/BDTcuttreebkg.root");
   TTree* datatree = (TTree*)data->Get("DecayTree");
+
+  //Create bkg cut
+  stringstream ss;
+  ss << massvar << " < " << Constants::xLM << " || " << massvar << " > " << Constants::xHM;
+
   cout << "----------------------------------------------------------------------------" << endl;
-  cout << "Starting training with " << sigtree->GetEntries() << " signal events and " << datatree->GetEntries() << " background events" << endl;
+  cout << "Starting training with " << sigtree->GetEntries() << " signal events and " << datatree->GetEntries(ss.str().c_str()) << " background events" << endl;
   cout << "----------------------------------------------------------------------------" << endl;
 
-  factory->AddTree(sigtree, "Signal", signalW, TCut(extracuts.c_str()), TMVA::Types::kMaxTreeType);
-  factory->AddBackgroundTree(datatree, backgroundW);
+  TFile* addedsigtree = new TFile("Tuples/BDTsigtest", "RECREATE");
+  factory->AddTree(sigtree, "Signal", signalW, TCut(extracuts_sig.c_str()), TMVA::Types::kMaxTreeType);
+  TFile* addedbkgtree = new TFile("Tuples/BDTbkgtest", "RECREATE");
+  factory->AddTree(datatree, "Background", backgroundW, TCut(ss.str().c_str()), TMVA::Types::kMaxTreeType);
 
   //Add Variables
   for(int i=0;i<N_variables;i++)
