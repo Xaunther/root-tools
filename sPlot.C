@@ -99,10 +99,10 @@ void sPlot(string wVarname, string pVarname, string tupledir)
   //I should plot 4 things:
   //Var 1 normal and sWeighted (2 contributions)
   //Var 2 normal and sWeighted (2 contributions)
-  RooPlot* pframe = pVar.frame();
-  RooPlot* pframeW = pVar.frame();
-  RooPlot* wframe = wVar.frame();
-  RooPlot* wframeW = wVar.frame();  
+  RooPlot* pframe = pVar.frame(RooFit::Bins(Constants::bins));
+  RooPlot* pframeW = pVar.frame(RooFit::Bins(Constants::bins));
+  RooPlot* wframe = wVar.frame(RooFit::Bins(Constants::bins));
+  RooPlot* wframeW = wVar.frame(RooFit::Bins(Constants::bins));
 
   RooDataSet* sigdata = new RooDataSet(data.GetName(), data.GetTitle(), &data, *data.get(), 0, "fsig_sw");
   RooDataSet* bkgdata = new RooDataSet(data.GetName(), data.GetTitle(), &data, *data.get(), 0, "fbkg_sw");
