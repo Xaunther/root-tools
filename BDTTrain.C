@@ -10,7 +10,7 @@
 #include "Functions/misc.h"
 using namespace std;
 
-void BDTTrain(string massvar, string extracuts_sig = "", bool logdira = false)
+void BDTTrain(string massvar, string extracuts_sig = "", bool HMonly = false, bool logdira = false)
 {
   int N_variables = 0;
   string filename = "Variables/BDTVariables.txt";
@@ -35,7 +35,14 @@ void BDTTrain(string massvar, string extracuts_sig = "", bool logdira = false)
 
   //Create bkg cut
   stringstream ss;
-  ss << massvar << " < " << Constants::xLM << " || " << massvar << " > " << Constants::xHM;
+  if (HMonly)
+    {
+      ss << massvar << " > " << Constants::xHM;
+    }
+  else
+    {
+      ss << massvar << " < " << Constants::xLM << " || " << massvar << " > " << Constants::xHM;
+    }
 
   cout << "----------------------------------------------------------------------------" << endl;
   cout << "Starting training with " << sigtree->GetEntries() << " signal events and " << datatree->GetEntries(ss.str().c_str()) << " background events" << endl;
