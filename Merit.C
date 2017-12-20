@@ -8,7 +8,7 @@
 #include "TLeaf.h"
 #include <sstream>
 #include "Functions/misc.h"
-#include "Functions/fitvartable.h"
+//#include "Functions/fitvartable.h"
 using namespace std;
 
 void Merit(string variablename, string filename = "Variables/VariablesMerit.txt", string cutsfilename = "Variables/CutsSwapped.txt", string varsfilename = "Variables/Variations.txt", string datafile = "Tuples/cuttreevars.root")
