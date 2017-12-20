@@ -31,6 +31,7 @@ void BDTMerit(int run_number, double init_value, double final_value, int steps =
   stringstream ss_HM;
   stringstream ss_LM;
   stringstream ss;
+  int maxpos;
   for(int i=0;i<=steps;i++)
     {
       ss_HM << HMcut << " && BDT_response > " << init_value+double(i*(final_value-init_value))/double(steps);
@@ -38,7 +39,19 @@ void BDTMerit(int run_number, double init_value, double final_value, int steps =
       ss << "BDT_response > " << init_value+double(i*(final_value-init_value))/double(steps);
       N_HM = datatree->GetEntries(ss_HM.str().c_str());
       N_LM = datatree->GetEntries(ss_LM.str().c_str());
-      N_bkg[i] = N_LM*(1-TMath::Power(double(N_LM)/double(N_HM),double(xmin-xmax)/double(xhigh-xmin)))/(1-TMath::Power(double(N_LM)/double(N_HM),double(xmin-xlow)/double(xhigh-xmin)));
+      //Interpolate from sidebands
+      if(N_HM != 0 && N_LM != 0 && N_HM != N_LM)
+	{
+	  N_bkg[i] = double(N_LM)*(1-pow(double(N_LM)/double(N_HM),(Constants::xmin-Constants::xmax)/(Constants::xHM-Constants::xmin)))/(1-pow(double(N_LM)/double(N_HM),(Constants::xmin-Constants::xLM)/(Constants::xHM-Constants::xmin)));
+	}
+      else if(N_HM != 0 && N_LM != 0)
+	{
+	  N_bkg[i] = N_LM/double(Constants::xLM-Constants::xmin)*(Constants::xmax-Constants::xmin);
+	}
+      else
+	{
+	  N_bkg[i] = 0;
+	}
       //N_MC[i] = 975.863316563*double(MCtree->GetEntries(ss.str().c_str()))/1740.0; //LL R-II
       //N_MC[i] = 483.103294757*double(MCtree->GetEntries(ss.str().c_str()))/6546.0; //LL R-I
       if(run_number==1)
@@ -49,7 +62,16 @@ void BDTMerit(int run_number, double init_value, double final_value, int steps =
 	{
 	  N_MC[i] = Constants::N_II*double(MCtree->GetEntries(ss.str().c_str()))/Constants::N_II_MC;
 	}
-      sig[i] = double(N_MC[i])/TMath::Sqrt(double(N_MC[i]+N_bkg[i]));
+      //Compute significance
+      if(N_LM == 0)
+	{
+	  sig[i] == 0;
+	}
+      else
+	{
+	  sig[i] = double(N_MC[i])/sqrt(double(N_MC[i]+N_bkg[i]));
+	}
+
       eff[i] = double(MCtree->GetEntries(ss.str().c_str()))/double(N0_MC);
       N_MC_raw[i] = MCtree->GetEntries(ss.str().c_str());
       ss_HM.str("");
@@ -64,4 +86,9 @@ void BDTMerit(int run_number, double init_value, double final_value, int steps =
     {
       cout << setfill(' ') << setw(7) << init_value+double(i*(final_value-init_value))/double(steps) << "|" << setw(14) << sig[i] << "|" << setw(9) << eff[i] << "|" << setw(7) << N_MC_raw[i] << "|" << setw(7) << N_bkg[i] << endl;
     }
+  //Output the line with max significance (saves time!)
+  maxpos = GetMaxPos(sig, steps+1);
+  cout << endl << "Max significance:" << endl << endl;
+  cout << setfill(' ') << setw(7) << init_value+double(maxpos*(final_value-init_value))/double(steps) << "|" << setw(14) << sig[maxpos] << "|" << setw(9) << eff[maxpos] << "|" << setw(7) << N_MC_raw[maxpos] << "|" << setw(7) << N_bkg[maxpos] << endl;
+
 }
