@@ -9,7 +9,7 @@
 #include <sstream>
 using namespace std;
 
-void BDTMerit(double init_value, double final_value, int steps = 100)
+void BDTMerit(int run_number, double init_value, double final_value, int steps = 100)
 {
   //Going to plot 1 variable and then extend it with a loop
   
@@ -41,8 +41,14 @@ void BDTMerit(double init_value, double final_value, int steps = 100)
       N_bkg[i] = N_LM*(1-TMath::Power(double(N_LM)/double(N_HM),double(xmin-xmax)/double(xhigh-xmin)))/(1-TMath::Power(double(N_LM)/double(N_HM),double(xmin-xlow)/double(xhigh-xmin)));
       //N_MC[i] = 975.863316563*double(MCtree->GetEntries(ss.str().c_str()))/1740.0; //LL R-II
       //N_MC[i] = 483.103294757*double(MCtree->GetEntries(ss.str().c_str()))/6546.0; //LL R-I
-      N_MC[i] = (1*483.103294757+0*975.863316563)*double(MCtree->GetEntries(ss.str().c_str()))/(6546.0); //Custom combination
-      //N_MC[i] = 645.4811*double(MCtree->GetEntries(ss.str().c_str()))/1722.0; //DD R-I
+      if(run_number==1)
+	{
+	  N_MC[i] = Constants::N_I*double(MCtree->GetEntries(ss.str().c_str()))/Constants::N_I_MC;
+	}
+      else if(run_number==2)
+	{
+	  N_MC[i] = Constants::N_II*double(MCtree->GetEntries(ss.str().c_str()))/Constants::N_II_MC;
+	}
       sig[i] = double(N_MC[i])/TMath::Sqrt(double(N_MC[i]+N_bkg[i]));
       eff[i] = double(MCtree->GetEntries(ss.str().c_str()))/double(N0_MC);
       N_MC_raw[i] = MCtree->GetEntries(ss.str().c_str());
