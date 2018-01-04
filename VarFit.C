@@ -8,10 +8,13 @@
 #include "TCanvas.h"
 #include "TLeaf.h"
 #include "TChain.h"
+#include "RooWorkspace.h"
 using namespace std;
 
 void VarFit(string variablename, string fitopt, string filedir, string cutfile = "")
 {
+  RooWorkspace* ws();
+
   int N_files = 0;
   string* filenames = ReadVariables(N_files, filedir);
   //Load TChain
@@ -42,19 +45,23 @@ void VarFit(string variablename, string fitopt, string filedir, string cutfile =
   //Do fit depending on request
   if(fitopt=="Gauss-exp") //Gaussian signal with exp bkg
     {
-      FitGauss_Exp(variablename, temptree, N_part, N_part_plot);
+      ws = FitGauss_Exp(variablename, temptree);
+      GoodPlot(ws, N_part, N_part_plot);
     }
   else if(fitopt=="CB") //CB 1 sided
     {
-      FitCB(variablename, temptree);
+      ws = FitCB(variablename, temptree);
+      GoodPlot(ws, N_part, N_part_plot);
     }
   else if(fitopt=="DoubleCB") //CB 2 sided
     {
-      FitDoubleCB(variablename, temptree);
+      ws = FitDoubleCB(variablename, temptree);
+      GoodPlot(ws, N_part, N_part_plot);
     }
   else if(fitopt=="Lb2NstG") //Lb2NstG fit
     {
-      FitLb2NstG(variablename, temptree);
+      ws = FitLb2NstG(variablename, temptree);
+      GoodPlot(ws, N_part, N_part_plot);
     }
   else
     {
