@@ -13,7 +13,7 @@ using namespace std;
 
 void VarFit(string variablename, string fitopt, string filedir, string cutfile = "")
 {
-  RooWorkspace* ws();
+  RooWorkspace* ws = new RooWorkspace();
 
   int N_files = 0;
   string* filenames = ReadVariables(N_files, filedir);
@@ -45,7 +45,7 @@ void VarFit(string variablename, string fitopt, string filedir, string cutfile =
   //Do fit depending on request
   if(fitopt=="Gauss-exp") //Gaussian signal with exp bkg
     {
-      ws = FitGauss_Exp(variablename, temptree);
+      ws = (RooWorkspace*)FitGauss_Exp(variablename, temptree);
       GoodPlot(ws, variablename, 1, N_part, N_part_plot);
     }
   else if(fitopt=="CB") //CB 1 sided
