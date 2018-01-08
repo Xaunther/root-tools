@@ -1,5 +1,8 @@
 void rootinit()
 {
+  //First of all come the personal constants
+  gROOT->ProcessLine(".L ./Dictionaries/Constants.cxx+");
+  gROOT->ProcessLine(".L ./Dictionaries/Names.cxx+");
   //Utilities from independent sources
   gROOT->ProcessLine(".L ./Functions/BifurcatedCB.cxx+");
   //Personal tools not depending on anything external
@@ -7,7 +10,6 @@ void rootinit()
   //Miscellaneous functions, must be loaded in top of all personal functions
   gROOT->ProcessLine(".L ./Functions/misc.cxx+");  
   //Personal codes
-  gROOT->ProcessLine(".L ./Dictionaries/Constants.cxx+");
   gROOT->ProcessLine(".L ./Functions/Fits.cxx+");
 
   //Finally I can load the user-run scripts, which depend on the libraries already loaded
