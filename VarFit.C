@@ -46,22 +46,22 @@ void VarFit(string variablename, string fitopt, string filedir, string cutfile =
   if(fitopt=="Gauss-exp") //Gaussian signal with exp bkg
     {
       ws = FitGauss_Exp(variablename, temptree);
-      GoodPlot(ws, N_part, N_part_plot);
+      GoodPlot(ws, variablename, 1, N_part, N_part_plot);
     }
   else if(fitopt=="CB") //CB 1 sided
     {
       ws = FitCB(variablename, temptree);
-      GoodPlot(ws, N_part, N_part_plot);
+      GoodPlot(ws, variablename, 0, N_part, N_part_plot);
     }
   else if(fitopt=="DoubleCB") //CB 2 sided
     {
       ws = FitDoubleCB(variablename, temptree);
-      GoodPlot(ws, N_part, N_part_plot);
+      GoodPlot(ws, variablename, 0, N_part, N_part_plot);
     }
   else if(fitopt=="Lb2NstG") //Lb2NstG fit
     {
       ws = FitLb2NstG(variablename, temptree);
-      GoodPlot(ws, N_part, N_part_plot);
+      GoodPlot(ws, variablename, 100, N_part, N_part_plot);
     }
   else
     {
