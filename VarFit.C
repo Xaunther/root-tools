@@ -20,15 +20,7 @@ void VarFit(string variablename, string fitopt, string filedir, string cutfile =
   //Load TChain
   string cuts = GetCuts(cutfile);
   string treename = GetTreeName(filedir); 
-  int N_part = GetNPart(filedir);
-  int N_part_plot = GetNPartPlot(variablename);
   int N_bkgs;
-  if(N_part_plot==0)
-    {
-      N_part_plot = N_part;
-    }
-  //If not a common opt, add manually here
-  //treename=""
 
   TChain* chain = new TChain(treename.c_str());
   //Add to chain and get N of entries
@@ -71,7 +63,7 @@ void VarFit(string variablename, string fitopt, string filedir, string cutfile =
     }
 
   //Proceed to the plot
-  GoodPlot(ws, variablename, N_bkgs, N_part, N_part_plot);
+  GoodPlot(ws, variablename, N_bkgs);
 
   cout << temptree->GetEntries() << " events plotted" << endl;
 }
