@@ -51,7 +51,7 @@ void CompareVar(string variablename, string filedir1, string filedir2, string cu
   TTree* temptree2 = (TTree*)chain2->CopyTree(cuts2.c_str());
 
   //Do fit depending on request
-  MultiPlot(variablename, temptree1, temptree2, N_part, N_part_plot);
+  MultiPlot(variablename, temptree1, temptree2);
   cout << temptree1->GetEntries() << " events plotted" << endl;
   cout << temptree2->GetEntries() << " events plotted" << endl;
 }
