@@ -11,8 +11,21 @@
 #include "RooWorkspace.h"
 using namespace std;
 
-void VarFit(string variablename, string fitopt, string filedir, string cutfile = "")
+void VarFit(string variablename, FitOption fitopt, string filedir, string cutfile = "")
 {
+  //I create an array of pointers to the fitting functions, so no need to change code in VarFit.C if we add more ;)
+  FitFunction fitf[] = 
+    {
+      FitGauss_Exp,
+      FitCB,
+      FitDoubleCB,
+      FitLb2NstG,
+      FitNothing
+    };
+  /************************************
+  *Function that returns this thing!  
+  *Encode number of bkgs somewhere in workspace
+  ************************************/
   RooWorkspace* ws = new RooWorkspace();
 
   int N_files = 0;
@@ -36,31 +49,8 @@ void VarFit(string variablename, string fitopt, string filedir, string cutfile =
   tempfile->Write();
 
   //Do fit depending on request
-  if(fitopt=="Gauss-exp") //Gaussian signal with exp bkg
-    {
-      ws = (RooWorkspace*)FitGauss_Exp(variablename, temptree);
-      N_bkgs = 1;
-    }
-  else if(fitopt=="CB") //CB 1 sided
-    {
-      ws = FitCB(variablename, temptree);
-      N_bkgs = 0;
-    }
-  else if(fitopt=="DoubleCB") //CB 2 sided
-    {
-      ws = FitDoubleCB(variablename, temptree);
-      N_bkgs = 0;
-    }
-  else if(fitopt=="Lb2NstG") //Lb2NstG fit
-    {
-      ws = FitLb2NstG(variablename, temptree);
-      N_bkgs = 4;
-    }
-  else
-    {
-      ws = FitNothing(variablename, temptree);
-      N_bkgs = -1;
-    }
+  ws = fitf[fitopt](variablename, temptree);
+  N_bkgs = -1;
 
   //Proceed to the plot
   GoodPlot(ws, variablename, N_bkgs);
