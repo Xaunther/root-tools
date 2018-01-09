@@ -21,12 +21,11 @@ void BDTMerit(int run_number, double init_value, double final_value, int steps =
   string LMcut = "B_M < 5000";
   int N0_MC = MCtree->GetEntries();
   int N_HM, N_LM;
-  int xmin = 4300, xmax = 6300, xlow = 5000, xhigh = 5600;
-  int* N_bkg = new int[steps+1];
-  int* N_MC  = new int[steps+1];
+  double* N_bkg = new double[steps+1];
+  double* N_MC = new double[steps+1];
   int* N_MC_raw = new int[steps+1];
-  double* eff= new double[steps+1];
-  double* sig= new double[steps+1];
+  double* eff = new double[steps+1];
+  double* sig = new double[steps+1];
   string cut;
   stringstream ss_HM;
   stringstream ss_LM;
@@ -50,7 +49,7 @@ void BDTMerit(int run_number, double init_value, double final_value, int steps =
 	}
       else
 	{
-	  N_bkg[i] = 0;
+	  N_bkg[i] = N_HM + N_LM;
 	}
       //N_MC[i] = 975.863316563*double(MCtree->GetEntries(ss.str().c_str()))/1740.0; //LL R-II
       //N_MC[i] = 483.103294757*double(MCtree->GetEntries(ss.str().c_str()))/6546.0; //LL R-I
@@ -63,12 +62,14 @@ void BDTMerit(int run_number, double init_value, double final_value, int steps =
 	  N_MC[i] = Constants::N_II*double(MCtree->GetEntries(ss.str().c_str()))/Constants::N_II_MC;
 	}
       //Compute significance
-      if(N_LM == 0)
+      if(N_bkg[i] == 0 && MCtree->GetEntries(ss.str().c_str()) == 0)
 	{
+	  cout << 1 << endl;
 	  sig[i] == 0;
 	}
       else
 	{
+	  cout << 2 << " " << N_LM << " " << N_HM << endl;;
 	  sig[i] = double(N_MC[i])/sqrt(double(N_MC[i]+N_bkg[i]));
 	}
 
