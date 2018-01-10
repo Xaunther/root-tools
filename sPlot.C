@@ -3,23 +3,22 @@
 #include <string>
 #include <sstream>
 #include "RooStats/SPlot.h"
-#include "Functions/misc.h"
-#include "Dictionaries/Constants.h"
+#include "Functions/Fits.h"
+#include "RooWorkspace.h"
 using namespace std;
 
-void sPlot(string wVarname, string pVarname, string tupledir)
+void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt)
 {
+  //RooWorkspace                                                                                                                                                                  
+  RooWorkspace* ws = new RooWorkspace();
+  //Array of fitting fitted fit functions                                                                                                                                          
+  FitFunction* fitf = FitFunction_init();
+  
   //Read the data
   int N_files = 0;
   string* filenames = ReadVariables(N_files, tupledir);
   //Load TChain
   string treename = GetTreeName(tupledir); 
-  int N_part = GetNPart(tupledir);
-  int N_part_plot = GetNPartPlot(pVarname);
-  if(N_part_plot==0)
-    {
-      N_part_plot = N_part;
-    }
   TChain* chain = new TChain(treename.c_str());
   //Add to chain and get N of entries
   for(int i=0;i<N_files;i++)
@@ -27,34 +26,64 @@ void sPlot(string wVarname, string pVarname, string tupledir)
       chain->Add(filenames[i].c_str());
       cout << i+1 << " file(s) chained" << endl;
     }
+  //Cut chain into new TChain in a temp root file
+  tempfile = new TFile("Tuples/temp.root", "recreate");
+  temptree = (TTree*)chain->CopyTree(cuts.c_str());
+  tempfile->Write();
 
-  // ---------------RooFit Start!---------------
-  //Define the pdf (linear + gaussian)
-  int entries = chain->GetEntries();
-  RooRealVar wVar(wVarname.c_str(), wVarname.c_str(), Constants::xmin, Constants::xmax);
-  RooRealVar pVar(pVarname.c_str(), pVarname.c_str(), Constants::xmin2, Constants::xmax2);
-  RooRealVar fsig("fsig","fsig", entries/10, 0, entries);
-  RooRealVar fbkg("fbkg","fbkg", entries/10, 0, entries);
+  //Fit to the desired thingy
+  ws = fitf[fitopt](wVarname, temptree);
 
-  //Linear coefficients
-  RooRealVar slope("slope", "slope", Constants::slope_0, Constants::slope_min, Constants::slope_max);
-  RooPolynomial bkg("bkg", "bkg", wVar, RooArgList(slope));
-  //Gaussian coefficients
-  RooRealVar mean("mean", "mean", Constants::mean_0, Constants::xmin, Constants::xmax);
-  RooRealVar width("width","width", Constants::width_0, Constants::width_min, Constants::width_max);
-  RooGaussian signal("signal","signal", wVar, mean, width);
-  
-  //Combine PDFs
-  RooAddPdf model("model", "model", RooArgList(signal,bkg), RooArgList(fsig,fbkg));
-  
-  //Define DataSet
-  RooDataSet data("data", "data", chain, RooArgSet(wVar, pVar));
+  //Retrieve stuff from workspace
+  //Number of backgrounds
+  int N_bkgs = int(ws->var(Names::N_bkgs.c_str())->getValV());
+  //Take B_M variable and its name
+  RooRealVar* B_M = ws->var(wVarname.c_str());
+  //Take dataset
+  RooAbsData* data = ws->data(Names::dataset.c_str());
+  //Initialize all possible variables
+  RooRealVar** mean = new RooRealVar*[N_bkgs+1];
+  RooRealVar** width = new RooRealVar*[N_bkgs+1];
+  RooRealVar* alpha = new RooRealVar();
+  RooRealVar** alphaL = new RooRealVar*[N_bkgs+1];
+  RooRealVar** alphaR = new RooRealVar*[N_bkgs+1];
+  RooRealVar* n = new RooRealVar();
+  RooRealVar** nL = new RooRealVar*[N_bkgs+1];
+  RooRealVar** nR = new RooRealVar*[N_bkgs+1];
+  RooRealVar* tau = new RooRealVar();
+  RooRealVar* fsig = new RooRealVar();
+  RooRealVar** fbkg = new RooRealVar*[abs(N_bkgs)];
+  //If N_bkgs is -1 it means we don't even fit! Cannot do sPlot!
+  //Also, we need at least 2 components so N_bkgs must be bigger than 0
 
-  // fit the model to the data.
-  model.fitTo(data);
+  /**************************************************
+   *Future me, this piece should go in another function, since it will be huge and the only thing I'm doing is setting all the parameters except the yields to constant
+   *************************************************/
+  if(N_bkgs <= 0)
+    {
+      return;
+    }
+  else
+    {
+      //Take out parameters that are not in array
+      alpha = 0;
+      n = 0;
+      tau = 0;
+      
+      //Take parameters out of ws
+      mean = ws->var(Names::mean[0].c_str());
+      width = ws->var(Names::width[0].c_str());
+      fsig = ws->var(Names::fsig.c_str());
+      for(int i=0;i<N_bkgs;i++)
+	{
+	  fbkg[i] = ws->var(Names::fbkg[i].c_str());
+	}
+    }
   
   // The sPlot technique requires that we fix the parameters
   // of the model that are not yields after doing the fit.
+  mean->setConstant();
+  width->setConstant();
   slope.setConstant();
   mean.setConstant();
   width.setConstant();
