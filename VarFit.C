@@ -13,19 +13,7 @@ using namespace std;
 
 void VarFit(string variablename, FitOption fitopt, string filedir, string cutfile = "")
 {
-  //I create an array of pointers to the fitting functions, so no need to change code in VarFit.C if we add more ;)
-  FitFunction fitf[] = 
-    {
-      FitGauss_Exp,
-      FitCB,
-      FitDoubleCB,
-      FitLb2NstG,
-      FitNothing
-    };
-  /************************************
-  *Function that returns this thing!  
-  *Encode number of bkgs somewhere in workspace
-  ************************************/
+  FitFunction* fitf = FitFunction_init();
   RooWorkspace* ws = new RooWorkspace();
 
   int N_files = 0;
@@ -33,7 +21,6 @@ void VarFit(string variablename, FitOption fitopt, string filedir, string cutfil
   //Load TChain
   string cuts = GetCuts(cutfile);
   string treename = GetTreeName(filedir); 
-  int N_bkgs;
 
   TChain* chain = new TChain(treename.c_str());
   //Add to chain and get N of entries
@@ -50,10 +37,9 @@ void VarFit(string variablename, FitOption fitopt, string filedir, string cutfil
 
   //Do fit depending on request
   ws = fitf[fitopt](variablename, temptree);
-  N_bkgs = -1;
 
   //Proceed to the plot
-  GoodPlot(ws, variablename, N_bkgs);
+  GoodPlot(ws, variablename);
 
   cout << temptree->GetEntries() << " events plotted" << endl;
 }
