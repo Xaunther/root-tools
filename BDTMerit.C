@@ -65,7 +65,7 @@ void BDTMerit(int run_number, double init_value, double final_value, int steps =
       if(N_bkg[i] == 0 && MCtree->GetEntries(ss.str().c_str()) == 0)
 	{
 	  cout << 1 << endl;
-	  sig[i] == 0;
+	  sig[i] = 0;
 	}
       else
 	{
