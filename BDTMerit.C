@@ -64,12 +64,10 @@ void BDTMerit(int run_number, double init_value, double final_value, int steps =
       //Compute significance
       if(N_bkg[i] == 0 && MCtree->GetEntries(ss.str().c_str()) == 0)
 	{
-	  cout << 1 << endl;
 	  sig[i] = 0;
 	}
       else
 	{
-	  cout << 2 << " " << N_LM << " " << N_HM << endl;;
 	  sig[i] = double(N_MC[i])/sqrt(double(N_MC[i]+N_bkg[i]));
 	}
 
