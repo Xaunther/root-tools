@@ -20,10 +20,22 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
   //Read the data
   int N_files = 0;
   string* filenames = ReadVariables(N_files, tupledir);
-  string cuts = GetCuts(cutfile);
   //Load TChain
   string treename = GetTreeName(tupledir); 
   TChain* chain = new TChain(treename.c_str());
+
+  //Read cuts and apply window limits (to avoid common program errors)
+  string cuts = GetCuts(cutfile);
+  stringstream ss;
+  ss.str(""); ss << Constants::xmin;
+  cuts += " && (" + wVarname + " > " + ss.str() + " && " + wVarname + " < ";
+  ss.str(""); ss << Constants::xmax;
+  cuts += ss.str() + ")";
+  ss.str(""); ss << Constants::xmin2;
+  cuts += " && (" + pVarname + " > " + ss.str() + " && " + pVarname + " < ";
+  ss.str(""); ss << Constants::xmax2;
+  cuts += ss.str() + ")";
+
   //Add to chain and get N of entries
   for(int i=0;i<N_files;i++)
     {
