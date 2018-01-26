@@ -10,14 +10,15 @@
 #include "TMath.h"
 #include "Functions/misc.h"
 using namespace std;
-void AddBranch(string branchname, string tupledir = "tuples.dir")
+void AddBranch(string branchname, string outputfile, string tupledir)
 {
   int N_files = 0;
   double branchvalue; //One should adapt the variable type to the branch requested Kplus_ProbNNp
   string* filenames = ReadVariables(N_files, tupledir);
 
   //Data chain
-  TChain* chain = new TChain("kstGTuple/DecayTree");
+  string treename = GetTreeName(tupledir);
+  TChain* chain = new TChain(treename.c_str());
 
   //Add to chain and get N of entries
   for(int i=0;i<N_files;i++)
@@ -29,7 +30,7 @@ void AddBranch(string branchname, string tupledir = "tuples.dir")
 
   //Add new branch with year
   //For data
-  TFile* file = new TFile("Tuples/Data.root", "UPDATE");
+  TFile* file = new TFile(outputfile.c_str(), "RECREATE");
   TTree* tree = (TTree*)file->Get("DecayTree");
   TBranch* newbranch = tree->Branch(branchname.c_str(), &branchvalue, (branchname+"/D").c_str());
 
