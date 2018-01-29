@@ -16,6 +16,10 @@ void Find_ROC()
   fout.open("Roc_area.txt");
   for(int i=0;i<5**6;i++)
     {
+      if(i%100==0)
+	{
+	  cout << "Reading file number " << i << endl;
+	}
       ss.str("");
       ss << "log_I_" << i << ".txt";
       fin.open(ss.str().c_str());
@@ -23,21 +27,28 @@ void Find_ROC()
 	{
 	  continue;
 	}
-      while(basura != "--- Factory                  : Method:          @B=0.01    @B=0.10    @B=0.30    ROC-integ. | ration:  cance:   ")
+      while(basura != "--- Factory                  : Method:          @B=0.01    @B=0.10    @B=0.30    ROC-integ. | ration:  cance:   " && !fin.eof())
 	{
 	  getline(fin,basura);
 	}
-      getline(fin, basura);
-      fin >> basura;
-      fin >> basura;
-      fin >> basura;
-      fin >> basura;
-      fin >> basura;
-      fin >> basura;
-      fin >> basura;
-      fin >> basura;
-      fin >> ROC_area;
-      fout << i << " | " << ROC_area << endl;
+      if(!fin.eof())
+	{
+	  getline(fin, basura);
+	  fin >> basura;
+	  fin >> basura;
+	  fin >> basura;
+	  fin >> basura;
+	  fin >> basura;
+	  fin >> basura;
+	  fin >> basura;
+	  fin >> basura;
+	  fin >> ROC_area;
+	  fout << i << " | " << ROC_area << endl;
+	}
+      else
+	{
+	  cout << "Error reading file number " << i << endl;
+	}
       fin.close();
     }
   fout.close();
