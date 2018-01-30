@@ -10,13 +10,13 @@
 #include "TMath.h"
 #include "Functions/misc.h"
 using namespace std;
-void AddBranch(string branchname, string tuplefile, string treename, string var1, string var2 = "", string var3 = "", string var4 = "", string var5 = "")
+void AddBranch(string branchname, string tupleinfile, string tupleoutfile, string treename, string var1, string var2 = "", string var3 = "", string var4 = "", string var5 = "")
 {
   int N_files = 0;
   double branchvalue; //One should adapt the variable type to the branch requested Kplus_ProbNNp
 
   //Data chain
-  TFile* infile = new TFile(tuplefile.c_str());
+  TFile* infile = new TFile(tupleinfile.c_str());
   TTree* intree = (TTree*)infile->Get(treename.c_str());
 
   string var[5];
@@ -40,11 +40,11 @@ void AddBranch(string branchname, string tuplefile, string treename, string var1
 
   //Add new branch with year
   //For data
-  TFile* file = new TFile(tuplefile.c_str(), "UPDATE");
-  TTree* tree = (TTree*)file->Get(treename.c_str());
+  TFile* file = new TFile(tupleoutfile.c_str(), "RECREATE");
+  TTree* tree = intree->CloneTree();
   TBranch* newbranch = tree->Branch(branchname.c_str(), &branchvalue, (branchname+"/D").c_str());
 
-  for(int i=0;i<tree->GetEntries();i++)
+  for(int i=0;i<intree->GetEntries();i++)
     {
       intree->GetEntry(i);
       tree->GetEntry(i);
@@ -53,7 +53,7 @@ void AddBranch(string branchname, string tuplefile, string treename, string var1
       newbranch->Fill();
       if(i%500000==0)
 	{
-	  cout << "Processing event: " << i << " / " << tree->GetEntries() << endl;
+	  cout << "Processing event: " << i << " / " << intree->GetEntries() << endl;
 	}
     }
   tree->Print();
