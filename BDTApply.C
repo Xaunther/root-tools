@@ -10,11 +10,14 @@
 #include "Functions/misc.h"
 using namespace std;
 
-void BDTApply(string varapplied, string fileapplied, string outputfilename, bool logdira = false)
+void BDTApply(string fileapplied, string outputfilename, bool logdira = false)
 {
   int N_variables = 0;
+  int N_extravars = 0;
   string filename = "Variables/BDTVariables.txt";
+  string filename2= "Variables/BDTExtravars.txt";
   string* variable_list = ReadVariables(N_variables, filename);
+  string* extravar_list = ReadVariables(N_extravars, filename2);
 
   TFile* data = new TFile(fileapplied.c_str());
   TTree* datatree = (TTree*)data->Get("DecayTree");
@@ -44,16 +47,17 @@ void BDTApply(string varapplied, string fileapplied, string outputfilename, bool
   reader->TMVA::Reader::BookMVA("BDT method", "weights/TMVAClassification_BDT.weights.xml");
 
   //Variables from data
-  Double_t* uservar = new Double_t[N_variables];
+  Double_t* uservar = new Double_t[N_variables + N_extravars];
   for(int i=0;i<N_variables;i++)
     {
       datatree->SetBranchAddress(variable_list[i].c_str(), &uservar[i]);
       tree->Branch(variable_list[i].c_str(), &uservar[i]);
     }
-  //Add variables to output file
-  double B_M;
-  datatree->SetBranchAddress(varapplied.c_str(), &B_M);
-  tree->Branch(varapplied.c_str(), &B_M);
+  for(int i=0;i<N_extravars;i++)
+    {
+      datatree->SetBranchAddress(extravar_list[i].c_str(), &uservar[N_variables + i]);
+      tree->Branch(extravar_list[i].c_str(), &uservar[N_variables + i]);
+    }
 
   //Add branch to store BDT response
   double BDT_response;
