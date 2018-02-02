@@ -14,7 +14,7 @@ void Find_ROC()
   double ROC_area;
 
   fout.open("Roc_area.txt");
-  for(int i=0;i<5**6;i++)
+  for(int i=0;i<15*5**2*8;i++)
     {
       if(i%100==0)
 	{
@@ -27,23 +27,24 @@ void Find_ROC()
 	{
 	  continue;
 	}
-      while(basura != "--- Factory                  : Method:          @B=0.01    @B=0.10    @B=0.30    ROC-integ. | ration:  cance:   " && !fin.eof())
+      while(basura != "  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   " && !fin.eof())
 	{
 	  getline(fin,basura);
 	}
       if(!fin.eof())
 	{
 	  getline(fin, basura);
-	  fin >> basura;
-	  fin >> basura;
-	  fin >> basura;
-	  fin >> basura;
-	  fin >> basura;
-	  fin >> basura;
+	  getline(fin, basura);
+	  getline(fin, basura);
 	  fin >> basura;
 	  fin >> basura;
 	  fin >> ROC_area;
-	  fout << i << " | " << ROC_area << endl;
+	  fout << i << " | " << ROC_area;
+	  getline(fin, basura);
+	  fin >> basura;
+	  fin >> basura;
+	  fin >> ROC_area;
+	  fout << " | " << ROC_area << endl;
 	}
       else
 	{
