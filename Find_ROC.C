@@ -14,14 +14,14 @@ void Find_ROC()
   double ROC_area;
 
   fout.open("Roc_area.txt");
-  for(int i=0;i<15*5**2*8;i++)
+  for(int i=0;i<15*7**3;i++)
     {
       if(i%100==0)
 	{
 	  cout << "Reading file number " << i << endl;
 	}
       ss.str("");
-      ss << "log_I_" << i << ".txt";
+      ss << "outputs/log_I_" << i << ".txt";
       fin.open(ss.str().c_str());
       if(!fin)
 	{
