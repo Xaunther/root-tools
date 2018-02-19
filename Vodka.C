@@ -4,6 +4,7 @@
 #include "TCanvas.h"
 #include "TH1.h"
 #include "TMath.h"
+#include "Functions/misc.h"
 using namespace std;
 
 void Vodka(string varname, bool binned = false)
@@ -62,7 +63,7 @@ void Vodka(string varname, bool binned = false)
       
       //Ordenar
       testsig = Ordenar(testtree->GetEntries("classID==0"), testsig);
-      testbkg = Ordenar(testtree->GetEntries("classID==1"),testbkg);
+      testbkg = Ordenar(testtree->GetEntries("classID==1"), testbkg);
       trainsig = Ordenar(traintree->GetEntries("classID==0"), trainsig);
       trainbkg = Ordenar(traintree->GetEntries("classID==1"), trainbkg);
       

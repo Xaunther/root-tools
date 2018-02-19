@@ -35,5 +35,5 @@ void rootinit()
   gROOT->ProcessLine(".L ./root/sPlot.C");
   gROOT->ProcessLine(".L ./root/TISTOS.C");
   gROOT->ProcessLine(".L ./root/VarFit.C");
-  gROOT->ProcessLine(".L ./root/Vodka.C");
+  gROOT->ProcessLine(".L ./root/Vodka.C+");
 }
