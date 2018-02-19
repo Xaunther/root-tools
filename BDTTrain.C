@@ -69,10 +69,10 @@ void BDTTrain(string massvar, string extracuts_sig = "", bool HMonly = false, bo
     }
   
   //Prepare training
-  factory->TMVA::Factory::PrepareTrainingAndTestTree("", "", "random");
+  factory->TMVA::Factory::PrepareTrainingAndTestTree("", "", Constants::BDT_Prepare_options.c_str());
 
   //TMVA method
-  factory->BookMethod(TMVA::Types::kBDT, "BDT", Constants::BDT_options.c_str());
+  factory->BookMethod(TMVA::Types::kBDT, "BDT", Constants::BDT_Method_options.c_str());
   
   //Train and test
   factory->TrainAllMethods();
