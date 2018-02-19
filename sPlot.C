@@ -2,9 +2,17 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include "TTree.h"
+#include "TChain.h"
+#include "TFile.h"
+#include "TCanvas.h"
 #include "RooStats/SPlot.h"
 #include "Functions/Fits.h"
+#include "Functions/misc.h"
 #include "RooWorkspace.h"
+#include "RooDataSet.h"
+#include "Dictionaries/Constants.h"
+#include "Dictionaries/Names.h"
 using namespace std;
 
 void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, string cutfile = "")
@@ -24,6 +32,8 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
   //Load TChain
   string treename = GetTreeName(tupledir); 
   TChain* chain = new TChain(treename.c_str());
+  TTree* temptree = new TTree();
+  TFile* tempfile = new TFile();
   //Add to chain and get N of entries
   for(int i=0;i<N_files;i++)
     {
@@ -66,7 +76,7 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
   // Now we use the SPlot class to add SWeights to our data set
   // based on our model and our yield variables
   //Retrieve the dataset and add the variable to reweight (to Plot)
-  RooDataSet* data = ws->data(Names::dataset.c_str());
+  RooDataSet* data = (RooDataSet*)ws->data(Names::dataset.c_str());
   RooRealVar* pVar = new RooRealVar(pVarname.c_str(), pVarname.c_str(), Constants::xmin2, Constants::xmax2);
   RooDataSet* tempset = new RooDataSet("tempset", "tempset", temptree, RooArgSet(*pVar));
   //Important thing here. Can only merge if both sets are the same size (PASS CUTS TO AVOID!!)

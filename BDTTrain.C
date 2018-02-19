@@ -9,6 +9,8 @@
 #include <sstream>
 #include "Functions/misc.h"
 #include "Dictionaries/Constants.h"
+#include "TMVA/Tools.h"
+#include "TMVA/Factory.h"
 using namespace std;
 
 void BDTTrain(string massvar, string extracuts_sig = "", bool HMonly = false, bool logdira = false)

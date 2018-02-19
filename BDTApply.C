@@ -6,6 +6,9 @@
 #include <string>
 #include "TCanvas.h"
 #include "TLeaf.h"
+#include <TXMLEngine.h>
+#include "TMVA/Tools.h"
+#include "TMVA/Reader.h"
 #include <sstream>
 #include "Functions/misc.h"
 using namespace std;
