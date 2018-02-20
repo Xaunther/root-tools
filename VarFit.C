@@ -3,13 +3,14 @@
 #include <string>
 #include <sstream>
 #include "TTree.h"
+#include "TChain.h"
 #include "TH1F.h"
 #include "TFile.h"
 #include "TCanvas.h"
 #include "TLeaf.h"
-#include "TChain.h"
 #include "RooWorkspace.h"
 #include "Functions/Fits.h"
+#include "Functions/misc.h"
 using namespace std;
 
 void VarFit(string variablename, FitOption fitopt, string filedir, string cutfile = "")
@@ -24,6 +25,8 @@ void VarFit(string variablename, FitOption fitopt, string filedir, string cutfil
   string treename = GetTreeName(filedir); 
 
   TChain* chain = new TChain(treename.c_str());
+  TTree* temptree = new TTree();
+  TFile* tempfile = new TFile();
   //Add to chain and get N of entries
   for(int i=0;i<N_files;i++)
     {

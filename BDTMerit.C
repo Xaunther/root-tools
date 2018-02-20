@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include "TTree.h"
 #include "TH1F.h"
@@ -7,9 +8,11 @@
 #include "TCanvas.h"
 #include "TLeaf.h"
 #include <sstream>
+#include "Functions/misc.h"
+#include "Dictionaries/Constants.h"
 using namespace std;
 
-void BDTMerit(int run_number, double init_value, double final_value, int steps = 100)
+void BDTMerit(RunNumber run_number, double init_value, double final_value, int steps = 100)
 {
   //Going to plot 1 variable and then extend it with a loop
   
@@ -53,13 +56,18 @@ void BDTMerit(int run_number, double init_value, double final_value, int steps =
 	}
       //N_MC[i] = 975.863316563*double(MCtree->GetEntries(ss.str().c_str()))/1740.0; //LL R-II
       //N_MC[i] = 483.103294757*double(MCtree->GetEntries(ss.str().c_str()))/6546.0; //LL R-I
-      if(run_number==1)
+      if(run_number==I)
 	{
 	  N_MC[i] = Constants::N_I*double(MCtree->GetEntries(ss.str().c_str()))/Constants::N_I_MC;
 	}
-      else if(run_number==2)
+      else if(run_number==II)
 	{
 	  N_MC[i] = Constants::N_II*double(MCtree->GetEntries(ss.str().c_str()))/Constants::N_II_MC;
+	}
+      else if(run_number==All)
+	{
+	  //Need to refine this (naive efficiency)
+	  N_MC[i] = (Constants::N_II+Constants::N_I)*double(MCtree->GetEntries(ss.str().c_str()))/(Constants::N_II_MC+Constants::N_I_MC);
 	}
       //Compute significance
       if(N_bkg[i] == 0 && MCtree->GetEntries(ss.str().c_str()) == 0)

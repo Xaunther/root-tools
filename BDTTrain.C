@@ -8,6 +8,9 @@
 #include "TLeaf.h"
 #include <sstream>
 #include "Functions/misc.h"
+#include "Dictionaries/Constants.h"
+#include "TMVA/Tools.h"
+#include "TMVA/Factory.h"
 using namespace std;
 
 void BDTTrain(string massvar, string extracuts_sig = "", bool HMonly = false, bool logdira = false)
@@ -68,10 +71,10 @@ void BDTTrain(string massvar, string extracuts_sig = "", bool HMonly = false, bo
     }
   
   //Prepare training
-  factory->TMVA::Factory::PrepareTrainingAndTestTree("", "", "random");
+  factory->TMVA::Factory::PrepareTrainingAndTestTree("", "", Constants::BDT_Prepare_options.c_str());
 
   //TMVA method
-  factory->BookMethod(TMVA::Types::kBDT, "BDT", "NTrees=400:MaxDepth=2");
+  factory->BookMethod(TMVA::Types::kBDT, "BDT", Constants::BDT_Method_options.c_str());
   
   //Train and test
   factory->TrainAllMethods();

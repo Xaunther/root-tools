@@ -10,42 +10,56 @@
 #include "TMath.h"
 #include "Functions/misc.h"
 using namespace std;
-void AddBranch(string branchname, string tupledir = "tuples.dir")
+void AddBranch(string branchname, string tupleinfile, string tupleoutfile, string treename, string var1, string var2 = "", string var3 = "", string var4 = "", string var5 = "")
 {
   int N_files = 0;
   double branchvalue; //One should adapt the variable type to the branch requested Kplus_ProbNNp
-  string* filenames = ReadVariables(N_files, tupledir);
 
   //Data chain
-  TChain* chain = new TChain("kstGTuple/DecayTree");
+  TFile* infile = new TFile(tupleinfile.c_str());
+  TTree* intree = (TTree*)infile->Get(treename.c_str());
 
-  //Add to chain and get N of entries
-  for(int i=0;i<N_files;i++)
+  string var[5];
+  var[0] = var1;
+  var[1] = var2;
+  var[2] = var3;
+  var[3] = var4;
+  var[4] = var5;
+
+  int N_vars = 0;
+  double varvalue[5];
+
+  for(int i=0;i<5;i++)
     {
-      chain->Add(filenames[i].c_str());
+      if(var[i]!="")
+	{
+	  intree->SetBranchAddress(var[i].c_str(),&varvalue[N_vars]);
+	  N_vars++;
+	}
     }
-
-  chain->SetBranchAddress(branchname.c_str(),&branchvalue);
 
   //Add new branch with year
   //For data
-  TFile* file = new TFile("Tuples/Data.root", "UPDATE");
-  TTree* tree = (TTree*)file->Get("DecayTree");
+  TFile* file = new TFile(tupleoutfile.c_str(), "RECREATE");
+  TTree* tree = intree->CloneTree();
   TBranch* newbranch = tree->Branch(branchname.c_str(), &branchvalue, (branchname+"/D").c_str());
 
-  for(int i=0;i<tree->GetEntries();i++)
+  for(int i=0;i<intree->GetEntries();i++)
     {
+      intree->GetEntry(i);
       tree->GetEntry(i);
-      chain->GetEntry(i);
+      //Insert formula, if any
+      branchvalue = -TMath::Log((1-varvalue[1]/varvalue[0])/(1+varvalue[1]/varvalue[0]))/2;
       newbranch->Fill();
       if(i%500000==0)
 	{
-	  cout << "Processing event: " << i << " / " << tree->GetEntries() << endl;
+	  cout << "Processing event: " << i << " / " << intree->GetEntries() << endl;
 	}
     }
   tree->Print();
   tree->Write();
 
   file->Close();
+  infile->Close();
   cout << "New branch added" << endl;
 }

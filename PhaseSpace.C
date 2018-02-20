@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "TMath.h"
 using namespace std;
 
 void PhaseSpace(double M, double m1, double m2)

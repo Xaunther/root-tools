@@ -4,10 +4,12 @@
 #include <string>
 #include <sstream>
 #include "TTree.h"
+#include "TChain.h"
 #include "TH1F.h"
 #include "TFile.h"
 #include "TCanvas.h"
 #include "TLeaf.h"
+#include "Functions/misc.h"
 using namespace std;
 
 void CutEff(string dirfile, string cutfile, string precutfile = "", string outfile = "CutEff_results.txt")
