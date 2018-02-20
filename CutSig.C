@@ -26,9 +26,9 @@ void CutSig(string dirfile_data, string dirfile_MC, string cutfiledir, double MC
   int N_precuts_LM = 0;
   int N_precuts_HM = 0;
   int N_precuts_MC = 0;
-  string* precuts_LM = ReadVariables(N_precuts_LM, precutfile_LM);
-  string* precuts_HM = ReadVariables(N_precuts_HM, precutfile_HM);
-  string* precuts_MC = ReadVariables(N_precuts_MC, precutfile_MC);
+  //  string* precuts_LM = ReadVariables(N_precuts_LM, precutfile_LM);
+  //  string* precuts_HM = ReadVariables(N_precuts_HM, precutfile_HM);
+  //  string* precuts_MC = ReadVariables(N_precuts_MC, precutfile_MC);
 
   ofstream fout;
   if(N_precuts_LM == 0)
@@ -108,7 +108,7 @@ void CutSig(string dirfile_data, string dirfile_MC, string cutfiledir, double MC
 	  //Compute significance
 	  if(N_LM == 0)
 	    {
-	      significances[j] == 0;
+	      significances[j] = 0;
 	    }
 	  else
 	    {

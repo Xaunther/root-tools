@@ -51,9 +51,11 @@ void BDTTrain(string massvar, string extracuts_sig = "", bool HMonly = false, bo
   cout << "Starting training with " << sigtree->GetEntries() << " signal events and " << datatree->GetEntries(ss.str().c_str()) << " background events" << endl;
   cout << "----------------------------------------------------------------------------" << endl;
 
-  TFile* addedsigtree = new TFile("Tuples/BDTsigtest", "RECREATE");
+  TFile* addedsigtree = new TFile("Tuples/BDTsigtest.root", "RECREATE");
+  addedsigtree->cd();
   factory->AddTree(sigtree, "Signal", signalW, TCut(extracuts_sig.c_str()), TMVA::Types::kMaxTreeType);
-  TFile* addedbkgtree = new TFile("Tuples/BDTbkgtest", "RECREATE");
+  TFile* addedbkgtree = new TFile("Tuples/BDTbkgtest.root", "RECREATE");
+  addedbkgtree->cd();
   factory->AddTree(datatree, "Background", backgroundW, TCut(ss.str().c_str()), TMVA::Types::kMaxTreeType);
 
   //Add Variables
@@ -80,4 +82,8 @@ void BDTTrain(string massvar, string extracuts_sig = "", bool HMonly = false, bo
   factory->TrainAllMethods();
   factory->TestAllMethods();
   factory->EvaluateAllMethods();
+  
+  //Leave open
+  //  addedsigtree->Close();
+  //  addedbkgtree->Close();
 }

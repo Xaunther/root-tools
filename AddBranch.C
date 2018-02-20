@@ -12,7 +12,6 @@
 using namespace std;
 void AddBranch(string branchname, string tupleinfile, string tupleoutfile, string treename, string var1, string var2 = "", string var3 = "", string var4 = "", string var5 = "")
 {
-  int N_files = 0;
   double branchvalue; //One should adapt the variable type to the branch requested Kplus_ProbNNp
 
   //Data chain

@@ -47,8 +47,9 @@ void CutTree(string outputfile = "Tuples/cuttree.root", string cutsfilename = "V
   //Cut chain into new TChain in a temp root file
   TFile* cutfile = new TFile(outputfile.c_str(), "recreate");
   TTree* cuttree = (TTree*)chain->CopyTree(cuts.c_str());
-  cutfile->Write();
-  
+  cutfile->cd();
+  cuttree->Write();
+
   cout << "Tree cut" << endl;
   cutfile->Close();
 }

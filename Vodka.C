@@ -73,18 +73,19 @@ void Vodka(string varname, bool binned = false)
   else
     {
       // BINNED VODKA TEST
-      TCanvas* c2 = new TCanvas();
       TCanvas* c1 = new TCanvas();
-  
+      TCanvas* c2 = new TCanvas();
+      TCanvas* c3 = new TCanvas();
+      TCanvas* c4 = new TCanvas();
+
+      c1->cd();
       testtree->Draw(varname.c_str(), "classID == 0");
       c2->cd();
       traintree->Draw(varname.c_str(), "classID == 0");
       
       cout << "Signal test: " << testtree->GetHistogram()->KolmogorovTest(traintree->GetHistogram()) << endl;
-
-      TCanvas* c4 = new TCanvas();
-      TCanvas* c3 = new TCanvas();
-
+      
+      c3->cd();
       testtree->Draw( varname.c_str(), "classID == 1");
       c4->cd();
       traintree->Draw(varname.c_str(), "classID == 1");

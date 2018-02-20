@@ -6,7 +6,7 @@
 #include "TFile.h"
 using namespace std;
 
-void PIDTable(string filename, string particle, string PIDopt)
+void PIDTable(string filename, string particle)
 {
   TH3F* hist; //Histogram variable
   TFile* file = TFile::Open(filename.c_str());

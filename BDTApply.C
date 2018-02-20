@@ -67,7 +67,7 @@ void BDTApply(string fileapplied, string outputfilename, bool logdira = false)
   tree->Branch("BDT_response", &BDT_response);
 
   //Apply BDT
-  for(unsigned long k=0; k<datatree->GetEntries(); k++)
+  for(long k=0; k<datatree->GetEntries(); k++)
     {
       //Some output to see it's still alive
       if (k%100000 == 0)

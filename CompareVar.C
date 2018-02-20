@@ -47,13 +47,18 @@ void CompareVar(string variablename, string filedir1, string filedir2, string cu
     }
   //Cut chain into new TChain in a temp root file
   TFile* tempfile1 = new TFile("Tuples/temp1.root", "recreate");
+  tempfile1->cd();
   TTree* temptree1 = (TTree*)chain1->CopyTree(cuts1.c_str());
 
   TFile* tempfile2 = new TFile("Tuples/temp2.root", "recreate");
+  tempfile2->cd();
   TTree* temptree2 = (TTree*)chain2->CopyTree(cuts2.c_str());
 
   //Do fit depending on request
   MultiPlot(variablename, temptree1, temptree2);
   cout << temptree1->GetEntries() << " events plotted" << endl;
   cout << temptree2->GetEntries() << " events plotted" << endl;
+  //Leave open
+  //  tempfile1->Close();
+  //  tempfile2->Close();
 }
