@@ -28,6 +28,7 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
   //Read the data
   int N_files = 0;
   string* filenames = ReadVariables(N_files, tupledir);
+  string cuts = GetCuts(cutfile);
   //Load TChain
   string treename = GetTreeName(tupledir); 
   TChain* chain = new TChain(treename.c_str());
