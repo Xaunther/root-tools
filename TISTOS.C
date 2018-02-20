@@ -3,10 +3,13 @@
 #include <string>
 #include <sstream>
 #include "TTree.h"
+#include "TChain.h"
 #include "TH1F.h"
 #include "TFile.h"
 #include "TCanvas.h"
 #include "TLeaf.h"
+#include "Functions/misc.h"
+#include "Functions/TISTOS.h"
 using namespace std;
 
 void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_results.txt", string L0_lines = "Variables/L0_TISTOS.txt", string Hlt1_lines = "Variables/Hlt1_TISTOS.txt", string Hlt2_lines = "Variables/Hlt2_TISTOS.txt")

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "TTree.h"
+#include "TChain.h"
 #include "TH1F.h"
 #include "TFile.h"
 #include <string>

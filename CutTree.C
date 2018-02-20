@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include "TTree.h"
+#include "TChain.h"
 #include "TH1F.h"
 #include "TFile.h"
 #include "TCanvas.h"
