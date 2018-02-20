@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <cmath>
 using namespace std;
 
 void Find_ROC()
@@ -14,7 +15,7 @@ void Find_ROC()
   double ROC_area;
 
   fout.open("Roc_area.txt");
-  for(int i=0;i<15*7**3;i++)
+  for(int i=0;i<15*pow(7,3);i++)
     {
       if(i%100==0)
 	{
