@@ -25,6 +25,7 @@ void rootinit()
   gROOT->ProcessLine(".L ./root/CutTree.C");
   gROOT->ProcessLine(".L ./root/MakeVarList.C");
   gROOT->ProcessLine(".L ./root/Merit.C");
+  gROOT->ProcessLine(".L ./root/OutputSearch.C");
   gROOT->ProcessLine(".L ./root/PhaseSpace.C");
   gROOT->ProcessLine(".L ./root/PIDTable.C");
   gROOT->ProcessLine(".L ./root/PlotCorrVar.C");
