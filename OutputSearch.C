@@ -54,9 +54,12 @@ void OutputSearch(string filename)
 
   fichero.close();
 
+  //Append to file
+  ofstream outfile;
+  outfile.open("output.txt", std::ios_base::app);
   for(int i=0;i<Nresults;i++)
     {
-      cout << results[i] << " | ";
+      outfile << results[i] << " | ";
     }
-  cout << endl;
+  outfile << endl;
 }
