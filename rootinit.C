@@ -25,7 +25,6 @@ void rootinit()
   gROOT->ProcessLine(".L ./root/CutEff.C+");
   gROOT->ProcessLine(".L ./root/CutSig.C+");
   gROOT->ProcessLine(".L ./root/CutTree.C+");
-  gROOT->ProcessLine(".L ./root/Find_ROC.C+");
   gROOT->ProcessLine(".L ./root/MakeVarList.C+");
   gROOT->ProcessLine(".L ./root/OutputSearch.C+");
   gROOT->ProcessLine(".L ./root/PhaseSpace.C+");
