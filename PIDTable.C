@@ -1,41 +1,46 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-#include <iomanip>
-#include "TH3F.h"
+#include <fstream>
+#include "TTree.h"
 #include "TFile.h"
+#include "Functions/misc.h"
 using namespace std;
 
-void PIDTable(string filename, string particle)
+void PIDTable(string filedir, string resultsfile = "PIDEff.txt")
 {
-  TH3F* hist; //Histogram variable
-  TFile* file = TFile::Open(filename.c_str());
-  stringstream ss_i, ss_j;
-  string histname;
-  long entries[10][10];
-  string operation = "(2+MC12TuneV2_ProbNNpi-MC12TuneV2_ProbNNK-MC12TuneV2_ProbNNp)_div_3";
-  for(int i=0;i<1;i++)
+  //Read filedir
+  int NFiles = 0;
+  string* tuple_names = ReadVariables(NFiles, filedir);
+
+
+  //Get relative path (Maybe make a function of this?)
+  int last_pos = 0;
+  while(filedir.find('/', last_pos+1)!=string::npos)
     {
-      for(int j=0;j<10;j++)//Loop 10x10 times
-	{
-	  ss_i.str("");
-	  ss_j.str("");
-	  ss_i << i;
-	  ss_j << j;
-	  histname = "PassedHist_" + particle + "_" + operation + " > 0." + ss_i.str() + " && " + operation + " > 0." + ss_j.str() + "_All__" + particle + "_P_" + particle + "_Eta_nTracks";
-	  //cout << histname << endl;
-	  hist = (TH3F*)file->Get(histname.c_str());
-	  entries[i][j] = hist->GetEntries();
-	}
+      last_pos = filedir.find('/', last_pos+1);
     }
+  string filepath = filedir.substr(0, last_pos+1);
   
-  for(int i=0;i<1;i++)
+  ofstream outfile;
+  outfile.open(resultsfile.c_str());
+  //Loop over all files in filedir
+  for(int i=0;i<NFiles;i++)
     {
-      for(int j=0;j<10;j++)
+      TFile* tuples_file = TFile::Open((filepath+tuple_names[i]).c_str());
+      TTree* tree = (TTree*)tuples_file->Get("CalibTool_PIDCalibTree");
+      int entries = tree->GetEntries();
+      double sum = 0;
+      float entry;
+      tree->SetBranchAddress("Event_PIDCalibEff", &entry);
+      for(int j=0;j<entries;j++)
 	{
-	  cout << setw(7) << endl;
-	  cout << entries[i][j] << "  ";
+	  tree->GetEntry(j);
+	  sum+=entry;
 	}
-      cout << endl;
+      outfile << tuple_names[i] << " | " << sum/double(entries) << endl;
+      cout << "Processed " << tuple_names[i] << endl;
+      tuples_file->Close();
     }
+  outfile.close();
 }
