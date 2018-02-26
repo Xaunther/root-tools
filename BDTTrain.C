@@ -13,7 +13,7 @@
 #include "TMVA/Factory.h"
 using namespace std;
 
-void BDTTrain(string massvar, string splitN, string extracuts_sig = "", bool HMonly = false, bool logdira = false)
+void BDTTrain(string massvar , string extracuts_sig = "", bool HMonly = false, bool logdira = false)
 {
   //Variables
   int N_variables = 0;
