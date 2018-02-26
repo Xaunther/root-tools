@@ -13,12 +13,14 @@
 #include "TMVA/Factory.h"
 using namespace std;
 
-void BDTTrain(string massvar, string extracuts_sig = "", bool HMonly = false, bool logdira = false)
+void BDTTrain(string massvar, string splitN, string extracuts_sig = "", bool HMonly = false, bool logdira = false)
 {
+  //Variables
   int N_variables = 0;
   string filename = "Variables/BDTVariables.txt";
   string* variable_list = ReadVariables(N_variables, filename);
   
+  //Instantiate class
   TMVA::Tools::Instance();
   
   //Output file to store the results
@@ -27,9 +29,11 @@ void BDTTrain(string massvar, string extracuts_sig = "", bool HMonly = false, bo
   //Declare factory :mgalletas:
   TMVA::Factory *factory = new TMVA::Factory("TMVAClassification", outfile, "V:!Silent:Color:Transformations=I:DrawProgressBar:AnalysisType=Classification");
   
+  //Weights for signal and background
   double signalW = 1;
   double backgroundW = 1;
 
+  //Open input MC and signal files
   TFile* signal = new TFile("Tuples/BDTcuttreeMC.root");
   TTree* sigtree = (TTree*)signal->Get("DecayTree");
 
