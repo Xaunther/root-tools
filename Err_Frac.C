@@ -15,8 +15,8 @@ void Err_Frac(int steps = 100, string filename = "Tuples/BDT-results_OP.root", s
   int N_sig_init = tree->GetEntries("classID==0");
   int N_bkg_init = tree->GetEntries("classID==1");
 
-  int N_sig;
-  int N_bkg;
+  int N_sig = 0;
+  int N_bkg = 0;
 
   double x0 = -0.2;
   double xf = 0.2;
