@@ -11,7 +11,7 @@
 #include "Functions/misc.h"
 using namespace std;
 
-void CutTree(string outputfile = "Tuples/cuttree.root", string cutsfilename = "Variables/PreCuts.txt", string tupledir = "Directories/Alltuples.dir", string variablefile = "")
+void CutTree(string outputfile = "Tuples/cuttree.root", string cutsfilename = "Variables/PreCuts.txt", string tupledir = "Directories/Alltuples.dir", string variablefile = "", int fentries = 1, int initentries = 1)
 {
   string cuts = GetCuts(cutsfilename);
   cout << cuts << endl;
@@ -46,7 +46,7 @@ void CutTree(string outputfile = "Tuples/cuttree.root", string cutsfilename = "V
 
   //Cut chain into new TChain in a temp root file
   TFile* cutfile = new TFile(outputfile.c_str(), "recreate");
-  TTree* cuttree = (TTree*)chain->CopyTree(cuts.c_str());
+  TTree* cuttree = (TTree*)chain->CopyTree(cuts.c_str(), "", long(chain->GetEntries()/double(fentries)), long(double(initentries-1)/fentries));
   cutfile->cd();
   cuttree->Write();
 
