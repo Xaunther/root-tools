@@ -13,7 +13,7 @@
 #include "TMVA/Factory.h"
 using namespace std;
 
-void BDTTrain(string massvar , string extracuts_sig = "", bool HMonly = false, bool logdira = false)
+void BDTTrain(string massvar , string sample, string extracuts_sig = "", bool HMonly = false, bool logdira = false)
 {
   //Variables
   int N_variables = 0;
@@ -37,7 +37,7 @@ void BDTTrain(string massvar , string extracuts_sig = "", bool HMonly = false, b
   TFile* signal = new TFile("Tuples/BDTcuttreeMC.root");
   TTree* sigtree = (TTree*)signal->Get("DecayTree");
 
-  TFile* data = new TFile("Tuples/BDTcuttreebkg.root");
+  TFile* data = new TFile(("Tuples/BDTcuttreebkg"+sample+".root").c_str());
   TTree* datatree = (TTree*)data->Get("DecayTree");
 
   //Create bkg cut
