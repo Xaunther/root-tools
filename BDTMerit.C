@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <fstream>
 #include "TTree.h"
+#include "TChain.h"
 #include "TH1F.h"
 #include "TFile.h"
 #include <string>
@@ -15,9 +16,15 @@ using namespace std;
 void BDTMerit(RunNumber run_number, double init_value, double final_value, int steps = 100)
 {
   //Going to plot 1 variable and then extend it with a loop
-  
-  TFile* datafile = new TFile("Tuples/data-mva_output.root");
-  TTree* datatree = (TTree*)datafile->Get("DecayTree"); //Get Tree from corresponding directory
+  int NFiles = 0;
+  string* filenames = ReadVariables(NFiles, "Directories/BDToutput.dir");
+  TChain* datatree = new TChain("DecayTree");
+  //Add to chain and get N of entries
+  for(int i=0;i<NFiles;i++)
+    {
+      datatree->Add(filenames[i].c_str());
+    }
+
   TFile* MCfile = new TFile("Tuples/data-mva_outputMC.root");
   TTree* MCtree = (TTree*)MCfile->Get("DecayTree");
   string HMcut = "B_M > 5600";
@@ -34,11 +41,14 @@ void BDTMerit(RunNumber run_number, double init_value, double final_value, int s
   stringstream ss_LM;
   stringstream ss;
   int maxpos;
+  //Run number cut to look only at certain part of the data
+  string runcut = GetRunCut(run_number, "data");
+  string runcut_MC = GetRunCut(run_number, "MC");
   for(int i=0;i<=steps;i++)
     {
-      ss_HM << HMcut << " && BDT_response > " << init_value+double(i*(final_value-init_value))/double(steps);
-      ss_LM << LMcut << " && BDT_response > " << init_value+double(i*(final_value-init_value))/double(steps);
-      ss << "BDT_response > " << init_value+double(i*(final_value-init_value))/double(steps);
+      ss_HM << runcut << " && " << HMcut << " && BDT_response > " << init_value+double(i*(final_value-init_value))/double(steps);
+      ss_LM << runcut << " && " << LMcut << " && BDT_response > " << init_value+double(i*(final_value-init_value))/double(steps);
+      ss << runcut_MC << " && BDT_response > " << init_value+double(i*(final_value-init_value))/double(steps);
       N_HM = datatree->GetEntries(ss_HM.str().c_str());
       N_LM = datatree->GetEntries(ss_LM.str().c_str());
       //Interpolate from sidebands
@@ -67,7 +77,8 @@ void BDTMerit(RunNumber run_number, double init_value, double final_value, int s
       else if(run_number==All)
 	{
 	  //Need to refine this (naive efficiency)
-	  N_MC[i] = (Constants::N_II+Constants::N_I)*double(MCtree->GetEntries(ss.str().c_str()))/(Constants::N_II_MC+Constants::N_I_MC);
+	  N_MC[i] = Constants::N_I*double(MCtree->GetEntries((ss.str()+" && "+GetRunCut(I,"MC")).c_str()))/Constants::N_I_MC +
+	    Constants::N_II*double(MCtree->GetEntries((ss.str()+" && "+GetRunCut(II,"MC")).c_str()))/Constants::N_II_MC;
 	}
       //Compute significance
       if(N_bkg[i] == 0 && MCtree->GetEntries(ss.str().c_str()) == 0)

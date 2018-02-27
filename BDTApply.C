@@ -17,10 +17,16 @@ void BDTApply(string fileapplied, string outputfilename, bool logdira = false)
 {
   int N_variables = 0;
   int N_extravars = 0;
+  int N_extrauint = 0;
+  int N_extrashort = 0;
   string filename = "Variables/BDTVariables.txt";
   string filename2= "Variables/BDTExtravars.txt";
+  string filenameInt = "Variables/BDTExtravarsUInt.txt";
+  string filenameShort = "Variables/BDTExtravarsShort.txt";
   string* variable_list = ReadVariables(N_variables, filename);
   string* extravar_list = ReadVariables(N_extravars, filename2);
+  string* extrauint_list = ReadVariables(N_extrauint, filenameInt);
+  string* extrashort_list = ReadVariables(N_extrashort, filenameShort);
 
   TFile* data = new TFile(fileapplied.c_str());
   TTree* datatree = (TTree*)data->Get("DecayTree");
@@ -51,6 +57,8 @@ void BDTApply(string fileapplied, string outputfilename, bool logdira = false)
 
   //Variables from data
   Double_t* uservar = new Double_t[N_variables + N_extravars];
+  UInt_t* userint = new UInt_t[N_extrauint];
+  Short_t* usershort = new Short_t[N_extrashort];
   for(int i=0;i<N_variables;i++)
     {
       datatree->SetBranchAddress(variable_list[i].c_str(), &uservar[i]);
@@ -61,6 +69,17 @@ void BDTApply(string fileapplied, string outputfilename, bool logdira = false)
       datatree->SetBranchAddress(extravar_list[i].c_str(), &uservar[N_variables + i]);
       tree->Branch(extravar_list[i].c_str(), &uservar[N_variables + i]);
     }
+  for(int i=0;i<N_extrauint;i++)
+    {
+      datatree->SetBranchAddress(extrauint_list[i].c_str(), &userint[i]);
+      tree->Branch(extrauint_list[i].c_str(), &userint[i]);
+    }
+  for(int i=0;i<N_extrashort;i++)
+    {
+      datatree->SetBranchAddress(extrashort_list[i].c_str(), &usershort[i]);
+      tree->Branch(extrashort_list[i].c_str(), &usershort[i]);
+    }
+
 
   //Add branch to store BDT response
   double BDT_response;
