@@ -6,13 +6,13 @@
 
 using namespace std;
 
-void Compare(string filename1, string filename2, string variable, string cuts)
+void Compare(string filename1, string filename2, string treename1, string treename2, string variable, string cuts)
 {
   //Open files and tuples
   TFile* file1 = TFile::Open(filename1.c_str());
   TFile* file2 = TFile::Open(filename2.c_str());
-  TTree* tree1 = (TTree*)file1->Get("TrainTree");
-  TTree* tree2 = (TTree*)file2->Get("TestTree");
+  TTree* tree1 = (TTree*)file1->Get(treename1.c_str());
+  TTree* tree2 = (TTree*)file2->Get(treename2.c_str());
 
   TCanvas* c1 = new TCanvas();
   tree1->Draw(variable.c_str(), cuts.c_str(), "HISTO");

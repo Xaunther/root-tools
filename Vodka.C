@@ -7,11 +7,13 @@
 #include "Functions/misc.h"
 using namespace std;
 
-void Vodka(string varname, bool binned = false)
+void Vodka(string filename1, string filename2, string treename1, string treename2, string varname, bool binned = false)
 {
-  TFile* file = TFile::Open("Tuples/BDT-results.root");
-  TTree* testtree = (TTree*)file->Get("TestTree");
-  TTree* traintree = (TTree*)file->Get("TrainTree");
+  //Open files and tuples                                                                                                                                                           
+  TFile* file1 = TFile::Open(filename1.c_str());
+  TFile* file2 = TFile::Open(filename2.c_str());
+  TTree* testtree = (TTree*)file1->Get(treename1.c_str());
+  TTree* traintree = (TTree*)file2->Get(treename2.c_str());
 
   if(!binned)
     {
@@ -66,8 +68,9 @@ void Vodka(string varname, bool binned = false)
       testbkg = Ordenar(testtree->GetEntries("classID==1"), testbkg);
       trainsig = Ordenar(traintree->GetEntries("classID==0"), trainsig);
       trainbkg = Ordenar(traintree->GetEntries("classID==1"), trainbkg);
-      
+      cout << "Signal:" << endl;
       TMath::KolmogorovTest(testtree->GetEntries("classID==0"), testsig, traintree->GetEntries("classID==0"), trainsig, "D");
+      cout << "Background:" << endl;
       TMath::KolmogorovTest(testtree->GetEntries("classID==1"), testbkg, traintree->GetEntries("classID==1"), trainbkg, "D");
     }
   else
