@@ -30,7 +30,7 @@ void Compare(string filename1, string filename2, string variable, string cuts)
   hist1->SetFillStyle(3004);
   hist2->SetFillStyle(3005);
 
-  c1->SaveAs(("compare_"+variable+".pdf").c_str());
+  c1->SaveAs(("plots/compare_"+variable+".pdf").c_str());
 
   file1->Close();
   file2->Close();
