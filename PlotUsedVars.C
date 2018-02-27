@@ -9,7 +9,7 @@
 #include "TLeaf.h"
 #include <sstream>
 #include "TMath.h"
-#include "Functions/misc.h"
+#include "../Functions/misc.h"
 using namespace std;
 void PlotUsedVars(string cutfile = "Variables/Cuts.txt", string plotopt = "", string tupledir = "tuples.dir")
 {

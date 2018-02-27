@@ -8,7 +8,7 @@
 #include "TCanvas.h"
 #include "TLeaf.h"
 #include <sstream>
-#include "Functions/misc.h"
+#include "../Functions/misc.h"
 using namespace std;
 
 void BDTCut(string tupledir = "Directories/Alltuples.dir", string tupledirbkg = "Directories/tuples.dir", string tupledirMC = "Directories/tuplesMCAll.dir", string cutsfilename = "Variables/BDTCuts.txt", string cutsbkgfilename = "Variables/BDTCutsbkg.txt")
