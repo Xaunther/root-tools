@@ -11,12 +11,15 @@
 #include "../Functions/misc.h"
 #include "RooWorkspace.h"
 #include "RooDataSet.h"
-#include "Dictionaries/Constants.h"
-#include "Dictionaries/Names.h"
+#include "../Dictionaries/Constants.h"
+#include "../Dictionaries/Names.h"
 using namespace std;
 
 void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, string cutfile = "")
 {
+  //Initialize constants
+  Constants::init(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
+  Names::init(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
   //RooWorkspace                                                                                                                                                                  
   RooWorkspace* ws = new RooWorkspace();
   //Array of fitting fitted fit functions                                                                                                                                          

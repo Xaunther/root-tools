@@ -10,11 +10,14 @@
 #include "TLeaf.h"
 #include <sstream>
 #include "../Functions/misc.h"
-#include "Dictionaries/Constants.h"
+#include "../Dictionaries/Constants.h"
 using namespace std;
 
 void BDTMerit(RunNumber run_number, double init_value, double final_value, int steps = 100)
 {
+  //Initialize constants
+  Constants::init(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
+
   //Going to plot 1 variable and then extend it with a loop
   int NFiles = 0;
   string* filenames = ReadVariables(NFiles, "Directories/BDToutput.dir");

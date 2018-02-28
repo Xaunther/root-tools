@@ -1,10 +1,11 @@
 #include <string>
 void rootinit()
 {
+  //Path to mother folder
   std::string path = "/afs/cern.ch/work/a/aalfonso/private/";
   //First of all come the personal constants
-  gROOT->ProcessLine(".L ./Dictionaries/Constants.cxx+");
-  gROOT->ProcessLine(".L ./Dictionaries/Names.cxx+");
+  gROOT->ProcessLine((".L "+path+"Dictionaries/Constants.cxx+").c_str());
+  gROOT->ProcessLine((".L "+path+"Dictionaries/Names.cxx+").c_str());
   //Utilities from independent sources
   gROOT->ProcessLine((".L "+path+"Functions/BifurcatedCB.cxx+").c_str());
   //Personal tools not depending on anything external

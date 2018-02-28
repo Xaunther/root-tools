@@ -9,7 +9,7 @@
 #include "TFile.h"
 #include "TCanvas.h"
 #include "TLeaf.h"
-#include "Dictionaries/Constants.h"
+#include "../Dictionaries/Constants.h"
 #include "../Functions/misc.h"
 using namespace std;
 
@@ -17,6 +17,8 @@ using namespace std;
 
 void CutSig(string dirfile_data, string dirfile_MC, string cutfiledir, double MC_exp_0, string precutfile_LM = "", string precutfile_HM = "", string precutfile_MC = "", string outfile_prefix = "outputs/CutEff_results_")
 {
+  //Initialize constants
+  Constants::init(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
   int N_cutfiles = 0;
   string* cutfiles = ReadVariables(N_cutfiles, cutfiledir);
   string allprecuts_LM = GetCuts(precutfile_LM);

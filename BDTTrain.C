@@ -8,13 +8,16 @@
 #include "TLeaf.h"
 #include <sstream>
 #include "../Functions/misc.h"
-#include "Dictionaries/Constants.h"
+#include "../Dictionaries/Constants.h"
 #include "TMVA/Tools.h"
 #include "TMVA/Factory.h"
 using namespace std;
 
 void BDTTrain(string massvar , string sample, string extracuts_sig = "", bool HMonly = false, bool logdira = false)
 {
+  //Initialize constants
+  Constants::init(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
+
   //Variables
   int N_variables = 0;
   string filename = "Variables/BDTVariables.txt";
