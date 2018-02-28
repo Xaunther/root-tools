@@ -18,7 +18,8 @@ using namespace std;
 void CutSig(string dirfile_data, string dirfile_MC, string cutfiledir, double MC_exp_0, string precutfile_LM = "", string precutfile_HM = "", string precutfile_MC = "", string outfile_prefix = "outputs/CutEff_results_")
 {
   //Initialize constants
-  Constants::init(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
+  Constants const_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
+
   int N_cutfiles = 0;
   string* cutfiles = ReadVariables(N_cutfiles, cutfiledir);
   string allprecuts_LM = GetCuts(precutfile_LM);
@@ -97,11 +98,11 @@ void CutSig(string dirfile_data, string dirfile_MC, string cutfiledir, double MC
 	  //Compute number of bkg events (interpolate)
 	  if(N_HM != 0 && N_LM != 0 && N_HM != N_LM)
 	    {
-	      N_bkg = double(N_LM)*(1-pow(double(N_LM)/double(N_HM),(Constants::xmin-Constants::xmax)/(Constants::xHM-Constants::xmin)))/(1-pow(double(N_LM)/double(N_HM),(Constants::xmin-Constants::xLM)/(Constants::xHM-Constants::xmin)));
+	      N_bkg = double(N_LM)*(1-pow(double(N_LM)/double(N_HM),(const_list.xmin-const_list.xmax)/(const_list.xHM-const_list.xmin)))/(1-pow(double(N_LM)/double(N_HM),(const_list.xmin-const_list.xLM)/(const_list.xHM-const_list.xmin)));
 	    }
 	  else if(N_HM != 0 && N_LM != 0)
 	    {
-	      N_bkg = N_LM/double(Constants::xLM-Constants::xmin)*(Constants::xmax-Constants::xmin);
+	      N_bkg = N_LM/double(const_list.xLM-const_list.xmin)*(const_list.xmax-const_list.xmin);
 	    }
 	  else
 	    {

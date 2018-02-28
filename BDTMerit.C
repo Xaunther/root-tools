@@ -16,7 +16,7 @@ using namespace std;
 void BDTMerit(RunNumber run_number, double init_value, double final_value, int steps = 100)
 {
   //Initialize constants
-  Constants::init(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
+  Constants const_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
 
   //Going to plot 1 variable and then extend it with a loop
   int NFiles = 0;
@@ -57,11 +57,11 @@ void BDTMerit(RunNumber run_number, double init_value, double final_value, int s
       //Interpolate from sidebands
       if(N_HM != 0 && N_LM != 0 && N_HM != N_LM)
 	{
-	  N_bkg[i] = double(N_LM)*(1-pow(double(N_LM)/double(N_HM),(Constants::xmin-Constants::xmax)/(Constants::xHM-Constants::xmin)))/(1-pow(double(N_LM)/double(N_HM),(Constants::xmin-Constants::xLM)/(Constants::xHM-Constants::xmin)));
+	  N_bkg[i] = double(N_LM)*(1-pow(double(N_LM)/double(N_HM),(const_list.xmin-const_list.xmax)/(const_list.xHM-const_list.xmin)))/(1-pow(double(N_LM)/double(N_HM),(const_list.xmin-const_list.xLM)/(const_list.xHM-const_list.xmin)));
 	}
       else if(N_HM != 0 && N_LM != 0)
 	{
-	  N_bkg[i] = N_LM/double(Constants::xLM-Constants::xmin)*(Constants::xmax-Constants::xmin);
+	  N_bkg[i] = N_LM/double(const_list.xLM-const_list.xmin)*(const_list.xmax-const_list.xmin);
 	}
       else
 	{
@@ -71,17 +71,17 @@ void BDTMerit(RunNumber run_number, double init_value, double final_value, int s
       //N_MC[i] = 483.103294757*double(MCtree->GetEntries(ss.str().c_str()))/6546.0; //LL R-I
       if(run_number==I)
 	{
-	  N_MC[i] = Constants::N_I*double(MCtree->GetEntries(ss.str().c_str()))/Constants::N_I_MC;
+	  N_MC[i] = const_list.N_I*double(MCtree->GetEntries(ss.str().c_str()))/const_list.N_I_MC;
 	}
       else if(run_number==II)
 	{
-	  N_MC[i] = Constants::N_II*double(MCtree->GetEntries(ss.str().c_str()))/Constants::N_II_MC;
+	  N_MC[i] = const_list.N_II*double(MCtree->GetEntries(ss.str().c_str()))/const_list.N_II_MC;
 	}
       else if(run_number==All)
 	{
 	  //Need to refine this (naive efficiency)
-	  N_MC[i] = Constants::N_I*double(MCtree->GetEntries((ss.str()+" && "+GetRunCut(I,"MC")).c_str()))/Constants::N_I_MC +
-	    Constants::N_II*double(MCtree->GetEntries((ss.str()+" && "+GetRunCut(II,"MC")).c_str()))/Constants::N_II_MC;
+	  N_MC[i] = const_list.N_I*double(MCtree->GetEntries((ss.str()+" && "+GetRunCut(I,"MC")).c_str()))/const_list.N_I_MC +
+	    const_list.N_II*double(MCtree->GetEntries((ss.str()+" && "+GetRunCut(II,"MC")).c_str()))/const_list.N_II_MC;
 	}
       //Compute significance
       if(N_bkg[i] == 0 && MCtree->GetEntries(ss.str().c_str()) == 0)

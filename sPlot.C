@@ -18,8 +18,9 @@ using namespace std;
 void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, string cutfile = "")
 {
   //Initialize constants
-  Constants::init(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
-  Names::init(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
+  Constants const_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
+  Names name_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
+
   //RooWorkspace                                                                                                                                                                  
   RooWorkspace* ws = new RooWorkspace();
   //Array of fitting fitted fit functions                                                                                                                                          
@@ -52,7 +53,7 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
   ws = fitf[fitopt](wVarname, temptree);
 
   //Number of backgrounds
-  int N_bkgs = int(ws->var(Names::N_bkgs.c_str())->getValV());
+  int N_bkgs = int(ws->var(name_list.N_bkgs.c_str())->getValV());
 
   //Can only do sPlot if we have a fit with 2 components, at least
   if(N_bkgs <= 0)
@@ -68,10 +69,10 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
   //Retrieve signal and bkg yields
   RooRealVar* fsig = new RooRealVar();
   RooRealVar** fbkg = new RooRealVar*[N_bkgs];
-  fsig = ws->var(Names::fsig.c_str());
+  fsig = ws->var(name_list.fsig.c_str());
   for(int i=0;i<N_bkgs;i++)
     {
-      fbkg[i] = ws->var(Names::fbkg[i].c_str());
+      fbkg[i] = ws->var(name_list.fbkg[i].c_str());
     }
   
   //RooMsgService::instance().setSilentMode(true);
@@ -79,8 +80,8 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
   // Now we use the SPlot class to add SWeights to our data set
   // based on our model and our yield variables
   //Retrieve the dataset and add the variable to reweight (to Plot)
-  RooDataSet* data = (RooDataSet*)ws->data(Names::dataset.c_str());
-  RooRealVar* pVar = new RooRealVar(pVarname.c_str(), pVarname.c_str(), Constants::xmin2, Constants::xmax2);
+  RooDataSet* data = (RooDataSet*)ws->data(name_list.dataset.c_str());
+  RooRealVar* pVar = new RooRealVar(pVarname.c_str(), pVarname.c_str(), const_list.xmin2, const_list.xmax2);
   RooDataSet* tempset = new RooDataSet("tempset", "tempset", temptree, RooArgSet(*pVar));
   //Important thing here. Can only merge if both sets are the same size (PASS CUTS TO AVOID!!)
   if(data->merge(tempset))
@@ -94,29 +95,29 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
       Yield_list.add(*fbkg[i]);
     }
   
-  RooStats::SPlot sData = RooStats::SPlot("sData","An SPlot", *data, ws->pdf(Names::pdfmodel.c_str()), Yield_list);
+  RooStats::SPlot sData = RooStats::SPlot("sData","An SPlot", *data, ws->pdf(name_list.pdfmodel.c_str()), Yield_list);
   
   // Check that our weights have the desired properties  
   std::cout << "Check SWeights:" << std::endl;
   
   std::cout << std::endl <<  "Yield of signal is "
 	    << fsig->getVal() << ".  From sWeights it is "
-	    << sData.GetYieldFromSWeight(Names::fsig.c_str()) << std::endl;
+	    << sData.GetYieldFromSWeight(name_list.fsig.c_str()) << std::endl;
   
   for(int i=0;i<N_bkgs;i++)
     {
       std::cout << "Yield of background is "
 		<< fbkg[i]->getVal() << ".  From sWeights it is "
-		<< sData.GetYieldFromSWeight(Names::fbkg[i].c_str()) << std::endl
+		<< sData.GetYieldFromSWeight(name_list.fbkg[i].c_str()) << std::endl
 		<< std::endl;
     }
   //This is a loop over some events to check the sWeights
   for(int i=0;i<10;i++)
     {
-      std::cout << "   Signal Weight      " << sData.GetSWeight(i,Names::fsig.c_str());
+      std::cout << "   Signal Weight      " << sData.GetSWeight(i,name_list.fsig.c_str());
       for(int j=0;j<N_bkgs;j++)
 	{
-	  std::cout << "   Background" << i << " Weight  " << sData.GetSWeight(i,Names::fbkg[j].c_str());
+	  std::cout << "   Background" << i << " Weight  " << sData.GetSWeight(i,name_list.fbkg[j].c_str());
 	}
       std::cout << "   Total Weight       " << sData.GetSumOfEventSWeight(i)
 		<< std::endl;
@@ -130,16 +131,16 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
   //I should plot 4 things:
   //Var 1 normal and sWeighted (N_bkgs+1 contributions)
   //Var 2 normal and sWeighted (N_bkgs+1 contributions)
-  RooPlot* pframe = pVar->frame(RooFit::Bins(Constants::bins));
-  RooPlot* pframeW = pVar->frame(RooFit::Bins(Constants::bins));
-  RooPlot* wframe = wVar->frame(RooFit::Bins(Constants::bins));
-  RooPlot* wframeW = wVar->frame(RooFit::Bins(Constants::bins));
+  RooPlot* pframe = pVar->frame(RooFit::Bins(const_list.bins));
+  RooPlot* pframeW = pVar->frame(RooFit::Bins(const_list.bins));
+  RooPlot* wframe = wVar->frame(RooFit::Bins(const_list.bins));
+  RooPlot* wframeW = wVar->frame(RooFit::Bins(const_list.bins));
 
-  RooDataSet* sigdata = new RooDataSet(data->GetName(), data->GetTitle(), data, *data->get(), 0, (Names::fsig+"_sw").c_str());
+  RooDataSet* sigdata = new RooDataSet(data->GetName(), data->GetTitle(), data, *data->get(), 0, (name_list.fsig+"_sw").c_str());
   RooDataSet** bkgdata= new RooDataSet*[N_bkgs];
   for(int i=0;i<N_bkgs;i++)
     {
-      string puto_nombre = Names::fbkg[i]+"_sw";
+      string puto_nombre = name_list.fbkg[i]+"_sw";
       cout << puto_nombre << endl;
       bkgdata[i] = new RooDataSet(data->GetName(), data->GetTitle(), data, *data->get(), 0, puto_nombre.c_str());
     }

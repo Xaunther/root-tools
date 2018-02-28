@@ -16,7 +16,7 @@ using namespace std;
 void BDTTrain(string massvar , string sample, string extracuts_sig = "", bool HMonly = false, bool logdira = false)
 {
   //Initialize constants
-  Constants::init(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
+  Constants const_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
 
   //Variables
   int N_variables = 0;
@@ -47,11 +47,11 @@ void BDTTrain(string massvar , string sample, string extracuts_sig = "", bool HM
   stringstream ss;
   if (HMonly)
     {
-      ss << massvar << " > " << Constants::xHM;
+      ss << massvar << " > " << const_list.xHM;
     }
   else
     {
-      ss << massvar << " < " << Constants::xLM << " || " << massvar << " > " << Constants::xHM;
+      ss << massvar << " < " << const_list.xLM << " || " << massvar << " > " << const_list.xHM;
     }
 
   cout << "----------------------------------------------------------------------------" << endl;
@@ -80,10 +80,10 @@ void BDTTrain(string massvar , string sample, string extracuts_sig = "", bool HM
     }
   
   //Prepare training
-  factory->TMVA::Factory::PrepareTrainingAndTestTree("", "", Constants::BDT_Prepare_options.c_str());
+  factory->TMVA::Factory::PrepareTrainingAndTestTree("", "", const_list.BDT_Prepare_options.c_str());
 
   //TMVA method
-  factory->BookMethod(TMVA::Types::kBDT, "BDT", Constants::BDT_Method_options.c_str());
+  factory->BookMethod(TMVA::Types::kBDT, "BDT", const_list.BDT_Method_options.c_str());
   
   //Train and test
   factory->TrainAllMethods();
