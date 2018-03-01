@@ -20,7 +20,7 @@ void BDTMerit(RunNumber run_number, double init_value, double final_value, int s
 
   //Going to plot 1 variable and then extend it with a loop
   int NFiles = 0;
-  string* filenames = ReadVariables(NFiles, "Directories/BDToutput.dir");
+  string* filenames = ReadVariables(NFiles, "../Directories/BDToutput.dir");
   TChain* datatree = new TChain("DecayTree");
   //Add to chain and get N of entries
   for(int i=0;i<NFiles;i++)
@@ -112,4 +112,10 @@ void BDTMerit(RunNumber run_number, double init_value, double final_value, int s
   cout << endl << "Max significance:" << endl << endl;
   cout << setfill(' ') << setw(7) << init_value+double(maxpos*(final_value-init_value))/double(steps) << "|" << setw(14) << sig[maxpos] << "|" << setw(9) << eff[maxpos] << "|" << setw(7) << N_MC_raw[maxpos] << "|" << setw(7) << N_bkg[maxpos] << endl;
 
+
+  //Also output into a file to instantly fit for that cut! ;)
+  ofstream fout;
+  fout.open("Variables/BDTOutCut.txt");
+  fout << "BDT_response > " << init_value+double(maxpos*(final_value-init_value))/double(steps) << endl;
+  fout.close();
 }
