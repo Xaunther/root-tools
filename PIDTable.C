@@ -14,7 +14,7 @@ void PIDTable(string filedir, string resultsfile = "PIDEff.txt")
   string* tuple_names = ReadVariables(NFiles, filedir);
 
 
-  //Get relative path (Maybe make a function of this?)
+  //Get absolute path (Maybe make a function of this?)
   int last_pos = 0;
   while(filedir.find('/', last_pos+1)!=string::npos)
     {
