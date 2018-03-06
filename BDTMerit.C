@@ -101,16 +101,16 @@ void BDTMerit(RunNumber run_number, double init_value, double final_value, int s
     }
   
   //Output the values
-  cout << "  Cut       Merit         Eff     N_sig   N_bkg " << endl;
-  cout << "-------|--------------|---------|-------|-------" << endl;
+  cout << "  Cut       Merit         Eff     N_sig   N_bkg   N_MC " << endl;
+  cout << "-------|--------------|---------|-------|-------|------" << endl;
   for(int i=0;i<=steps;i++)
     {
-      cout << setfill(' ') << setw(7) << init_value+double(i*(final_value-init_value))/double(steps) << "|" << setw(14) << sig[i] << "|" << setw(9) << eff[i] << "|" << setw(7) << N_MC_raw[i] << "|" << setw(7) << N_bkg[i] << endl;
+      cout << setfill(' ') << setw(7) << init_value+double(i*(final_value-init_value))/double(steps) << "|" << setw(14) << sig[i] << "|" << setw(9) << eff[i] << "|" << setw(7) << N_MC[i] << "|" << setw(7) << N_bkg[i] << "|" << setw(6) << N_MC_raw[i] << endl;
     }
   //Output the line with max significance (saves time!)
   maxpos = GetMaxPos(sig, steps+1);
   cout << endl << "Max significance:" << endl << endl;
-  cout << setfill(' ') << setw(7) << init_value+double(maxpos*(final_value-init_value))/double(steps) << "|" << setw(14) << sig[maxpos] << "|" << setw(9) << eff[maxpos] << "|" << setw(7) << N_MC_raw[maxpos] << "|" << setw(7) << N_bkg[maxpos] << endl;
+  cout << setfill(' ') << setw(7) << init_value+double(maxpos*(final_value-init_value))/double(steps) << "|" << setw(14) << sig[maxpos] << "|" << setw(9) << eff[maxpos] << "|" << setw(7) << N_MC[maxpos] << "|" << setw(7) << N_bkg[maxpos] << "|" << setw(6) << N_MC_raw[maxpos] << endl;
 
 
   //Also output into a file to instantly fit for that cut! ;)
