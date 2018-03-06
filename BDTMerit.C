@@ -117,5 +117,13 @@ void BDTMerit(RunNumber run_number, double init_value, double final_value, int s
   ofstream fout;
   fout.open("Variables/BDTOutCut.txt");
   fout << "BDT_response > " << init_value+double(maxpos*(final_value-init_value))/double(steps) << endl;
+  if(run_number == I)
+    {
+      fout << "runNumber < " << const_list.Max_Run_Number[1] << endl;
+    }
+  else if(run_number == II)
+    {
+      fout << "runNumber > " << const_list.Max_Run_Number[1] << endl;      
+    }
   fout.close();
 }
