@@ -24,6 +24,7 @@ void rootinit()
   gROOT->ProcessLine((".L "+path+"root/BDTMerit.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/BDTTrain.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/CompareVar.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/Compute_Value.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/Compare.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/Create_Cuts.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/CutEff.C+").c_str());
