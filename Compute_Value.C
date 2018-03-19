@@ -17,12 +17,10 @@ Long64_t DoOperation(TChain* chain, string file)
 void Compute_Value(string datadir, string filetoloop, string outfilename = "result_value.txt")
 {
   int N_loops = 0;
-  int N_tuples = 0:
   ofstream outfile;
 
   //Get thing to loop over (string of filenames by default)
   string* filename = ReadVariables(N_loops, filetoloop);
-  string* dataname = ReadVariables(N_tuples, datadir);
 
   //Get chain with data to use
   TChain* chain = GetChain(datadir);
