@@ -48,6 +48,7 @@ void AddBranch(string branchname, string tupleinfile, string tupleoutfile, strin
       intree->GetEntry(i);
       tree->GetEntry(i);
       //Insert formula, if any
+      //Pseudorapidity (eta = -0.5*log((1-x)/(1+x)), x = PZ/P) var1 = P, var2 = PZ
       branchvalue = -TMath::Log((1-varvalue[1]/varvalue[0])/(1+varvalue[1]/varvalue[0]))/2;
       newbranch->Fill();
       if(i%500000==0)
