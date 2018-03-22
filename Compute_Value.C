@@ -9,8 +9,9 @@ using namespace std;
 //Operation to do at each loop (editable)
 Long64_t DoOperation(TChain* chain, string file)
 {
-  string cuts = GetCuts(file);
-  return chain->GetEntries(cuts.c_str());
+  string cuts_up = GetCuts(file) + " && B_M > 5600";
+  string cuts_down = GetCuts(file) + "&& B_M < 5000";
+  return Interpol_exp(chain->GetEntries(cuts_down.c_str()), chain->GetEntries(cuts_up.c_str()));
 }
 
 
@@ -32,6 +33,10 @@ void Compute_Value(string datadir, string filetoloop, string outfilename = "resu
     {
       //Do Operation defined on top (easily editable)
       outfile << filename[i] << " | " << DoOperation(chain, filename[i]) << endl;
+      if(i%100==0)
+	{
+	  cout << "Read file number " << i << endl;
+	}
     }
 
   //Close file
