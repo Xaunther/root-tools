@@ -10,6 +10,7 @@ void rootinit()
   gROOT->ProcessLine((".L "+path+"Functions/BifurcatedCB.cxx+").c_str());
   //Personal tools not depending on anything external
   gROOT->ProcessLine((".L "+path+"Functions/TISTOS.cxx+").c_str());
+  gROOT->ProcessLine((".L "+path+"Functions/Styles.cxx+").c_str());
   //Miscellaneous functions, must be loaded in top of all personal functions
   gROOT->ProcessLine((".L "+path+"Functions/misc.cxx+").c_str());
   //Personal codes
