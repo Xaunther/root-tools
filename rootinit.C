@@ -36,6 +36,7 @@ void rootinit()
   gROOT->ProcessLine((".L "+path+"root/OutputSearch.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/PhaseSpace.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/PIDTable.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/plot2D.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/PlotCorrVar.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/PlotUsedVars.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/PlotVar.C+").c_str());
