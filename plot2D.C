@@ -2,7 +2,6 @@
 //For now, hard-coded bin range and width
 
 #include "../Functions/Styles.h"
-#include "../Functions/misc.h"
 #include "TCanvas.h"
 #include "TLine.h"
 #include "TStyle.h"

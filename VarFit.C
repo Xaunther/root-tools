@@ -10,7 +10,6 @@
 #include "TLeaf.h"
 #include "RooWorkspace.h"
 #include "../Functions/Fits.h"
-#include "../Functions/misc.h"
 using namespace std;
 
 void VarFit(string variablename, FitOption fitopt, string filedir, string cutfile = "")

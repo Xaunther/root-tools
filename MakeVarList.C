@@ -2,7 +2,6 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-#include "../Functions/misc.h"
 using namespace std;
 
 void MakeVarList(string infile = "temp.txt", int col = 3, string outfile = "temp2.txt")

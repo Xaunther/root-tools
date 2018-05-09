@@ -4,7 +4,6 @@
 #include "TCanvas.h"
 #include "TH1.h"
 #include "TMath.h"
-#include "../Functions/misc.h"
 using namespace std;
 
 void Vodka(string filename1, string filename2, string treename1, string treename2, string varname, bool binned = false)

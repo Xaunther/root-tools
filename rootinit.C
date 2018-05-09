@@ -11,10 +11,20 @@ void rootinit()
   //Personal tools not depending on anything external
   gROOT->ProcessLine((".L "+path+"Functions/TISTOS.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/Styles.cxx+").c_str());
-  //Miscellaneous functions, must be loaded in top of all personal functions
-  gROOT->ProcessLine((".L "+path+"Functions/misc.cxx+").c_str());
-  //Personal codes
+
+  //Personal tools that rely on Dictionaries
+  gROOT->ProcessLine((".L "+path+"Functions/ArrayTools.cxx+").c_str());
+  gROOT->ProcessLine((".L "+path+"Functions/Dictreading.cxx+").c_str());
+  gROOT->ProcessLine((".L "+path+"Functions/Filereading.cxx+").c_str());
+  gROOT->ProcessLine((".L "+path+"Functions/Filesaving.cxx+").c_str());
+  gROOT->ProcessLine((".L "+path+"Functions/TreeTools.cxx+").c_str());
+  //Personal tools that rely on other tools
+  gROOT->ProcessLine((".L "+path+"Functions/RunInfo.cxx+").c_str());
+  gROOT->ProcessLine((".L "+path+"Functions/PlotTools.cxx+").c_str());
+  gROOT->ProcessLine((".L "+path+"Functions/ParticleInfo.cxx+").c_str());
+  gROOT->ProcessLine((".L "+path+"Functions/Interpol_exp.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/Fits.cxx+").c_str());
+  gROOT->ProcessLine((".L "+path+"Functions/Constantize.cxx+").c_str());
 
   //Finally I can load the user-run scripts, which depend on the libraries already loaded
   //This away when running ROOT interactively I have some help on how to use them (not compiled!)

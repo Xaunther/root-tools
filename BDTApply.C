@@ -10,7 +10,7 @@
 #include "TMVA/Tools.h"
 #include "TMVA/Reader.h"
 #include <sstream>
-#include "../Functions/misc.h"
+#include "../Functions/Filereading.h"
 using namespace std;
 
 void BDTApply(string fileapplied, string outputfilename, bool logdira = false)

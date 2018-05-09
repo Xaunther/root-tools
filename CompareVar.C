@@ -8,8 +8,9 @@
 #include "TCanvas.h"
 #include "TLeaf.h"
 #include "TChain.h"
-#include "../Functions/misc.h"
 #include "../Functions/Fits.h"
+#include "../Functions/Filereading.h"
+#include "../Functions/Dictreading.h"
 using namespace std;
 
 void CompareVar(string variablename, string filedir1, string filedir2 = "", string filedir3 = "", string filedir4 = "", string filedir5 = "", string filedir6 = "", string filedir7 = "", string filedir8 = "", string filedir9 = "", string filedir10 = "")

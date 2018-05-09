@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "../Functions/misc.h"
 using namespace std;
 
 #define Nresults 5

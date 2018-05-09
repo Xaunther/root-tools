@@ -10,7 +10,6 @@
 #include "TCanvas.h"
 #include "TLeaf.h"
 #include "../Dictionaries/Constants.h"
-#include "../Functions/misc.h"
 using namespace std;
 
 #define TAM 1000

@@ -9,7 +9,6 @@
 #include "TLeaf.h"
 #include <sstream>
 #include "TMath.h"
-#include "../Functions/misc.h"
 using namespace std;
 void PlotVar(string plotvar, string plotopt = "", string tupledir = "Directories/Bd2KstG_tuples.dir", string cutfile="Variables/Cuts.txt")
 {

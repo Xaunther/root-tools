@@ -1,7 +1,6 @@
 //Function to compute the value of something, looped over a series of files
 #include <string>
 #include <fstream>
-#include "../Functions/misc.h"
 #include "TChain.h"
 
 using namespace std;

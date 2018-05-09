@@ -9,7 +9,6 @@
 #include "TLeaf.h"
 #include <sstream>
 #include "TMath.h"
-#include "../Functions/misc.h"
 using namespace std;
 void RenameBranch(string outname, string tupledir = "Directories/Lb2016DataMagUp.dir")
 {
