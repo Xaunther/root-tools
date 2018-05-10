@@ -1,7 +1,6 @@
-#include <iostream>
-#include <fstream>
 #include <string>
-#include <sstream>
+#include "../Functions/Filereading.h"
+#include "../Functions/Filesaving.h"
 using namespace std;
 
 void MakeVarList(string infile = "temp.txt", int col = 3, string outfile = "temp2.txt")

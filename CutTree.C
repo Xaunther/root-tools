@@ -8,6 +8,8 @@
 #include "TFile.h"
 #include "TCanvas.h"
 #include "TLeaf.h"
+#include "../Functions/Dictreading.h"
+#include "../Functions/Filereading.h"
 using namespace std;
 
 void CutTree(string outputfile = "Tuples/cuttree.root", string cutsfilename = "Variables/PreCuts.txt", string tupledir = "Directories/Alltuples.dir", string variablefile = "", int fentries = 1, int initentries = 1)

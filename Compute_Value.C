@@ -1,7 +1,12 @@
 //Function to compute the value of something, looped over a series of files
 #include <string>
+#include <iostream>
 #include <fstream>
 #include "TChain.h"
+#include "../Functions/Filereading.h"
+#include "../Functions/Dictreading.h"
+#include "../Functions/Interpol_exp.h"
+#include "../Functions/TreeTools.h"
 
 using namespace std;
 

@@ -9,6 +9,10 @@
 #include "TFile.h"
 #include "TCanvas.h"
 #include "TLeaf.h"
+#include "../Functions/Filereading.h"
+#include "../Functions/Dictreading.h"
+#include "../Functions/TreeTools.h"
+#include "../Functions/ArrayTools.h"
 using namespace std;
 
 void CutEff(string dirfile, string cutfile, string precutfile = "", string outfile = "CutEff_results.txt")

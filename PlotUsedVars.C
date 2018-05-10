@@ -9,6 +9,8 @@
 #include "TLeaf.h"
 #include <sstream>
 #include "TMath.h"
+#include "../Functions/Dictreading.h"
+#include "../Functions/Filereading.h"
 using namespace std;
 void PlotUsedVars(string cutfile = "Variables/Cuts.txt", string plotopt = "", string tupledir = "tuples.dir")
 {

@@ -8,6 +8,8 @@
 #include "TH2F.h"
 #include <string>
 #include <iostream>
+#include "../Functions/Dictreading.h"
+#include "../Functions/Filereading.h"
 using namespace std;
 
 //Constantitllsos
