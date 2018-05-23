@@ -34,6 +34,7 @@ void rootinit()
   gROOT->ProcessLine((".L "+path+"root/BDTCut.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/BDTMerit.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/BDTTrain.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/CheckMultiplicity.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/CompareVar.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/Compute_Value.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/Compare.C+").c_str());
