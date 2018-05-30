@@ -14,14 +14,13 @@
 #include "TMVA/Factory.h"
 using namespace std;
 
-void BDTTrain(string massvar , string sample, string extracuts_sig = "", bool HMonly = false, bool logdira = false, string seed = "")
+void BDTTrain(string massvar , string sample, string extracuts_sig = "", bool HMonly = false, bool logdira = false, string seed = "", string filename = "Variables/BDTVariables.txt")
 {
   //Initialize constants
   Constants const_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
 
   //Variables
   int N_variables = 0;
-  string filename = "Variables/BDTVariables.txt";
   string* variable_list = ReadVariables(N_variables, filename);
   
   //Instantiate class

@@ -13,21 +13,26 @@
 #include "../Functions/Filereading.h"
 using namespace std;
 
-void BDTApply(string fileapplied, string outputfilename, bool logdira = false)
+void BDTApply(string fileapplied, string outputfilename, bool logdira = false, string filename = "Variables/BDTVariables.txt")
 {
   int N_variables = 0;
   int N_extravars = 0;
   int N_extrauint = 0;
+  int N_extraulong64 = 0;
+  int N_extraint = 0;
   int N_extrashort = 0;
   int N_extrabool = 0;
-  string filename = "Variables/BDTVariables.txt";
   string filename2= "Variables/BDTExtravars.txt";
-  string filenameInt = "Variables/BDTExtravarsUInt.txt";
+  string filenameUInt = "Variables/BDTExtravarsUInt.txt";
+  string filenameULong64 = "Variables/BDTExtravarsULong64.txt";
+  string filenameInt = "Variables/BDTExtravarsInt.txt";
   string filenameShort = "Variables/BDTExtravarsShort.txt";
   string filenameBool = "Variables/BDTExtravarsBool.txt";
   string* variable_list = ReadVariables(N_variables, filename);
   string* extravar_list = ReadVariables(N_extravars, filename2);
-  string* extrauint_list = ReadVariables(N_extrauint, filenameInt);
+  string* extrauint_list = ReadVariables(N_extrauint, filenameUInt);
+  string* extraulong64_list = ReadVariables(N_extraulong64, filenameULong64);
+  string* extraint_list = ReadVariables(N_extraint, filenameInt);
   string* extrashort_list = ReadVariables(N_extrashort, filenameShort);
   string* extrabool_list = ReadVariables(N_extrabool, filenameBool);
 
@@ -60,7 +65,9 @@ void BDTApply(string fileapplied, string outputfilename, bool logdira = false)
 
   //Variables from data
   Double_t* uservar = new Double_t[N_variables + N_extravars];
-  UInt_t* userint = new UInt_t[N_extrauint];
+  UInt_t* useruint = new UInt_t[N_extrauint];
+  ULong64_t* userulong64 = new ULong64_t[N_extraulong64];
+  Int_t* userint = new Int_t[N_extraint];
   Short_t* usershort = new Short_t[N_extrashort];
   Bool_t* userbool = new Bool_t[N_extrabool];
   for(int i=0;i<N_variables;i++)
@@ -75,15 +82,25 @@ void BDTApply(string fileapplied, string outputfilename, bool logdira = false)
     }
   for(int i=0;i<N_extrauint;i++)
     {
-      datatree->SetBranchAddress(extrauint_list[i].c_str(), &userint[i]);
-      tree->Branch(extrauint_list[i].c_str(), &userint[i]);
+      datatree->SetBranchAddress(extrauint_list[i].c_str(), &useruint[i]);
+      tree->Branch(extrauint_list[i].c_str(), &useruint[i]);
+    }
+  for(int i=0;i<N_extraulong64;i++)
+    {
+      datatree->SetBranchAddress(extraulong64_list[i].c_str(), &userulong64[i]);
+      tree->Branch(extraulong64_list[i].c_str(), &userulong64[i]);
+    }
+  for(int i=0;i<N_extraint;i++)
+    {
+      datatree->SetBranchAddress(extraint_list[i].c_str(), &userint[i]);
+      tree->Branch(extraint_list[i].c_str(), &userint[i]);
     }
   for(int i=0;i<N_extrashort;i++)
     {
       datatree->SetBranchAddress(extrashort_list[i].c_str(), &usershort[i]);
       tree->Branch(extrashort_list[i].c_str(), &usershort[i]);
     }
-  for(int i=0;i<N_extrashort;i++)
+  for(int i=0;i<N_extrabool;i++)
     {
       datatree->SetBranchAddress(extrabool_list[i].c_str(), &userbool[i]);
       tree->Branch(extrabool_list[i].c_str(), &userbool[i]);
