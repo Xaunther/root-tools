@@ -4,6 +4,7 @@
 #include "TStyle.h"
 #include <string>
 #include "../Dictionaries/Constants.h"
+#include "../Functions/Dictreading.h"
 using namespace std;
 
 void BDT_BvsS(string filename, double yfactor = 1, string output = "plots/BDT_BvsS.pdf")
