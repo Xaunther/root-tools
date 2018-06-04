@@ -1,8 +1,7 @@
 #include <string>
-void rootinit()
+void rootinit(std::string path)
 {
   //Path to mother folder
-  std::string path = "/afs/cern.ch/work/a/aalfonso/private/";
   //First of all come the personal constants
   gROOT->ProcessLine((".L "+path+"Dictionaries/Constants.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Dictionaries/Names.cxx+").c_str());
