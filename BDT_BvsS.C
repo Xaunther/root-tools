@@ -1,13 +1,15 @@
 #include "TH1D.h"
+#include <iostream>
 #include "TFile.h"
 #include "TCanvas.h"
 #include "TStyle.h"
+#include "TArrayD.h"
 #include <string>
 #include "../Dictionaries/Constants.h"
 #include "../Functions/Dictreading.h"
 using namespace std;
 
-void BDT_BvsS(string filename, double yfactor = 1, string output = "plots/BDT_BvsS.pdf")
+void BDT_BvsS(string filename, double yfactor = 1, double xfactor = 1, string output = "plots/BDT_BvsS.pdf")
 {
   TFile* file = TFile::Open(filename.c_str());
   TH1D* histo = (TH1D*)file->Get("Method_BDT/BDT/MVA_BDT_effBvsS");
@@ -20,8 +22,18 @@ void BDT_BvsS(string filename, double yfactor = 1, string output = "plots/BDT_Bv
     }
   //X, Y axis titles
   histo->GetYaxis()->SetTitle("Rate (kHz)");
+  int Nbins = histo->GetXaxis()->GetNbins();
+  double* xbin = new double[Nbins+1];
+  Double_t* xbin0 = new Double_t[Nbins+1];
+  histo->GetXaxis()->GetLowEdge(xbin0);
+  for(int i=0;i<Nbins;i++)
+    {
+      xbin[i] = xbin0[i]*xfactor;
+    }
+  xbin[Nbins] = 1*xfactor;
+  histo->GetXaxis()->Set(Nbins, xbin);
   //histo->SetTitle("Signal average");
-  histo->SetTitle("Bu2K1gamma");
+  histo->SetTitle("HHgamma Line");
 
   //Canvas
   TCanvas* c1 = new TCanvas();
