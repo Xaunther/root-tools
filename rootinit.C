@@ -43,6 +43,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"root/CutSig.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/CutTree.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/Err_Frac.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/Fit_NstG.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/MakeVarList.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/OutputSearch.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/PhaseSpace.C+").c_str());
