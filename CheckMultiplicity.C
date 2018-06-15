@@ -10,30 +10,22 @@ void CheckMultiplicity(string filedir, string cutfile = "")
   string cuts = GetCuts(cutfile);
   TTree* temptree = (TTree*)chain->CopyTree(cuts.c_str());
   ULong64_t evtnumber;
-  temptree->SetBranchAddress("EventInSequence", &evtnumber);
-  ULong64_t* id_evtnumber = new ULong64_t[temptree->GetEntries()];
+  UInt_t ncand;  temptree->SetBranchAddress("nCandidate", &ncand);
+  temptree->SetBranchAddress("eventNumber", &evtnumber);
+  ULong64_t currentevt = 0;
   int* repeated_evtnumber = new int[temptree->GetEntries()];
   int N = 0;
   for(int i=0;i<temptree->GetEntries();i++)
     {
-      bool wasadded = false;
       repeated_evtnumber[i] = 0;
       temptree->GetEntry(i);
-      for(int j=0;j<N;j++)
+      if(i==0){currentevt=evtnumber;}
+      if(currentevt != evtnumber)
 	{
-	  if(id_evtnumber[j]==evtnumber)
-	    {
-	      repeated_evtnumber[j]++;
-	      wasadded = true;
-	    }
-	}
-      if(!wasadded)
-	{
-	  id_evtnumber[N] = evtnumber;
-	  repeated_evtnumber[N]++;
-	  N++;
-	}
-
+	currentevt = evtnumber;
+	N++;
+      }
+      repeated_evtnumber[N]++;
     }
   int N_repeated = 0;
   int* nCandidates = new int[N]; for(int i=0;i<N;i++){nCandidates[i]=0;}

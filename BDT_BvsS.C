@@ -2,14 +2,14 @@
 #include <iostream>
 #include "TFile.h"
 #include "TCanvas.h"
+#include "TLine.h"
 #include "TStyle.h"
-#include "TArrayD.h"
 #include <string>
 #include "../Dictionaries/Constants.h"
 #include "../Functions/Dictreading.h"
 using namespace std;
 
-void BDT_BvsS(string filename, double yfactor = 1, double xfactor = 1, string output = "plots/BDT_BvsS.pdf")
+void BDT_BvsS(string filename, double yfactor = 1, double xfactor = 1, double oldrate = 0, double oldeff = 0, string output = "plots/BDT_BvsS.pdf")
 {
   TFile* file = TFile::Open(filename.c_str());
   TH1D* histo = (TH1D*)file->Get("Method_BDT/BDT/MVA_BDT_effBvsS");
@@ -33,15 +33,21 @@ void BDT_BvsS(string filename, double yfactor = 1, double xfactor = 1, string ou
   xbin[Nbins] = 1*xfactor;
   histo->GetXaxis()->Set(Nbins, xbin);
   //histo->SetTitle("Signal average");
-  histo->SetTitle("HHgamma Line");
+  histo->SetTitle(const_list.plot_title.c_str());
 
   //Canvas
   TCanvas* c1 = new TCanvas();
   c1->SetLogy(const_list.logY);
   c1->SetGrid();
-
   //Draw and save
   gStyle->SetOptStat(0);
   histo->Draw();
+  //Draw old performance
+  TLine* RateLine = new TLine(histo->GetXaxis()->GetXmin(), oldrate, histo->GetXaxis()->GetXmax(), oldrate);
+  TLine* EffLine = new TLine(oldeff, histo->GetYaxis()->GetXmin()*yfactor, oldeff, histo->GetBinContent(histo->GetNbinsX())*21/20);
+  RateLine->SetLineColor(kRed);
+  EffLine->SetLineColor(kRed);
+  RateLine->Draw("same");
+  EffLine->Draw("same");
   c1->SaveAs(output.c_str());
 }
