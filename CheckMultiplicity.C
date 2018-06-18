@@ -2,15 +2,18 @@
 #include <iostream>
 #include "../Functions/TreeTools.h"
 #include "../Functions/Filereading.h"
+#include "TChain.h"
+#include "TFile.h"
+#include "TTree.h"
 using namespace std;
 
 void CheckMultiplicity(string filedir, string cutfile = "")
 {
   TChain* chain = GetChain(filedir);
   string cuts = GetCuts(cutfile);
+  TFile* file = TFile::Open("Tuples/temp.root", "recreate");
   TTree* temptree = (TTree*)chain->CopyTree(cuts.c_str());
   ULong64_t evtnumber;
-  UInt_t ncand;  temptree->SetBranchAddress("nCandidate", &ncand);
   temptree->SetBranchAddress("eventNumber", &evtnumber);
   ULong64_t currentevt = 0;
   int* repeated_evtnumber = new int[temptree->GetEntries()];
@@ -37,12 +40,16 @@ void CheckMultiplicity(string filedir, string cutfile = "")
 	}
       nCandidates[repeated_evtnumber[i]-1]++;
     }
+  double multiplicity = 0;
   for(int i=0;i<N;i++)
     {
       if(nCandidates[i]>0)
 	{
 	  cout << i+1 << "  |  " << nCandidates[i] << endl;
+	  multiplicity += nCandidates[i]*(i+1);
 	}
     }
   cout << "Found " << N_repeated << " events out of " << N << "  with multiplicity higher than 1 " << endl;
+  cout << "Multiplicity: " << multiplicity/double(N) << endl;
+  file->Close();
 }
