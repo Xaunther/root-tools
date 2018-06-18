@@ -16,14 +16,14 @@
 #include "../Functions/RunInfo.h"
 using namespace std;
 
-void BDTMerit(RunNumber run_number, double init_value, double final_value, int steps = 100)
+void BDTMerit(RunNumber run_number, double init_value, double final_value, int steps = 100, string filename = "Tuples/data-mva_outputMC.root")
 {
   //Initialize constants
   Constants const_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
 
   //Going to plot 1 variable and then extend it with a loop
   int NFiles = 0;
-  string* filenames = ReadVariables(NFiles, "../Directories/BDToutput.dir");
+  string* filenames = ReadVariables(NFiles,"../Directories/BDToutput.dir");
   TChain* datatree = new TChain("DecayTree");
   //Add to chain and get N of entries
   for(int i=0;i<NFiles;i++)
@@ -31,7 +31,7 @@ void BDTMerit(RunNumber run_number, double init_value, double final_value, int s
       datatree->Add(filenames[i].c_str());
     }
 
-  TFile* MCfile = new TFile("Tuples/data-mva_outputMC.root");
+  TFile* MCfile = new TFile(filename.c_str());
   TTree* MCtree = (TTree*)MCfile->Get("DecayTree");
   string HMcut = "B_M > 5600";
   string LMcut = "B_M < 5000";
