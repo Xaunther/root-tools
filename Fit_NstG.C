@@ -37,12 +37,23 @@ void Fit_NstG(bool needCuts, string varnamedata, string filedirdata, string cutf
       Names name_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
       
       string variablename[Nbkgs];
-      variablename[0] = "B_M012_Subst01_Kpi2pK";
-      variablename[1] = "B_M012_Subst01_pipi2pK";
-      variablename[2] = "B_M012_Subst01_Kpi2pK";
-      variablename[3] = "B_M012_Subst01_Kpi2pK";
-      variablename[4] = "B_M012_Subst01_Kpi2pK";
-      variablename[5] = "B_M012_Subst01_Kpi2pK";
+      variablename[0] = varnamedata;
+      variablename[2] = varnamedata;
+      variablename[3] = varnamedata;
+      variablename[4] = varnamedata;
+      variablename[5] = varnamedata;
+      if(varnamedata == "B_M012")
+	{
+	  variablename[1] = "B_M012_Subst0_pi2K";
+	}
+      else if(varnamedata == "B_M012_Subst01_Kpi2pK")
+	{
+	  variablename[1] = "B_M012_Subst01_pipi2pK";
+	}
+      else if(varnamedata == "B_M012_Subst0_K2p")
+	{
+	  variablename[1] = "B_M012_Subst0_pi2p";
+	}
       //Root stuff
       TTree** tree = new TTree*[Nbkgs];
       TFile** file = new TFile*[Nbkgs];
@@ -80,7 +91,7 @@ void Fit_NstG(bool needCuts, string varnamedata, string filedirdata, string cutf
       tempfile->Write();
       
       RooWorkspace* Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws);
-      GoodPlot(Final_ws, varnamedata);
+      GoodPlot(Final_ws, varnamedata, true);
     }
 }
 
