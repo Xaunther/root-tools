@@ -11,6 +11,7 @@
 #include "../Functions/Filereading.h"
 #include "../Functions/Dictreading.h"
 #include "TMVA/Tools.h"
+#include "TMVA/DataLoader.h"
 #include "TMVA/Factory.h"
 using namespace std;
 
@@ -31,6 +32,7 @@ void BDTTrain(string massvar , string sample, string extracuts_sig = "", bool HM
 
   //Declare factory :mgalletas:
   TMVA::Factory *factory = new TMVA::Factory("TMVAClassification", outfile, "V:!Silent:Color:Transformations=I:DrawProgressBar:AnalysisType=Classification");
+  TMVA::DataLoader *dl = new TMVA::DataLoader();
   
   //Weights for signal and background
   double signalW = 1;
@@ -60,10 +62,10 @@ void BDTTrain(string massvar , string sample, string extracuts_sig = "", bool HM
 
   TFile* addedsigtree = new TFile("Tuples/BDTsigtest.root", "RECREATE");
   addedsigtree->cd();
-  factory->AddTree(sigtree, "Signal", signalW, TCut(extracuts_sig.c_str()), TMVA::Types::kMaxTreeType);
+  dl->AddTree(sigtree, "Signal", signalW, TCut(extracuts_sig.c_str()), TMVA::Types::kMaxTreeType);
   TFile* addedbkgtree = new TFile("Tuples/BDTbkgtest.root", "RECREATE");
   addedbkgtree->cd();
-  factory->AddTree(datatree, "Background", backgroundW, TCut(ss.str().c_str()), TMVA::Types::kMaxTreeType);
+  dl->AddTree(datatree, "Background", backgroundW, TCut(ss.str().c_str()), TMVA::Types::kMaxTreeType);
 
   //Add Variables
   for(int i=0;i<N_variables;i++)
@@ -71,19 +73,19 @@ void BDTTrain(string massvar , string sample, string extracuts_sig = "", bool HM
       if (variable_list[i] == "B_DIRA_OWNPV" && logdira)
 	{
 	  string logvarname = "log_B_DIRA_OWNPV := log(1-B_DIRA_OWNPV)";
-	  factory->TMVA::Factory::AddVariable(logvarname.c_str(), 'D');
+	  dl->AddVariable(logvarname.c_str(), 'D');
 	}
       else
 	{
-	  factory->TMVA::Factory::AddVariable(variable_list[i].c_str(), 'D');
+	  dl->AddVariable(variable_list[i].c_str(), 'D');
 	}
     }
   
   //Prepare training
-  factory->TMVA::Factory::PrepareTrainingAndTestTree("", "", (const_list.BDT_Prepare_options+seed).c_str());
+  dl->PrepareTrainingAndTestTree("", "", (const_list.BDT_Prepare_options+seed).c_str());
 
   //TMVA method
-  factory->BookMethod(TMVA::Types::kBDT, "BDT", const_list.BDT_Method_options.c_str());
+  factory->BookMethod(dl, TMVA::Types::kBDT, "BDT", const_list.BDT_Method_options.c_str());
   
   //Train and test
   factory->TrainAllMethods();
