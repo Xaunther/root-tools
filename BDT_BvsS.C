@@ -12,10 +12,10 @@ using namespace std;
 void BDT_BvsS(string filename, double yfactor = 1, double xfactor = 1, double oldrate = 0, double oldeff = 0, string output = "plots/BDT_BvsS.pdf")
 {
   TFile* file = TFile::Open(filename.c_str());
-  TH1D* histo = (TH1D*)file->Get("default/BDT/Method_BDT/MVA_BDT_effBvsS");
+  TH1D* histo = (TH1D*)file->Get("default/Method_BDT/BDT/MVA_BDT_effBvsS");
 
   Constants const_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
-  cout << histo->GetBinContent(0) << endl;
+
   for(int i=0;i<histo->GetNbinsX()+1;i++)
     {
       histo->SetBinContent(i, histo->GetBinContent(i)*yfactor);
