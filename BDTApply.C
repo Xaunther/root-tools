@@ -61,7 +61,7 @@ void BDTApply(string fileapplied, string outputfilename, bool logdira = false, s
 	}
     }
   //TMVA method
-  reader->TMVA::Reader::BookMVA("BDT method", "weights/TMVAClassification_BDT.weights.xml");
+  reader->TMVA::Reader::BookMVA("BDT method", "default/weights/TMVAClassification_BDT.weights.xml");
 
   //Variables from data
   Double_t* uservar = new Double_t[N_variables + N_extravars];
