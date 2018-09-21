@@ -56,6 +56,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"root/ROC_Area.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/sPlot.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/TISTOS.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/Trigger_effs.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/VarFit.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/Vodka.C+").c_str());
 }
