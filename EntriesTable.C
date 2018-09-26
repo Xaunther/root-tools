@@ -4,14 +4,16 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <iomanip>
 #include "../Functions/StringTools.h"
 #include "../Functions/TreeTools.h"
+#include "../Functions/Filereading.h"
 using namespace std;
 
 #define col_width 7 //Spaces allowed for each number (max)
-void EntriesTable(string samples, string varcut, double var_min, double var_max, int steps = 100)
+void EntriesTable(string samples, string varcut, double var_min, double var_max, int steps = 100, string output = "output.txt")
 {
   int N_samples = 0; //Number of samples (columns in output)
   string* files = SplitString(N_samples, samples, ", ");
@@ -27,19 +29,27 @@ void EntriesTable(string samples, string varcut, double var_min, double var_max,
       chain[i] = GetChain(files[i], "", false);
     }
 
-  //Output in screen
+  //Get cuts
+  string cuts = GetCuts(varcut);
+  if(cuts.substr(cuts.size()-2, 1) == ")")
+    {
+      cuts = cuts.substr(0, cuts.size()-1); //Remove the last parenthesis if has been read from cutfile!
+    }
+  //Output in file
+  ofstream outf;
+  outf.open(output.c_str());
   for(int i=0;i<=steps;i++)
     {
       for(int j=0;j<N_samples;j++)
 	{
 	  double cut = var_min+(var_max-var_min)/steps*double(i);
 	  stringstream ss;
-	  ss << varcut << " " << cut;
-	  cout << setfill(' ') << setw(col_width) << chain[j]->GetEntries(ss.str().c_str()) << " ";
+	  ss << cuts << " " << cut;
+	  outf << setfill(' ') << setw(col_width) << GetEvents(chain[j], ss.str()) << " ";
 	  ss.str("");
 	}
-      cout << endl;
+      outf << endl;
     }
-
+  outf.close();
   return;
 }
