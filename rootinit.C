@@ -52,6 +52,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"root/PIDTable.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/plot2D.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/PlotCorrVar.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/PlotTable.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/PlotUsedVars.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/PlotVar.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/RenameBranch.C+").c_str());
