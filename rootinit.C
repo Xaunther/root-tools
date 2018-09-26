@@ -10,6 +10,7 @@ void rootinit(std::string path)
   //Personal tools not depending on anything external
   gROOT->ProcessLine((".L "+path+"Functions/TISTOS.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/Styles.cxx+").c_str());
+  gROOT->ProcessLine((".L "+path+"Functions/StringTools.cxx+").c_str());
 
   //Personal tools that rely on Dictionaries
   gROOT->ProcessLine((".L "+path+"Functions/ArrayTools.cxx+").c_str());
@@ -42,6 +43,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"root/CutEff.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/CutSig.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/CutTree.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/EntriesTable.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/Err_Frac.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/Fit_NstG.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/MakeVarList.C+").c_str());
