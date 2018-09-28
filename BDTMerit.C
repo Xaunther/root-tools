@@ -13,26 +13,19 @@
 #include "../Functions/Dictreading.h"
 #include "../Functions/Filereading.h"
 #include "../Functions/ArrayTools.h"
+#include "../Functions/TreeTools.h"
 #include "../Functions/RunInfo.h"
 using namespace std;
 
-void BDTMerit(RunNumber run_number, double init_value, double final_value, int steps = 100, string filename = "Tuples/data-mva_outputMC.root")
+void BDTMerit(RunNumber run_number, double init_value, double final_value, int steps = 100, string filename = "Tuples/data-mva_outputMC.root", string BDTvarname = "BDT_response")
 {
   //Initialize constants
   Constants const_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
 
   //Going to plot 1 variable and then extend it with a loop
   int NFiles = 0;
-  string* filenames = ReadVariables(NFiles,"../Directories/BDToutput.dir");
-  TChain* datatree = new TChain("DecayTree");
-  //Add to chain and get N of entries
-  for(int i=0;i<NFiles;i++)
-    {
-      datatree->Add(filenames[i].c_str());
-    }
-
-  TFile* MCfile = new TFile(filename.c_str());
-  TTree* MCtree = (TTree*)MCfile->Get("DecayTree");
+  TChain* datatree = GetChain("../Directories/BDToutput.dir", "DecayTree");
+  TChain* MCtree = GetChain(filename);
   string HMcut = "B_M > 5600";
   string LMcut = "B_M < 5000";
   int N0_MC, N_HM, N_LM, N0_bkg;
@@ -70,9 +63,9 @@ void BDTMerit(RunNumber run_number, double init_value, double final_value, int s
 
   for(int i=0;i<=steps;i++)
     {
-      ss_HM << runcut << " && " << HMcut << " && BDT_response > " << init_value+double(i*(final_value-init_value))/double(steps);
-      ss_LM << runcut << " && " << LMcut << " && BDT_response > " << init_value+double(i*(final_value-init_value))/double(steps);
-      ss << runcut_MC << " && BDT_response > " << init_value+double(i*(final_value-init_value))/double(steps);
+      ss_HM << runcut << " && " << HMcut << " && " + BDTvarname + " > " << init_value+double(i*(final_value-init_value))/double(steps);
+      ss_LM << runcut << " && " << LMcut << " && " + BDTvarname + " > " << init_value+double(i*(final_value-init_value))/double(steps);
+      ss << runcut_MC << " && " + BDTvarname + " > " << init_value+double(i*(final_value-init_value))/double(steps);
       N_HM = datatree->GetEntries(ss_HM.str().c_str());
       N_LM = datatree->GetEntries(ss_LM.str().c_str());
       //Interpolate from sidebands
@@ -137,7 +130,7 @@ void BDTMerit(RunNumber run_number, double init_value, double final_value, int s
   //Also output into a file to instantly fit for that cut! ;)
   ofstream fout;
   fout.open("Variables/BDTOutCut.txt");
-  fout << "BDT_response > " << init_value+double(maxpos*(final_value-init_value))/double(steps) << endl;
+  fout << BDTvarname + " > " << init_value+double(maxpos*(final_value-init_value))/double(steps) << endl;
   if(run_number == I)
     {
       fout << "runNumber < " << const_list.Max_Run_Number[1] << endl;
