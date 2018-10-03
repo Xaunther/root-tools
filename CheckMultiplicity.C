@@ -22,13 +22,13 @@ void CheckMultiplicity(string filedir, string cutfile = "")
     {
       repeated_evtnumber[i] = 0;
       temptree->GetEntry(i);
-      if(i==0){currentevt=evtnumber;}
+      if(i==0){currentevt=evtnumber; N++;}
       if(currentevt != evtnumber)
 	{
 	currentevt = evtnumber;
 	N++;
       }
-      repeated_evtnumber[N]++;
+      repeated_evtnumber[N-1]++;
     }
   int N_repeated = 0;
   int* nCandidates = new int[N]; for(int i=0;i<N;i++){nCandidates[i]=0;}
