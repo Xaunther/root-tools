@@ -99,12 +99,19 @@ void Fit_NstG(string varnamedata, string filedirdata, string cutfiledata)
 {
   //Put dirs in an array
   string filedir[Nbkgs];
-  filedir[0] = "../Directories/Bd2KstG_tuples.dir";
-  filedir[1] = "../Directories/Bd2Rho0G_tuples.dir";
-  filedir[2] = "../Directories/Lb2L1520G_tuples.dir";
-  filedir[3] = "../Directories/Lb2L1670G_tuples.dir";
-  filedir[4] = "../Directories/Lb2L1820G_tuples.dir";
-  filedir[5] = "../Directories/Lb2L1830G_tuples.dir";
+  //  filedir[0] = "../Directories/Bd2KstG_tuples.dir";
+  //  filedir[1] = "../Directories/Bd2Rho0G_tuples.dir";
+  //  filedir[2] = "../Directories/Lb2L1520G_tuples.dir";
+  //  filedir[3] = "../Directories/Lb2L1670G_tuples.dir";
+  //  filedir[4] = "../Directories/Lb2L1820G_tuples.dir";
+  //  filedir[5] = "../Directories/Lb2L1830G_tuples.dir";
+  filedir[0] = "Tuples/KstG_MC_cut.root";
+  filedir[1] = "Tuples/RhoG_MC_cut.root";
+  filedir[2] = "Tuples/L1520G_MC_cut.root";
+  filedir[3] = "Tuples/L1670G_MC_cut.root";
+  filedir[4] = "Tuples/L1820G_MC_cut.root";
+  filedir[5] = "Tuples/L1830G_MC_cut.root";
+  
   //It happens, that the cuts are different for some MC...
   string cutfile[Nbkgs];
   cutfile[0] = "Variables/Cuts_Kpigamma.txt";
