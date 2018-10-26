@@ -3,23 +3,33 @@
 #include "TCanvas.h"
 #include "TH1.h"
 #include <string>
+#include "../Functions/TreeTools.h"
+#include "../Functions/Filereading.h"
 
 using namespace std;
+void Compare(string filename1, string filename2, string variable, string cutfile);
+void Compare(string filename1, string filename2, string treename1, string treename2, string variable, string cutfile);
 
-void Compare(string filename1, string filename2, string treename1, string treename2, string variable, string cuts)
+void Compare(string filename1, string filename2, string variable, string cutfile)
+{
+  Compare(filename1, filename2, "", "", variable, cutfile);
+  
+}
+
+
+void Compare(string filename1, string filename2, string treename1, string treename2, string variable, string cutfile)
 {
   //Open files and tuples
-  TFile* file1 = TFile::Open(filename1.c_str());
-  TFile* file2 = TFile::Open(filename2.c_str());
-  TTree* tree1 = (TTree*)file1->Get(treename1.c_str());
-  TTree* tree2 = (TTree*)file2->Get(treename2.c_str());
-
+  TChain* chain1 = GetChain(filename1, treename1);
+  TChain* chain2 = GetChain(filename2, treename2);
+  string cuts = GetCuts(cutfile);
   TCanvas* c1 = new TCanvas();
-  tree1->Draw(variable.c_str(), cuts.c_str(), "HISTO");
-  tree2->Draw(variable.c_str(), cuts.c_str(), "HISTO SAME");
+  
+  chain1->Draw(variable.c_str(), cuts.c_str(), "HISTO NORM");
+  chain2->Draw(variable.c_str(), cuts.c_str(), "HISTO NORM SAME");
 
-  TH1* hist1 = tree1->GetHistogram();
-  TH1* hist2 = tree2->GetHistogram();
+  TH1* hist1 = chain1->GetHistogram();
+  TH1* hist2 = chain2->GetHistogram();
 
   hist1->SetFillColorAlpha(kBlue, 1);
   hist2->SetFillColorAlpha(kRed, 1);
@@ -32,6 +42,4 @@ void Compare(string filename1, string filename2, string treename1, string treena
 
   c1->SaveAs(("plots/compare_"+variable+".pdf").c_str());
 
-  file1->Close();
-  file2->Close();
 }
