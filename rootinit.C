@@ -30,6 +30,7 @@ void rootinit(std::string path)
   //This away when running ROOT interactively I have some help on how to use them (not compiled!)
 
   gROOT->ProcessLine((".L "+path+"root/AddBranch.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/AppendVars.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/BDTApply.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/BDTCut.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/BDTMerit.C+").c_str());
