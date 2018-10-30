@@ -93,6 +93,6 @@ void AppendVars(string file1, string file2, string outfile, string cutfile1 = ""
 	}
     }
   tree->Write();
-  tree->Print();
+  //tree->Print();
   file->Close();
 }
