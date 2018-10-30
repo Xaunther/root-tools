@@ -17,17 +17,19 @@ using namespace std;
 #define Nbkgs 6
 //Use 1: default
 //Use 2: is needCuts, default. If not, use already created temp files
-void Fit_NstG(string varnamedata, string filedirdata, string cutfiledata = "");
-void Fit_NstG(bool needCuts, string varnamedata, string filedirdata, string cutfiledata = "");
+void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "");
+void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "");
 
-void Fit_NstG(bool needCuts, string varnamedata, string filedirdata, string cutfiledata)
+void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedirdata, string cutfiledata)
 {
   if(needCuts)
     {
-      Fit_NstG(varnamedata, filedirdata, cutfiledata);
+      Fit_NstG(use_weights, varnamedata, filedirdata, cutfiledata);
     }
   else
     {
+      string w_var = "";
+      if(use_weights){w_var = "Event_PIDCalibEff";}
       //RooFit
       FitFunction* fitf = FitFunction_init();
       RooWorkspace** ws = new RooWorkspace*[Nbkgs];
@@ -66,7 +68,7 @@ void Fit_NstG(bool needCuts, string varnamedata, string filedirdata, string cutf
 	  file[i] = TFile::Open(("Tuples/temp"+ss.str()+".root").c_str());
 	  tree[i] = (TTree*)file[i]->Get("DecayTree");
 	  ss.str("");
-	  ws[i] = fitf[DoubleCB](variablename[i], tree[i]);
+	  ws[i] = fitf[DoubleCB](variablename[i], tree[i], w_var);
 	  //Now we retrieve the values of the parameters and save them in our new workspace
 	  RooRealVar* dummy = new RooRealVar(name_list.alphaL[i+1].c_str(),name_list.alphaL[i+1].c_str(), ws[i]->var(name_list.alphaL[0].c_str())->getValV(), ws[i]->var(name_list.alphaL[0].c_str())->getValV(), ws[i]->var(name_list.alphaL[0].c_str())->getValV());
 	  Param_ws->import(*dummy);
@@ -90,12 +92,12 @@ void Fit_NstG(bool needCuts, string varnamedata, string filedirdata, string cutf
       TTree* temptree = (TTree*)chain->CopyTree(cutsdata.c_str());
       tempfile->Write();
       
-      RooWorkspace* Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws);
+      RooWorkspace* Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws, "");
       GoodPlot(Final_ws, varnamedata, true);
     }
 }
 
-void Fit_NstG(string varnamedata, string filedirdata, string cutfiledata)
+void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata)
 {
   //Put dirs in an array
   string filedir[Nbkgs];
@@ -105,12 +107,12 @@ void Fit_NstG(string varnamedata, string filedirdata, string cutfiledata)
   //  filedir[3] = "../Directories/Lb2L1670G_tuples.dir";
   //  filedir[4] = "../Directories/Lb2L1820G_tuples.dir";
   //  filedir[5] = "../Directories/Lb2L1830G_tuples.dir";
-  filedir[0] = "Tuples/KstG_MC_cut.root";
-  filedir[1] = "Tuples/RhoG_MC_cut.root";
-  filedir[2] = "Tuples/L1520G_MC_cut.root";
-  filedir[3] = "Tuples/L1670G_MC_cut.root";
-  filedir[4] = "Tuples/L1820G_MC_cut.root";
-  filedir[5] = "Tuples/L1830G_MC_cut.root";
+  filedir[0] = "Tuples/MC_PID/KstG_MC_cut_PID_w.root";
+  filedir[1] = "Tuples/MC_PID/RhoG_MC_cut_PID_w.root";
+  filedir[2] = "Tuples/MC_PID/L1520G_MC_cut_PID_w.root";
+  filedir[3] = "Tuples/MC_PID/L1670G_MC_cut_PID_w.root";
+  filedir[4] = "Tuples/MC_PID/L1820G_MC_cut_PID_w.root";
+  filedir[5] = "Tuples/MC_PID/L1830G_MC_cut_PID_w.root";
   
   //It happens, that the cuts are different for some MC...
   string cutfile[Nbkgs];
@@ -137,5 +139,5 @@ void Fit_NstG(string varnamedata, string filedirdata, string cutfiledata)
       tree[i] = (TTree*)chain[i]->CopyTree(cuts[i].c_str());
       file[i]->Write();
     }
-  Fit_NstG(0, varnamedata, filedirdata, cutfiledata);
+  Fit_NstG(0, use_weights, varnamedata, filedirdata, cutfiledata);
 }

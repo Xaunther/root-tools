@@ -17,7 +17,7 @@
 #include "../Dictionaries/Names.h"
 using namespace std;
 
-void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, string cutfile = "")
+void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, string cutfile = "", string w_var = "")
 {
   //Initialize constants
   Constants const_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
@@ -52,7 +52,7 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
   tempfile->Write();
 
   //Fit to the desired thingy
-  ws = fitf[fitopt](wVarname, temptree);
+  ws = fitf[fitopt](wVarname, temptree, w_var);
 
   //Number of backgrounds
   int N_bkgs = int(ws->var(name_list.N_bkgs.c_str())->getValV());
