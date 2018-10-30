@@ -8,10 +8,13 @@
 #include "TTree.h"
 #include "TFile.h"
 #include "../Functions/TreeTools.h"
+#include "../Functions/Filereading.h"
 using namespace std;
 
-void AppendVars(string file1, string file2, string outfile, string cuts1 = "")
+void AppendVars(string file1, string file2, string outfile, string cutfile1 = "")
 {
+  //Cuts
+  string cuts1 = GetCuts(cutfile1);
   //Get 2 chains
   TChain* raw_chain1 = GetChain(file1);
   TTree* chain1 = raw_chain1->CopyTree(cuts1.c_str());
