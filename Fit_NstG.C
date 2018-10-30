@@ -17,8 +17,8 @@ using namespace std;
 #define Nbkgs 6
 //Use 1: default
 //Use 2: is needCuts, default. If not, use already created temp files
-void Fit_NstG(string, string, string = "");
-void Fit_NstG(bool, string, string, string = "");
+void Fit_NstG(string varnamedata, string filedirdata, string cutfiledata = "");
+void Fit_NstG(bool needCuts, string varnamedata, string filedirdata, string cutfiledata = "");
 
 void Fit_NstG(bool needCuts, string varnamedata, string filedirdata, string cutfiledata)
 {
