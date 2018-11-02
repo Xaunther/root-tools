@@ -15,7 +15,7 @@
 #include "../Functions/PlotTools.h"
 using namespace std;
 
-void VarFit(string variablename, FitOption fitopt, string filedir, string cutfile = "", string w_var = "")
+void VarFit(string variablename, FitOption fitopt, string filedir, string cutfile = "", string w_var = "", string title = "", string Xtitle = "")
 {
   FitFunction* fitf = FitFunction_init();
   RooWorkspace* ws = new RooWorkspace();
@@ -45,7 +45,7 @@ void VarFit(string variablename, FitOption fitopt, string filedir, string cutfil
   ws = fitf[fitopt](variablename, temptree, w_var);
 
   //Proceed to the plot
-  GoodPlot(ws, variablename);
+  GoodPlot(ws, variablename, true, title, Xtitle);
 
   cout << temptree->GetEntries() << " events plotted" << endl;
 }
