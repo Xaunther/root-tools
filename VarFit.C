@@ -1,17 +1,13 @@
 #include <iostream>
-#include <fstream>
 #include <string>
-#include <sstream>
 #include "TTree.h"
 #include "TChain.h"
-#include "TH1F.h"
 #include "TFile.h"
-#include "TCanvas.h"
-#include "TLeaf.h"
 #include "RooWorkspace.h"
 #include "../Functions/Fits.h"
 #include "../Functions/Dictreading.h"
 #include "../Functions/Filereading.h"
+#include "../Functions/TreeTools.h"
 #include "../Functions/PlotTools.h"
 using namespace std;
 
@@ -24,17 +20,10 @@ void VarFit(string variablename, FitOption fitopt, string filedir, string cutfil
   string* filenames = ReadVariables(N_files, filedir);
   //Load TChain
   string cuts = GetCuts(cutfile);
-  string treename = GetTreeName(filedir); 
 
-  TChain* chain = new TChain(treename.c_str());
+  TChain* chain = GetChain(filedir);
   TTree* temptree = new TTree();
   TFile* tempfile = new TFile();
-  //Add to chain and get N of entries
-  for(int i=0;i<N_files;i++)
-    {
-      chain->Add(filenames[i].c_str());
-      cout << i+1 << " file(s) chained" << endl;
-    }
 
   //Cut chain into new TChain in a temp root file
   tempfile = new TFile("Tuples/temp.root", "recreate");
