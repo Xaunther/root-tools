@@ -16,7 +16,6 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"Functions/ArrayTools.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/Dictreading.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/Filereading.cxx+").c_str());
-  gROOT->ProcessLine((".L "+path+"Functions/Filesaving.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/TreeTools.cxx+").c_str());
   //Personal tools that rely on other tools
   gROOT->ProcessLine((".L "+path+"Functions/RunInfo.cxx+").c_str());
@@ -24,6 +23,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"Functions/ParticleInfo.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/Interpol_exp.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/Fits.cxx+").c_str());
+  gROOT->ProcessLine((".L "+path+"Functions/Filesaving.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/Constantize.cxx+").c_str());
 
   //Finally I can load the user-run scripts, which depend on the libraries already loaded
@@ -47,6 +47,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"root/EntriesTable.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/Err_Frac.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/Fit_NstG.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/LatexTable.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/MakeVarList.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/OutputSearch.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/PhaseSpace.C+").c_str());
