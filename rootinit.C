@@ -8,6 +8,7 @@ void rootinit(std::string path)
   //Utilities from independent sources
   gROOT->ProcessLine((".L "+path+"Functions/BifurcatedCB.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/RooCBExp.cxx+").c_str());
+  gROOT->ProcessLine((".L "+path+"Functions/RooGaussExp.cxx+").c_str());
   //Personal tools not depending on anything external
   gROOT->ProcessLine((".L "+path+"Functions/ErrorTools.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/TISTOS.cxx+").c_str());
