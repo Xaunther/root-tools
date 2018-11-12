@@ -79,10 +79,19 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
 	  ss.str("");
 	  ws[i] = fitf[fitopt[i]](variablename[i], tree[i], w_var);
 	  //Now we retrieve the values of the parameters and save them in our new workspace
-	  RooRealVar* dummy = new RooRealVar(name_list.alphaL[i+1].c_str(),name_list.alphaL[i+1].c_str(), ws[i]->var(name_list.alphaL[0].c_str())->getValV(), ws[i]->var(name_list.alphaL[0].c_str())->getValV(), ws[i]->var(name_list.alphaL[0].c_str())->getValV());
-	  Param_ws->import(*dummy);
-	  dummy = new RooRealVar(name_list.alphaR[i+1].c_str(),name_list.alphaR[i+1].c_str(), ws[i]->var(name_list.alphaR[0].c_str())->getValV(), ws[i]->var(name_list.alphaR[0].c_str())->getValV(), ws[i]->var(name_list.alphaR[0].c_str())->getValV());
-	  Param_ws->import(*dummy);
+	  RooRealVar* dummy;
+	  if(fitopt[i] == GaussExp)
+	    {
+	      dummy = new RooRealVar(name_list.alphaL[i+1].c_str(),name_list.alphaL[i+1].c_str(), ws[i]->var(name_list.alpha.c_str())->getValV(), ws[i]->var(name_list.alpha.c_str())->getValV(), ws[i]->var(name_list.alpha.c_str())->getValV());
+	      Param_ws->import(*dummy);	      
+	    }
+	  else
+	    {
+	      dummy = new RooRealVar(name_list.alphaL[i+1].c_str(),name_list.alphaL[i+1].c_str(), ws[i]->var(name_list.alphaL[0].c_str())->getValV(), ws[i]->var(name_list.alphaL[0].c_str())->getValV(), ws[i]->var(name_list.alphaL[0].c_str())->getValV());
+	      Param_ws->import(*dummy);
+	      dummy = new RooRealVar(name_list.alphaR[i+1].c_str(),name_list.alphaR[i+1].c_str(), ws[i]->var(name_list.alphaR[0].c_str())->getValV(), ws[i]->var(name_list.alphaR[0].c_str())->getValV(), ws[i]->var(name_list.alphaR[0].c_str())->getValV());
+	      Param_ws->import(*dummy);
+	    }
 	  if(fitopt[i] == DoubleCB)
 	    {
 	      dummy = new RooRealVar(name_list.nL[i+1].c_str(),name_list.nL[i+1].c_str(), ws[i]->var(name_list.nL[0].c_str())->getValV(), ws[i]->var(name_list.nL[0].c_str())->getValV(), ws[i]->var(name_list.nL[0].c_str())->getValV());
