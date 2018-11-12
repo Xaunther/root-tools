@@ -37,6 +37,15 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
       
       //Names dict
       Names name_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
+
+      //Type of fit for each sample
+      FitOption fitopt[Nbkgs];
+      fitopt[0] = CBExp;
+      fitopt[1] = CBExp;
+      fitopt[2] = GaussExp;
+      fitopt[3] = CBExp;
+      fitopt[4] = GaussExp;
+      fitopt[5] = CBExp;
       
       string variablename[Nbkgs];
       variablename[0] = varnamedata;
@@ -68,16 +77,27 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
 	  file[i] = TFile::Open(("Tuples/temp"+ss.str()+".root").c_str());
 	  tree[i] = (TTree*)file[i]->Get("DecayTree");
 	  ss.str("");
-	  ws[i] = fitf[DoubleCB](variablename[i], tree[i], w_var);
+	  ws[i] = fitf[fitopt[i]](variablename[i], tree[i], w_var);
 	  //Now we retrieve the values of the parameters and save them in our new workspace
 	  RooRealVar* dummy = new RooRealVar(name_list.alphaL[i+1].c_str(),name_list.alphaL[i+1].c_str(), ws[i]->var(name_list.alphaL[0].c_str())->getValV(), ws[i]->var(name_list.alphaL[0].c_str())->getValV(), ws[i]->var(name_list.alphaL[0].c_str())->getValV());
 	  Param_ws->import(*dummy);
 	  dummy = new RooRealVar(name_list.alphaR[i+1].c_str(),name_list.alphaR[i+1].c_str(), ws[i]->var(name_list.alphaR[0].c_str())->getValV(), ws[i]->var(name_list.alphaR[0].c_str())->getValV(), ws[i]->var(name_list.alphaR[0].c_str())->getValV());
 	  Param_ws->import(*dummy);
-	  dummy = new RooRealVar(name_list.nL[i+1].c_str(),name_list.nL[i+1].c_str(), ws[i]->var(name_list.nL[0].c_str())->getValV(), ws[i]->var(name_list.nL[0].c_str())->getValV(), ws[i]->var(name_list.nL[0].c_str())->getValV());
-	  Param_ws->import(*dummy);
-	  dummy = new RooRealVar(name_list.nR[i+1].c_str(),name_list.nR[i+1].c_str(), ws[i]->var(name_list.nR[0].c_str())->getValV(), ws[i]->var(name_list.nR[0].c_str())->getValV(), ws[i]->var(name_list.nR[0].c_str())->getValV());
-	  Param_ws->import(*dummy);
+	  if(fitopt[i] == DoubleCB)
+	    {
+	      dummy = new RooRealVar(name_list.nL[i+1].c_str(),name_list.nL[i+1].c_str(), ws[i]->var(name_list.nL[0].c_str())->getValV(), ws[i]->var(name_list.nL[0].c_str())->getValV(), ws[i]->var(name_list.nL[0].c_str())->getValV());
+	      Param_ws->import(*dummy);
+	    }
+	  else if(fitopt[i] == CBExp)
+	    {
+	      dummy = new RooRealVar(name_list.nL[i+1].c_str(),name_list.nL[i+1].c_str(), ws[i]->var(name_list.n.c_str())->getValV(), ws[i]->var(name_list.n.c_str())->getValV(), ws[i]->var(name_list.n.c_str())->getValV());
+	      Param_ws->import(*dummy);
+	    }
+	  if(fitopt[i] == DoubleCB)
+	    {
+	      dummy = new RooRealVar(name_list.nR[i+1].c_str(),name_list.nR[i+1].c_str(), ws[i]->var(name_list.nR[0].c_str())->getValV(), ws[i]->var(name_list.nR[0].c_str())->getValV(), ws[i]->var(name_list.nR[0].c_str())->getValV());
+	      Param_ws->import(*dummy);
+	    }
 	  dummy = new RooRealVar(name_list.mean[i+1].c_str(),name_list.mean[i+1].c_str(), ws[i]->var(name_list.mean[0].c_str())->getValV(), ws[i]->var(name_list.mean[0].c_str())->getValV(), ws[i]->var(name_list.mean[0].c_str())->getValV());
 	  Param_ws->import(*dummy);
 	  dummy = new RooRealVar(name_list.width[i+1].c_str(),name_list.width[i+1].c_str(), ws[i]->var(name_list.width[0].c_str())->getValV(), ws[i]->var(name_list.width[0].c_str())->getValV(), ws[i]->var(name_list.width[0].c_str())->getValV());
