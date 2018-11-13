@@ -15,21 +15,19 @@
 using namespace std;
 
 #define Nbkgs 6
-//Use 1: default
-//Use 2: is needCuts, default. If not, use already created temp files
-void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "");
+//Use: if needCuts, cut temp files. If not, use already created temp files
+void Cut_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "");
 void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "");
 
 void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedirdata, string cutfiledata)
 {
   if(needCuts)
     {
-      Fit_NstG(use_weights, varnamedata, filedirdata, cutfiledata);
+      Cut_NstG(use_weights, varnamedata, filedirdata, cutfiledata);
     }
   else
     {
       string w_var = "";
-      if(use_weights){w_var = "Event_PIDCalibEff";}
       //RooFit
       FitFunction* fitf = FitFunction_init();
       RooWorkspace** ws = new RooWorkspace*[Nbkgs];
@@ -48,6 +46,7 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
 	  fitopt[3] = DoubleGaussExp;
 	  fitopt[4] = DoubleGaussExp;
 	  fitopt[5] = CBExp;
+	  if(use_weights){w_var = "Event_PIDCalibEff_pbarpi";}
 	}
       else if(varnamedata == "B_M012_Subst0_K2p") //ppigamma
 	{
@@ -57,6 +56,7 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
 	  fitopt[3] = CBExp;
 	  fitopt[4] = DoubleGaussExp;
 	  fitopt[5] = DoubleGaussExp;
+	  if(use_weights){w_var = "Event_PIDCalibEff";}
 	}
       else if (varnamedata == "B_M012_Subst01_Kpi2pK") //pKgamma
 	{
@@ -66,7 +66,7 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
 	  fitopt[3] = CBExp;
 	  fitopt[4] = CBExp;
 	  fitopt[5] = CBExp;
-
+	  if(use_weights){w_var = "Event_PIDCalibEff_ppibar";}
 	}
       //ELSE: LET IT DIE
       
@@ -149,7 +149,7 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
     }
 }
 
-void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata)
+void Cut_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata)
 {
   //Put dirs in an array
   string filedir[Nbkgs];
