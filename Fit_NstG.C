@@ -40,12 +40,35 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
 
       //Type of fit for each sample
       FitOption fitopt[Nbkgs];
-      fitopt[0] = CBExp;
-      fitopt[1] = CBExp;
-      fitopt[2] = GaussExp;
-      fitopt[3] = CBExp;
-      fitopt[4] = GaussExp;
-      fitopt[5] = CBExp;
+      if(varnamedata == "B_M012") //Kpigamma
+	{
+	  fitopt[0] = CBExp;
+	  fitopt[1] = CBExp;
+	  fitopt[2] = CBExp;
+	  fitopt[3] = DoubleGaussExp;
+	  fitopt[4] = DoubleGaussExp;
+	  fitopt[5] = CBExp;
+	}
+      else if(varnamedata == "B_M012_Subst0_K2p") //ppigamma
+	{
+	  fitopt[0] = CBExp;
+	  fitopt[1] = DoubleGaussExp;
+	  fitopt[2] = GaussExp;
+	  fitopt[3] = CBExp;
+	  fitopt[4] = DoubleGaussExp;
+	  fitopt[5] = DoubleGaussExp;
+	}
+      else if (varnamedata == "B_M012_Subst01_Kpi2pK") //pKgamma
+	{
+	  fitopt[0] = CBExp;
+	  fitopt[1] = DoubleGaussExp;
+	  fitopt[2] = CBExp;
+	  fitopt[3] = CBExp;
+	  fitopt[4] = CBExp;
+	  fitopt[5] = CBExp;
+
+	}
+      //ELSE: LET IT DIE
       
       string variablename[Nbkgs];
       variablename[0] = varnamedata;
