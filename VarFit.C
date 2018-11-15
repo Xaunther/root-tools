@@ -31,7 +31,7 @@ void VarFit(string variablename, FitOption fitopt, string filedir, string cutfil
   tempfile->Write();
 
   //Do fit depending on request
-  ws = fitf[fitopt](variablename, temptree, w_var);
+  ws = fitf[fitopt](variablename, temptree, w_var, 0, 0);
 
   //Proceed to the plot
   GoodPlot(ws, variablename, true, title, Xtitle);

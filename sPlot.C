@@ -52,7 +52,7 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
   tempfile->Write();
 
   //Fit to the desired thingy
-  ws = fitf[fitopt](wVarname, temptree, w_var);
+  ws = fitf[fitopt](wVarname, temptree, w_var, new string[1]{pVarname}, 1);
 
   //Number of backgrounds
   int N_bkgs = int(ws->var(name_list.N_bkgs.c_str())->getValV());

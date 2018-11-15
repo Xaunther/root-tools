@@ -32,6 +32,6 @@ void LatexTable(string variablename, FitOption fitopt, string filedir, bool newf
   cout << "Will fit " << temptree->GetEntries() << " events" << endl << endl;
 
   //Do fit depending on request
-  ws = fitf[fitopt](variablename, temptree, w_var);
+  ws = fitf[fitopt](variablename, temptree, w_var, 0, 0);
   SaveLatex(ws, fitopt, newfile, col1, outfile);
 }
