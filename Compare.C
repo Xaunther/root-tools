@@ -7,16 +7,17 @@
 #include "../Functions/Filereading.h"
 
 using namespace std;
-void Compare(string filename1, string filename2, string variable, string cutfile, string treename1 = "", string treename2 = "", string wvar1 = "1", string wvar2 = "1")
+void Compare(string filename1, string filename2, string variable, string cutfile1, string cutfile2, string treename1 = "", string treename2 = "", string wvar1 = "1", string wvar2 = "1")
 {
   //Open files and tuples
   TChain* chain1 = GetChain(filename1, treename1);
   TChain* chain2 = GetChain(filename2, treename2);
-  string cuts = GetCuts(cutfile);
+  string cuts1 = GetCuts(cutfile1);
+  string cuts2 = GetCuts(cutfile2);
   TCanvas* c1 = new TCanvas();
   
-  chain1->Draw(variable.c_str(), ("("+cuts+")*"+wvar1).c_str(), "HISTO NORM");
-  chain2->Draw(variable.c_str(), ("("+cuts+")*"+wvar2).c_str(), "HISTO NORM SAME");
+  chain1->Draw(variable.c_str(), ("("+cuts1+")*"+wvar1).c_str(), "HISTO NORM");
+  chain2->Draw(variable.c_str(), ("("+cuts2+")*"+wvar2).c_str(), "HISTO NORM SAME");
 
   TH1* hist1 = chain1->GetHistogram();
   TH1* hist2 = chain2->GetHistogram();
