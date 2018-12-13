@@ -13,6 +13,7 @@
 #include "../Functions/Dictreading.h"
 #include "../Functions/TreeTools.h"
 #include "../Functions/ArrayTools.h"
+#include "../Functions/StringTools.h"
 using namespace std;
 
 void CutEff(string dirfile, string cutfile, string precutfile = "", string outfile = "CutEff_results.txt")
@@ -23,28 +24,17 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
   int N_cuts = 0;
   string* cuts = ReadVariables(N_cuts, cutfile);
   int N_precuts = 0;
-  string* precuts = ReadVariables(N_precuts, precutfile);
+  string* precuts = SplitString(N_precuts, allprecuts, " && ");
 
-  if(N_precuts == 0)
+  if(allprecuts == "")
     {
       allprecuts = "1";
     }
   int* N_final = new int[N_cuts+1];
   int N0;
 
-  int N_files = 0;
-  string* filenames = ReadVariables(N_files, dirfile);
-
   //Data chain
-  string treename = GetTreeName(dirfile);
-  cout << "Reading Tree " << treename << endl;
-  TChain* chain = new TChain(treename.c_str());
-
-  //Add to chain and get N of entries
-  for(int i=0;i<N_files;i++)
-    {
-      chain->Add(filenames[i].c_str());
-    }
+  TChain* chain = GetChain(dirfile);
 
   //Simply compute #of evts before and after
   N0 = chain->GetEntries(allprecuts.c_str());
