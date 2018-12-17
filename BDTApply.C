@@ -13,7 +13,7 @@
 #include "../Functions/Filereading.h"
 using namespace std;
 
-void BDTApply(string fileapplied, string outputfilename, bool logdira = false, string filename = "Variables/BDTVariables.txt")
+void BDTApply(string fileapplied, string outputfilename, bool logdira = false, string filename = "Variables/BDTVariables.txt", string BDTweights = "TMVAClassification")
 {
   int N_variables = 0;
   int N_extravars = 0;
@@ -61,7 +61,8 @@ void BDTApply(string fileapplied, string outputfilename, bool logdira = false, s
 	}
     }
   //TMVA method
-  reader->TMVA::Reader::BookMVA("BDT method", "default/weights/TMVAClassification_BDT.weights.xml");
+  //The Folder is the one used by default
+  reader->TMVA::Reader::BookMVA("BDT method", ("default/weights/"+BDTweights+"_BDT.weights.xml").c_str());
 
   //Variables from data
   Double_t* uservar = new Double_t[N_variables + N_extravars];
