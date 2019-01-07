@@ -18,7 +18,7 @@ using namespace std;
 
 //BDTTrain es la función original, se usa en algunos análisis y no es demasiado general, pero es dificil ahora tocar todo para que cuadre
 //BDTTrain2 generaliza la función anterior, reduciendo los argumentos a cosas mas necesarias
-void BDTTrain2(string sig_file, string bkg_file, string varfile = "Variables/BDTVariables.txt", string factoryname = "TMVAClassification");
+void BDTTrain2(string sig_file, string bkg_file, string sig_cutfile = "", string bkg_cutfile = "", string varfile = "Variables/BDTVariables.txt", string factoryname = "TMVAClassification");
 
 void BDTTrain2(string sig_file, string bkg_file, string sig_cutfile, string bkg_cutfile, string varfile, string factoryname)
 {
