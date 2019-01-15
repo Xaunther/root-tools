@@ -22,7 +22,7 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
   string allprecuts = GetCuts(precutfile);
 
   int N_cuts = 0;
-  string* cuts = ReadVariables(N_cuts, cutfile);
+  string* cuts = SplitString(N_cuts, allcuts, " && ");
   int N_precuts = 0;
   string* precuts = SplitString(N_precuts, allprecuts, " && ");
 
