@@ -11,7 +11,7 @@
 #include "TMath.h"
 #include "../Functions/Filereading.h"
 using namespace std;
-void PlotCorrVar(string drawopt = "", string varfile = "Variables/VariablesCorr.txt", string cutfile="Variables/Cuts.txt", string tupledir = "Directories/Cuttuples2.dir")
+void PlotCorrVar(string histopt = "", string drawopt = "", string varfile = "Variables/VariablesCorr.txt", string cutfile="Variables/Cuts.txt", string tupledir = "Directories/Cuttuples2.dir", string fileext = ".pdf")
 {
   int N_files = 0;
   int N_vars = 0;
@@ -35,8 +35,8 @@ void PlotCorrVar(string drawopt = "", string varfile = "Variables/VariablesCorr.
     {
       for(int j=i+1;j<N_vars;j++)
 	{
-	  chain->Draw((variables[i]+":"+variables[j]).c_str(), cuts.c_str(), drawopt.c_str());
-	  c1->SaveAs(("plots/"+variables[i]+"_VS_"+variables[j]+".pdf").c_str());
+	  chain->Draw((variables[i]+":"+variables[j]+histopt).c_str(), cuts.c_str(), drawopt.c_str());
+	  c1->SaveAs(("plots/"+variables[i]+"_VS_"+variables[j]+fileext).c_str());
 	}
     }
 }
