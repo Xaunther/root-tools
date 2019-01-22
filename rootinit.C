@@ -54,6 +54,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"root/Fit_NstG.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/LatexTable.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/MakeVarList.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/MassSub.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/OutputSearch.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/PhaseSpace.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/PIDTable.C+").c_str());
