@@ -1,78 +1,57 @@
-#include <iostream>
-#include <fstream>
-#include "TTree.h"
-#include "TH1F.h"
-#include "TFile.h"
-#include <string>
-#include "TCanvas.h"
-#include "TLeaf.h"
-#include <sstream>
-#include "../Dictionaries/Constants.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/Dictreading.h"
-#include "../Functions/TreeTools.h"
-#include "TMVA/Tools.h"
-#include "TMVA/DataLoader.h"
-#include "TMVA/Factory.h"
-using namespace std;
+//#include "TMVA/Tools.h"
+//#include "TMVA/DataLoader.h"
+//#include "TMVA/Factory.h"
+//using namespace std;
 
-//BDTTrain es la función original, se usa en algunos análisis y no es demasiado general, pero es dificil ahora tocar todo para que cuadre
-//BDTTrain2 generaliza la función anterior, reduciendo los argumentos a cosas mas necesarias
-void BDTTrain2(string sig_file, string bkg_file, string sig_cutfile = "", string bkg_cutfile = "", string varfile = "Variables/BDTVariables.txt", string factoryname = "TMVAClassification");
-
-void BDTTrain2(string sig_file, string bkg_file, string sig_cutfile, string bkg_cutfile, string varfile, string factoryname)
+//Tutorial
+void BDTTrain2()
 {
-  //Initialize constants
-  Constants const_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
+  //Variables. Array con las variables a usar:
+  int N = 15;
+  string* variable_list = new string[N];
+  variable_list[0] = "B_OWNPV_CHI2";
+  variable_list[1] = "KS0_M";
+  //ETC, hasta variable_list[N-1]
 
-  //Variables
-  int N_variables = 0;
-  string* variable_list = ReadVariables(N_variables, varfile);
-  
   //Instantiate class
   TMVA::Tools::Instance();
 
   //Output file to store the results
-  TFile* outfile = TFile::Open("Tuples/BDT-results.root", "RECREATE");
+  TFile* outfile = TFile::Open("BDT-results.root", "RECREATE");
 
   //Declare factory :mgalletas:
-  TMVA::Factory *factory = new TMVA::Factory(factoryname.c_str(), outfile, "V:!Silent:Color:Transformations=I:DrawProgressBar:AnalysisType=Classification");
+  TMVA::Factory *factory = new TMVA::Factory("TMVAClassification", outfile, "V:!Silent:Color:Transformations=I:DrawProgressBar:AnalysisType=Classification");
   TMVA::DataLoader *dl = new TMVA::DataLoader();
   
   //Weights for signal and background
   double signalW = 1;
   double backgroundW = 1;
 
-  //Cuts
-  string sig_cuts = GetCuts(sig_cutfile);
-  string bkg_cuts = GetCuts(bkg_cutfile);
-
   //Open input MC and signal files
-  TTree* sigtree  = GetTree(sig_file);
-  TTree* datatree = GetTree(bkg_file);
+  TFile* sigfile = new TFile("Archivo_MC_cut.root");
+  TTree* sigtree  = (TTree*)sigfile->Get("DecayTree");
+  TFile* datafile = new TFile("Archivo_data_cut.root");
+  TTree* datatree = (TTree*)datafile->Get("DecayTree");
 
   cout << "----------------------------------------------------------------------------" << endl;
-  cout << "Starting training with " << sigtree->GetEntries(sig_cuts.c_str()) << " signal events and " << datatree->GetEntries(bkg_cutfile.c_str()) << " background events" << endl;
+  cout << "Starting training with " << sigtree->GetEntries() << " signal events and " << datatree->GetEntries() << " background events" << endl;
   cout << "----------------------------------------------------------------------------" << endl;
 
-  TFile* addedsigtree = new TFile("Tuples/BDTsigtest.root", "RECREATE");
-  addedsigtree->cd();
-  dl->AddTree(sigtree, "Signal", signalW, sig_cuts.c_str(), TMVA::Types::kMaxTreeType);
-  TFile* addedbkgtree = new TFile("Tuples/BDTbkgtest.root", "RECREATE");
-  addedbkgtree->cd();
-  dl->AddTree(datatree, "Background", backgroundW, bkg_cuts.c_str() , TMVA::Types::kMaxTreeType);
+  //Add trees to dataloader
+  dl->AddTree(sigtree, "Signal", signalW, "", TMVA::Types::kMaxTreeType);
+  dl->AddTree(datatree, "Background", backgroundW, "", TMVA::Types::kMaxTreeType);
 
-  //Add Variables
-  for(int i=0;i<N_variables;i++)
+  //Add Variables used in BDT
+  for(int i=0;i<N;i++)
     {
       dl->AddVariable(variable_list[i].c_str(), 'D');
     }
   
-  //Prepare training
-  dl->PrepareTrainingAndTestTree("", "", (const_list.BDT_Prepare_options).c_str());
+  //Prepare training. Here you tell the BDT to take 50% of each sample to train (by default) and randomly selected events.
+  dl->PrepareTrainingAndTestTree("", "", "SplitMode=Random:SplitSeed=100");
 
-  //TMVA method
-  factory->BookMethod(dl, TMVA::Types::kBDT, "BDT", const_list.BDT_Method_options.c_str());
+  //TMVA method. Parameters of the BDT. Use these as default
+  factory->BookMethod(dl, TMVA::Types::kBDT, "BDT", "NTrees=400:MaxDepth=2:CreateMVAPdfs=True");
   //Train and test
   factory->TrainAllMethods();
   factory->TestAllMethods();
