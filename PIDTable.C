@@ -7,7 +7,7 @@
 #include "../Functions/Filereading.h"
 using namespace std;
 
-void PIDTable(string filedir, string resultsfile = "PIDEff.txt")
+void PIDTable(string filedir, string resultsfile = "PIDEff.txt", bool abspath = false)
 {
   //Read filedir
   int NFiles = 0;
@@ -21,7 +21,10 @@ void PIDTable(string filedir, string resultsfile = "PIDEff.txt")
       last_pos = filedir.find('/', last_pos+1);
     }
   string filepath = filedir.substr(0, last_pos+1);
-  
+  if(abspath)
+    {
+      filepath = "";
+    }
   ofstream outfile;
   outfile.open(resultsfile.c_str());
   //Loop over all files in filedir
