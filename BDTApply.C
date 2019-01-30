@@ -1,4 +1,4 @@
-void BDTApply(string fileapplied, string outputfilename, bool logdira = false, string filename = "Variables/BDTVariables.txt", string BDTweights = "TMVAClassification")
+void BDTApply(string fileapplied)
 {
   //Variables. Array con las variables a usar:
   int N = 15;
