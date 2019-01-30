@@ -1,112 +1,43 @@
-#include <iostream>
-#include <fstream>
-#include "TTree.h"
-#include "TH1F.h"
-#include "TFile.h"
-#include <string>
-#include "TCanvas.h"
-#include "TLeaf.h"
-#include <TXMLEngine.h>
-#include "TMVA/Tools.h"
-#include "TMVA/Reader.h"
-#include <sstream>
-#include "../Functions/Filereading.h"
-using namespace std;
-
 void BDTApply(string fileapplied, string outputfilename, bool logdira = false, string filename = "Variables/BDTVariables.txt", string BDTweights = "TMVAClassification")
 {
-  int N_variables = 0;
-  int N_extravars = 0;
-  int N_extrauint = 0;
-  int N_extraulong64 = 0;
-  int N_extraint = 0;
-  int N_extrashort = 0;
-  int N_extrabool = 0;
-  string filename2= "Variables/BDTExtravars.txt";
-  string filenameUInt = "Variables/BDTExtravarsUInt.txt";
-  string filenameULong64 = "Variables/BDTExtravarsULong64.txt";
-  string filenameInt = "Variables/BDTExtravarsInt.txt";
-  string filenameShort = "Variables/BDTExtravarsShort.txt";
-  string filenameBool = "Variables/BDTExtravarsBool.txt";
-  string* variable_list = ReadVariables(N_variables, filename);
-  string* extravar_list = ReadVariables(N_extravars, filename2);
-  string* extrauint_list = ReadVariables(N_extrauint, filenameUInt);
-  string* extraulong64_list = ReadVariables(N_extraulong64, filenameULong64);
-  string* extraint_list = ReadVariables(N_extraint, filenameInt);
-  string* extrashort_list = ReadVariables(N_extrashort, filenameShort);
-  string* extrabool_list = ReadVariables(N_extrabool, filenameBool);
+  //Variables. Array con las variables a usar:
+  int N = 15;
+  string* variable_list = new string[N];
+  variable_list[0] = "B_OWNPV_CHI2";
+  variable_list[1] = "KS0_M";
+  //ETC, hasta variable_list[N-1]
 
-  TFile* data = new TFile(fileapplied.c_str());
+  TFile* data = new TFile(fileapplied.c_str()); //Data_cut.root o MC_cut.root (aprox)
   TTree* datatree = (TTree*)data->Get("DecayTree");
 
   //BDT Output
-  TFile* target = new TFile(outputfilename.c_str(), "RECREATE");
+  TFile* target = new TFile((fileapplied+"_BDT").c_str(), "RECREATE");
   TTree* tree = new TTree("DecayTree", "treelibrated tree");
 
   TMVA::Tools::Instance();
   TMVA::Reader* reader =  new TMVA::Reader("V:Color:!Silent");
 
-  Float_t* var = new Float_t[N_variables];
+  Float_t* var = new Float_t[N];
   //Variables used in training
-  for(int i=0;i<N_variables;i++)
+  for(int i=0;i<N;i++)
     {
-      if (variable_list[i] == "B_DIRA_OWNPV" && logdira)
-	{
-	  string logvarname = "log_B_DIRA_OWNPV := log(1-B_DIRA_OWNPV)";
-	  reader->TMVA::Reader::AddVariable(logvarname.c_str(), &var[i]);
-	}
-      else
-	{
-	  reader->TMVA::Reader::AddVariable(variable_list[i].c_str(), &var[i]);
-	}
+      reader->TMVA::Reader::AddVariable(variable_list[i].c_str(), &var[i]);
     }
   //TMVA method
   //The Folder is the one used by default
-  reader->TMVA::Reader::BookMVA("BDT method", ("default/weights/"+BDTweights+"_BDT.weights.xml").c_str());
+  reader->TMVA::Reader::BookMVA("BDT method", "default/weights/TMVAClassification_BDT.weights.xml");
 
   //Variables from data
-  Double_t* uservar = new Double_t[N_variables + N_extravars];
-  UInt_t* useruint = new UInt_t[N_extrauint];
-  ULong64_t* userulong64 = new ULong64_t[N_extraulong64];
-  Int_t* userint = new Int_t[N_extraint];
-  Short_t* usershort = new Short_t[N_extrashort];
-  Bool_t* userbool = new Bool_t[N_extrabool];
-  for(int i=0;i<N_variables;i++)
+  for(int i=0;i<N;i++)
     {
-      datatree->SetBranchAddress(variable_list[i].c_str(), &uservar[i]);
-      tree->Branch(variable_list[i].c_str(), &uservar[i]);
-    }
-  for(int i=0;i<N_extravars;i++)
-    {
-      datatree->SetBranchAddress(extravar_list[i].c_str(), &uservar[N_variables + i]);
-      tree->Branch(extravar_list[i].c_str(), &uservar[N_variables + i]);
-    }
-  for(int i=0;i<N_extrauint;i++)
-    {
-      datatree->SetBranchAddress(extrauint_list[i].c_str(), &useruint[i]);
-      tree->Branch(extrauint_list[i].c_str(), &useruint[i]);
-    }
-  for(int i=0;i<N_extraulong64;i++)
-    {
-      datatree->SetBranchAddress(extraulong64_list[i].c_str(), &userulong64[i]);
-      tree->Branch(extraulong64_list[i].c_str(), &userulong64[i]);
-    }
-  for(int i=0;i<N_extraint;i++)
-    {
-      datatree->SetBranchAddress(extraint_list[i].c_str(), &userint[i]);
-      tree->Branch(extraint_list[i].c_str(), &userint[i]);
-    }
-  for(int i=0;i<N_extrashort;i++)
-    {
-      datatree->SetBranchAddress(extrashort_list[i].c_str(), &usershort[i]);
-      tree->Branch(extrashort_list[i].c_str(), &usershort[i]);
-    }
-  for(int i=0;i<N_extrabool;i++)
-    {
-      datatree->SetBranchAddress(extrabool_list[i].c_str(), &userbool[i]);
-      tree->Branch(extrabool_list[i].c_str(), &userbool[i]);
+      datatree->SetBranchAddress(variable_list[i].c_str(), &var[i]);
+      tree->Branch(variable_list[i].c_str(), &var[i]);
     }
 
+  //Add branch to store B mass
+  double B_M;
+  datatree->SetBranchAddress("B_M", &B_M);
+  tree->Branch("B_M", &B_M);
   //Add branch to store BDT response
   double BDT_response;
   tree->Branch("BDT_response", &BDT_response);
@@ -114,22 +45,11 @@ void BDTApply(string fileapplied, string outputfilename, bool logdira = false, s
   //Apply BDT
   for(long k=0; k<datatree->GetEntries(); k++)
     {
-      //Some output to see it's still alive
-      if (k%100000 == 0)
-	{
-	  cout << "--- ... Processing event: " << k << endl;
-	}
       datatree->GetEntry(k);
-
-      //Here we can perform operations if we made the log or smth
-      for (int j=0;j<N_variables;j++)
-	{
-	  var[j] = uservar[j];
-	}
-
       BDT_response = reader->TMVA::Reader::EvaluateMVA("BDT method");
       tree->Fill();
     }
+  //Save ntuple
   tree->Write();
   
   data->Close();
