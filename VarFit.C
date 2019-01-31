@@ -16,8 +16,6 @@ void VarFit(string variablename, FitOption fitopt, string filedir, string cutfil
   FitFunction* fitf = FitFunction_init();
   RooWorkspace* ws = new RooWorkspace();
 
-  int N_files = 0;
-  string* filenames = ReadVariables(N_files, filedir);
   //Load TChain
   string cuts = GetCuts(cutfile);
 
@@ -39,7 +37,7 @@ void VarFit(string variablename, FitOption fitopt, string filedir, string cutfil
   ws = fitf[fitopt](variablename, temptree, w_var, 0, 0, opts);
 
   //Proceed to the plot
-  GoodPlot(ws, variablename, true, title, Xtitle);
+  GoodPlot(ws, variablename, true, title, Xtitle, opts);
 
   cout << temptree->GetEntries() << " events plotted" << endl;
 }
