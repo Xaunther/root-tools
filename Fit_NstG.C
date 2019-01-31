@@ -17,10 +17,14 @@ using namespace std;
 #define Nbkgs 6
 //Use: if needCuts, cut temp files. If not, use already created temp files
 void Cut_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "");
-void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "");
+void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "", string opts = "");
 
-void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedirdata, string cutfiledata)
+void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedirdata, string cutfiledata, string opts)
 {
+  if(opts == "")
+    {
+      opts = GetValueFor("Project_name", "Dictionaries/Project_variables.txt");
+    }
   if(needCuts)
     {
       Cut_NstG(use_weights, varnamedata, filedirdata, cutfiledata);
@@ -100,7 +104,7 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
 	  file[i] = TFile::Open(("Tuples/temp"+ss.str()+".root").c_str());
 	  tree[i] = (TTree*)file[i]->Get("DecayTree");
 	  ss.str("");
-	  ws[i] = fitf[fitopt[i]](variablename[i], tree[i], w_var, 0, 0);
+	  ws[i] = fitf[fitopt[i]](variablename[i], tree[i], w_var, 0, 0, opts);
 	  //Now we retrieve the values of the parameters and save them in our new workspace
 	  RooRealVar* dummy;
 	  if(fitopt[i] == GaussExp)
@@ -144,7 +148,7 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
       TTree* temptree = (TTree*)chain->CopyTree(cutsdata.c_str());
       tempfile->Write();
       
-      RooWorkspace* Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws, "", 0, 0);
+      RooWorkspace* Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws, "", 0, 0, opts);
       GoodPlot(Final_ws, varnamedata, true);
     }
 }

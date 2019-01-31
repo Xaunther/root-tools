@@ -17,11 +17,15 @@
 #include "../Dictionaries/Names.h"
 using namespace std;
 
-void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, string cutfile = "", string w_var = "")
+void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, string cutfile = "", string w_var = "", string opts = "")
 {
   //Initialize constants
-  Constants const_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
-  Names name_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
+  if(opts=="")
+    {
+      opts = GetValueFor("Project_name", "Dictionaries/Project_variables.txt");
+    }
+  Constants const_list(opts);
+  Names name_list(opts);
 
   //RooWorkspace                                                                                                                                                                  
   RooWorkspace* ws = new RooWorkspace();
@@ -52,7 +56,7 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
   tempfile->Write();
 
   //Fit to the desired thingy
-  ws = fitf[fitopt](wVarname, temptree, w_var, new string[1]{pVarname}, 1);
+  ws = fitf[fitopt](wVarname, temptree, w_var, new string[1]{pVarname}, 1, opts);
 
   //Number of backgrounds
   int N_bkgs = int(ws->var(name_list.N_bkgs.c_str())->getValV());

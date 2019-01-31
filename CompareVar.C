@@ -11,29 +11,18 @@
 #include "../Functions/Fits.h"
 #include "../Functions/Filereading.h"
 #include "../Functions/Dictreading.h"
+#include "../Functions/StringTools.h"
 using namespace std;
 
-void CompareVar(string variablename, string filedir1, string filedir2 = "", string filedir3 = "", string filedir4 = "", string filedir5 = "", string filedir6 = "", string filedir7 = "", string filedir8 = "", string filedir9 = "", string filedir10 = "")
+void CompareVar(string variablename, string filedir1, string opts)
 {
   int N_files[] = {0};
   int N_used;
-  string* filedir = new string[10];
-  filedir[0] = filedir1;
-  filedir[1] = filedir2;
-  filedir[2] = filedir3;
-  filedir[3] = filedir4;
-  filedir[4] = filedir5;
-  filedir[5] = filedir6;
-  filedir[6] = filedir7;
-  filedir[7] = filedir8;
-  filedir[8] = filedir9;
-  filedir[9] = filedir10;
-
-  string** filenames = new string*[10];
+  string* filedir = SplitString(N_used, filedir1);
+  string** filenames = new string*[N_used];
   //Load TChain
-  for(int i=0;i<10;i++)
+  for(int i=0;i<N_used;i++)
     {
-      N_used = i;
       if(filedir[i]!="")
 	{
 	  filenames[i] = ReadVariables(N_files[i], filedir[i]);
@@ -63,7 +52,12 @@ void CompareVar(string variablename, string filedir1, string filedir2 = "", stri
   //Cut chain into new TChain in a temp root file
 
   //Do fit depending on request
-  MultiPlot(variablename, N_used, trees);
+  //Options
+  if(opts=="")
+    {
+      opts = GetValueFor("Project_name", "Dictionaries/Project_variables.txt");
+    }
+  MultiPlot(variablename, N_used, trees, opts);
   //Leave open
   //  tempfile1->Close();
   //  tempfile2->Close();

@@ -11,7 +11,7 @@
 #include "../Functions/PlotTools.h"
 using namespace std;
 
-void VarFit(string variablename, FitOption fitopt, string filedir, string cutfile = "", string w_var = "", string title = "", string Xtitle = "")
+void VarFit(string variablename, FitOption fitopt, string filedir, string cutfile = "", string w_var = "", string title = "", string Xtitle = "", string opts = "")
 {
   FitFunction* fitf = FitFunction_init();
   RooWorkspace* ws = new RooWorkspace();
@@ -30,8 +30,13 @@ void VarFit(string variablename, FitOption fitopt, string filedir, string cutfil
   temptree = (TTree*)chain->CopyTree(cuts.c_str());
   tempfile->Write();
 
+  //If opts not specified, use default
+  if(opts=="")
+    {
+      opts = GetValueFor("Project_name", "Dictionaries/Project_variables.txt");
+    }
   //Do fit depending on request
-  ws = fitf[fitopt](variablename, temptree, w_var, 0, 0);
+  ws = fitf[fitopt](variablename, temptree, w_var, 0, 0, opts);
 
   //Proceed to the plot
   GoodPlot(ws, variablename, true, title, Xtitle);

@@ -7,10 +7,11 @@
 #include "../Functions/TreeTools.h"
 #include "../Functions/Filereading.h"
 #include "../Functions/Filesaving.h"
+#include "../Functions/Dictreading.h"
 using namespace std;
 
 //Does the same as VarFit, but making a latextable with the result instead of a plot
-void LatexTable(string variablename, FitOption fitopt, string filedir, bool newfile, string cutfile = "", string w_var = "", string outfile = "", string col1 = "")
+void LatexTable(string variablename, FitOption fitopt, string filedir, bool newfile, string cutfile = "", string w_var = "", string outfile = "", string col1 = "", string opts = "")
 {
   FitFunction* fitf = FitFunction_init();
   RooWorkspace* ws = new RooWorkspace();
@@ -32,6 +33,10 @@ void LatexTable(string variablename, FitOption fitopt, string filedir, bool newf
   cout << "Will fit " << temptree->GetEntries() << " events" << endl << endl;
 
   //Do fit depending on request
-  ws = fitf[fitopt](variablename, temptree, w_var, 0, 0);
+  if(opts == "")
+    {
+      opts = GetValueFor("Project_name", "Dictionaries/Project_variables.txt");
+    }
+  ws = fitf[fitopt](variablename, temptree, w_var, 0, 0, opts);
   SaveLatex(ws, fitopt, newfile, col1, outfile);
 }
