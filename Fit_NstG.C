@@ -42,6 +42,7 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
 
       //Type of fit for each sample
       FitOption fitopt[Nbkgs];
+      string opts_MC[Nbkgs];
       if(varnamedata == "B_M012") //Kpigamma
 	{
 	  fitopt[0] = CBExp;
@@ -50,6 +51,12 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
 	  fitopt[3] = DoubleGaussExp;
 	  fitopt[4] = DoubleGaussExp;
 	  fitopt[5] = CBExp;
+	  opts_MC[0] = "NstG_KpiG";
+	  opts_MC[1] = "NstG_KpiG";
+	  opts_MC[2] = "NstG_KpiG";
+	  opts_MC[3] = "NstG_KpiG";
+	  opts_MC[4] = "NstG_KpiG";
+	  opts_MC[5] = "NstG_KpiG";
 	  if(use_weights){w_var = "Event_PIDCalibEff_pbarpi";}
 	}
       else if(varnamedata == "B_M012_Subst0_K2p") //ppigamma
@@ -60,6 +67,12 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
 	  fitopt[3] = CBExp;
 	  fitopt[4] = DoubleGaussExp;
 	  fitopt[5] = DoubleGaussExp;
+	  opts_MC[0] = "NstGamma";
+	  opts_MC[1] = "NstGamma";
+	  opts_MC[2] = "NstGamma";
+	  opts_MC[3] = "NstGamma";
+	  opts_MC[4] = "NstGamma";
+	  opts_MC[5] = "NstGamma";
 	  if(use_weights){w_var = "Event_PIDCalibEff";}
 	}
       else if (varnamedata == "B_M012_Subst01_Kpi2pK") //pKgamma
@@ -70,17 +83,24 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
 	  fitopt[3] = CBExp;
 	  fitopt[4] = CBExp;
 	  fitopt[5] = CBExp;
+	  opts_MC[0] = "NstG_pKG";
+	  opts_MC[1] = "NstG_pKG";
+	  opts_MC[2] = "NstG_pKG";
+	  opts_MC[3] = "NstG_pKG";
+	  opts_MC[4] = "NstG_pKG";
+	  opts_MC[5] = "NstG_pKG";
 	  if(use_weights){w_var = "Event_PIDCalibEff_ppibar";}
 	}
       //ELSE: LET IT DIE
       
       string variablename[Nbkgs];
       variablename[0] = varnamedata;
+      variablename[1] = varnamedata;
       variablename[2] = varnamedata;
       variablename[3] = varnamedata;
       variablename[4] = varnamedata;
       variablename[5] = varnamedata;
-      if(varnamedata == "B_M012")
+      /*      if(varnamedata == "B_M012")
 	{
 	  variablename[1] = "B_M012_Subst0_pi2K";
 	}
@@ -91,7 +111,7 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
       else if(varnamedata == "B_M012_Subst0_K2p")
 	{
 	  variablename[1] = "B_M012_Subst0_pi2p";
-	}
+	  }*/
       //Root stuff
       TTree** tree = new TTree*[Nbkgs];
       TFile** file = new TFile*[Nbkgs];
@@ -104,7 +124,7 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
 	  file[i] = TFile::Open(("Tuples/temp"+ss.str()+".root").c_str());
 	  tree[i] = (TTree*)file[i]->Get("DecayTree");
 	  ss.str("");
-	  ws[i] = fitf[fitopt[i]](variablename[i], tree[i], w_var, 0, 0, opts);
+	  ws[i] = fitf[fitopt[i]](variablename[i], tree[i], w_var, 0, 0, opts_MC[i]);
 	  //Now we retrieve the values of the parameters and save them in our new workspace
 	  RooRealVar* dummy;
 	  if(fitopt[i] == GaussExp)
@@ -149,7 +169,7 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
       tempfile->Write();
       
       RooWorkspace* Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws, "", 0, 0, opts);
-      GoodPlot(Final_ws, varnamedata, true);
+      GoodPlot(Final_ws, varnamedata, true, "", "", opts);
     }
 }
 
