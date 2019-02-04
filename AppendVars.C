@@ -11,14 +11,14 @@
 #include "../Functions/Filereading.h"
 using namespace std;
 
-void AppendVars(string file1, string file2, string outfile, string cutfile1 = "")
+void AppendVars(string file1, string file2, string outfile, string cutfile1 = "", string treename1 = "", string treename2 = "")
 {
   //Cuts
   string cuts1 = GetCuts(cutfile1);
   //Get 2 chains
-  TChain* raw_chain1 = GetChain(file1);
+  TChain* raw_chain1 = GetChain(file1, treename1);
   TTree* chain1 = raw_chain1->CopyTree(cuts1.c_str());
-  TChain* chain2 = GetChain(file2);
+  TChain* chain2 = GetChain(file2, treename2);
   //Define outtree
   TFile* file = new TFile(outfile.c_str(), "RECREATE");
   TTree* tree = chain1->CloneTree();
