@@ -16,18 +16,18 @@ using namespace std;
 
 #define Nbkgs 6
 //Use: if needCuts, cut temp files. If not, use already created temp files
-void Cut_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "");
-void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "", string opts = "");
+void Cut_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "", string opts = "", bool plotMC = false);
+void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "", string opts = "", bool plotMC = false);
 
-void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedirdata, string cutfiledata, string opts)
+void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedirdata, string cutfiledata, string opts, bool plotMC)
 {
   if(opts == "")
     {
-      opts = GetValueFor("Project_name", "Dictionaries/Project_variables.txt");
+      opts = GetValueFor("Project_name", "Dictionaries/Project_variables.txt");      
     }
   if(needCuts)
     {
-      Cut_NstG(use_weights, varnamedata, filedirdata, cutfiledata);
+      Cut_NstG(use_weights, varnamedata, filedirdata, cutfiledata, opts, plotMC);
     }
   else
     {
@@ -38,18 +38,18 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
       RooWorkspace* Param_ws = new RooWorkspace("Parameter WS");
       
       //Names dict
-      Names name_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
+      Names name_list(opts);
 
       //Type of fit for each sample
       FitOption fitopt[Nbkgs];
       string opts_MC[Nbkgs];
       if(varnamedata == "B_M012") //Kpigamma
 	{
-	  fitopt[0] = CBExp;
+	  fitopt[0] = DoubleCB;
 	  fitopt[1] = CBExp;
 	  fitopt[2] = CBExp;
 	  fitopt[3] = DoubleGaussExp;
-	  fitopt[4] = DoubleGaussExp;
+	  fitopt[4] = CBExp;
 	  fitopt[5] = CBExp;
 	  opts_MC[0] = "NstG_KpiG";
 	  opts_MC[1] = "NstG_KpiG";
@@ -61,12 +61,12 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
 	}
       else if(varnamedata == "B_M012_Subst0_K2p") //ppigamma
 	{
-	  fitopt[0] = CBExp;
-	  fitopt[1] = DoubleGaussExp;
-	  fitopt[2] = GaussExp;
+	  fitopt[0] = DoubleCB;
+	  fitopt[1] = CBExp;
+	  fitopt[2] = CBExp;
 	  fitopt[3] = CBExp;
-	  fitopt[4] = DoubleGaussExp;
-	  fitopt[5] = DoubleGaussExp;
+	  fitopt[4] = CBExp;
+	  fitopt[5] = CBExp;
 	  opts_MC[0] = "NstGamma";
 	  opts_MC[1] = "NstGamma";
 	  opts_MC[2] = "NstGamma";
@@ -125,6 +125,11 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
 	  tree[i] = (TTree*)file[i]->Get("DecayTree");
 	  ss.str("");
 	  ws[i] = fitf[fitopt[i]](variablename[i], tree[i], w_var, 0, 0, opts_MC[i]);
+	  //Plot MC if requested
+	  if(plotMC)
+	    {
+	      GoodPlot(ws[i], varnamedata, true, "", "", opts, "_"+ss.str());
+	    }
 	  //Now we retrieve the values of the parameters and save them in our new workspace
 	  RooRealVar* dummy;
 	  if(fitopt[i] == GaussExp)
@@ -173,7 +178,7 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
     }
 }
 
-void Cut_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata)
+void Cut_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata, string opts, bool plotMC)
 {
   //Put dirs in an array
   string filedir[Nbkgs];
@@ -215,5 +220,5 @@ void Cut_NstG(bool use_weights, string varnamedata, string filedirdata, string c
       tree[i] = (TTree*)chain[i]->CopyTree(cuts[i].c_str());
       file[i]->Write();
     }
-  Fit_NstG(0, use_weights, varnamedata, filedirdata, cutfiledata);
+  Fit_NstG(0, use_weights, varnamedata, filedirdata, cutfiledata, opts, plotMC);
 }
