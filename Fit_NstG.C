@@ -128,7 +128,7 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
 	  //Plot MC if requested
 	  if(plotMC)
 	    {
-	      GoodPlot(ws[i], varnamedata, true, "", "", opts, "_"+ss.str());
+	      GoodPlot(ws[i], variablename[i], true, "", "", opts_MC[i], "_MC"+ss.str());
 	    }
 	  //Now we retrieve the values of the parameters and save them in our new workspace
 	  RooRealVar* dummy;
