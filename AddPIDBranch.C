@@ -11,9 +11,9 @@ using namespace std;
 
 void AddPIDBranch(string tupleinfile, string tupleoutfile, string treename = "", string p1 = "Kplus", string p2 = "piminus")
 {
-  double eff;
-  double eff1;
-  double eff2;
+  float eff;
+  float eff1;
+  float eff2;
   double inv1;
   double inv2;
 
