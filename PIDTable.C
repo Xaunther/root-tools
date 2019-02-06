@@ -1,6 +1,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <stdlib.h>
 #include <fstream>
 #include "TTree.h"
 #include "TFile.h"
@@ -32,14 +33,18 @@ void PIDTable(string filedir, string resultsfile = "PIDEff.txt", bool abspath = 
     {
       TFile* tuples_file = TFile::Open((filepath+tuple_names[i]).c_str());
       TTree* tree = (TTree*)tuples_file->Get("CalibTool_PIDCalibTree");
-      int entries = tree->GetEntries();
-      double sum = 0;
-      float entry;
-      tree->SetBranchAddress("Event_PIDCalibEff", &entry);
-      for(int j=0;j<entries;j++)
+      double sum = 0;      
+      double entries = 0;
+      if(tree != 0)
 	{
-	  tree->GetEntry(j);
-	  sum+=entry;
+	  entries = tree->GetEntries();
+	  float entry;
+	  tree->SetBranchAddress("Event_PIDCalibEff", &entry);
+	  for(int j=0;j<entries;j++)
+	    {
+	      tree->GetEntry(j);
+	      sum+=entry;
+	    }
 	}
       outfile << tuple_names[i] << " | " << sum/double(entries) << endl;
       cout << "Processed " << tuple_names[i] << endl;
