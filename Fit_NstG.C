@@ -123,13 +123,13 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
 	  ss << i;
 	  file[i] = TFile::Open(("Tuples/temp"+ss.str()+".root").c_str());
 	  tree[i] = (TTree*)file[i]->Get("DecayTree");
-	  ss.str("");
 	  ws[i] = fitf[fitopt[i]](variablename[i], tree[i], w_var, 0, 0, opts_MC[i]);
 	  //Plot MC if requested
 	  if(plotMC)
 	    {
 	      GoodPlot(ws[i], variablename[i], true, "", "", opts_MC[i], "_MC"+ss.str());
 	    }
+	  ss.str("");
 	  //Now we retrieve the values of the parameters and save them in our new workspace
 	  RooRealVar* dummy;
 	  if(fitopt[i] == GaussExp)
@@ -175,6 +175,12 @@ void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedi
       
       RooWorkspace* Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws, "", 0, 0, opts);
       GoodPlot(Final_ws, varnamedata, true, "", "", opts);
+      string logopts = opts+"_log";
+      if(opts==GetValueFor("Project_name", "Dictionaries/Project_variables.txt"))
+	{
+	  logopts = "NstG_ppiG_log";
+	}
+      GoodPlot(Final_ws, varnamedata, true, "", "", logopts, "_log");
     }
 }
 
