@@ -25,6 +25,10 @@ void AppendVars(string file1, string file2, string outfile, string cutfile1 = ""
   //Print Number of events in each ntuple
   cout << "Tuple 1: " << chain1->GetEntries() << " events" << endl;
   cout << "Tuple 2: " << chain2->GetEntries() << " events" << endl;
+  if(chain1->GetEntries()==0 || chain2->GetEntries()==0)
+    {
+      exit(0);
+    }
   //Get list of variables from file2
   //List size
   int size = (*chain2->GetListOfLeaves()).LastIndex();

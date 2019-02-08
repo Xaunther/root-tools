@@ -19,14 +19,17 @@ void AddPIDBranch(string tupleinfile, string tupleoutfile, string treename = "",
 
   //Data chain
   TChain* inchain = GetChain(tupleinfile, treename);
+  //For datafile
+  TFile* file = new TFile(tupleoutfile.c_str(), "RECREATE");
+  if(inchain->GetEntries()==0)
+    {
+      exit(0);
+    }
+  TTree* tree = inchain->CloneTree();
   //Efficiencies of each particle and total
   inchain->SetBranchAddress((p1+"_PIDCalibEff").c_str(),&eff1);
   inchain->SetBranchAddress((p2+"_PIDCalibEff").c_str(),&eff2);
   inchain->SetBranchAddress("Event_PIDCalibEff",&eff);
-
-  //For datafile
-  TFile* file = new TFile(tupleoutfile.c_str(), "RECREATE");
-  TTree* tree = inchain->CloneTree();
   //Create new branches
   TBranch* binv1 = tree->Branch("Event_PIDCalibEff_pbarpi", &inv1, "Event_PIDCalibEff_pbarpi/D");
   TBranch* binv2 = tree->Branch("Event_PIDCalibEff_ppibar", &inv2, "Event_PIDCalibEff_pbarpi/D");
@@ -40,9 +43,9 @@ void AddPIDBranch(string tupleinfile, string tupleoutfile, string treename = "",
       inv2 = eff1-eff;
       binv1->Fill();
       binv2->Fill();
-      if(i%(inchain->GetEntries()/10)==0)
+      if(i%(inchain->GetEntries()/10+1)==0)
 	{
-	  cout << "Processing event: " << i << " / " << inchain->GetEntries() << endl;
+	  cout << "Processing event: " << i+1 << " / " << inchain->GetEntries() << endl;
 	}
     }
   tree->Write();
