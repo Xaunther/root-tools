@@ -5,6 +5,7 @@
 #include <fstream>
 #include "TTree.h"
 #include "TFile.h"
+#include "TMath.h"
 #include "../Functions/Filereading.h"
 using namespace std;
 
@@ -46,7 +47,7 @@ void PIDTable(string filedir, string resultsfile = "PIDEff.txt", bool abspath = 
 	      sum+=entry;
 	    }
 	}
-      outfile << tuple_names[i] << " | " << sum/double(entries) << endl;
+      outfile << tuple_names[i] << " | " << TMath::Abs(sum/double(entries)) << endl;
       cout << "Processed " << tuple_names[i] << endl;
       tuples_file->Close();
     }
