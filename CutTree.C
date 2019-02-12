@@ -13,7 +13,7 @@
 #include "../Functions/TreeTools.h"
 using namespace std;
 
-void CutTree(string outputfile = "Tuples/cuttree.root", string cutsfilename = "Variables/PreCuts.txt", string tupledir = "Directories/Alltuples.dir", string variablefile = "", int fentries = 1, int initentries = 1)
+void CutTree(string outputfile, string cutsfilename = "", string tupledir = "", string variablefile = "", int fentries = 1, int initentries = 1)
 {
   string cuts = GetCuts(cutsfilename);
   cout << cuts << endl;
