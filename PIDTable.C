@@ -7,6 +7,7 @@
 #include "TFile.h"
 #include "TMath.h"
 #include "../Functions/Filereading.h"
+#include "../Functions/TreeTools.h"
 using namespace std;
 
 void PIDTable(string filedir, string resultsfile = "PIDEff.txt", bool abspath = false)
@@ -32,24 +33,8 @@ void PIDTable(string filedir, string resultsfile = "PIDEff.txt", bool abspath = 
   //Loop over all files in filedir
   for(int i=0;i<NFiles;i++)
     {
-      TFile* tuples_file = TFile::Open((filepath+tuple_names[i]).c_str());
-      TTree* tree = (TTree*)tuples_file->Get("CalibTool_PIDCalibTree");
-      double sum = 0;      
-      double entries = 0;
-      if(tree != 0)
-	{
-	  entries = tree->GetEntries();
-	  float entry;
-	  tree->SetBranchAddress("Event_PIDCalibEff", &entry);
-	  for(int j=0;j<entries;j++)
-	    {
-	      tree->GetEntry(j);
-	      sum+=entry;
-	    }
-	}
-      outfile << tuple_names[i] << " | " << TMath::Abs(sum/double(entries)) << endl;
+      outfile << tuple_names[i] << " | " << TMath::Abs(GetMean(tuple_names[i], "Event_PIDCalibEff", "CalibTool_PIDCalibTree"));
       cout << "Processed " << tuple_names[i] << endl;
-      tuples_file->Close();
     }
   outfile.close();
 }
