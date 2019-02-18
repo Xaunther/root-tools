@@ -15,7 +15,9 @@ Long64_t DoOperation(TChain* chain, string file)
 {
   string cuts_up = GetCuts(file) + " && (B_M012_Subst0_K2p > 5900) && (B_M012_Subst0_K2p < 6600)";
   string cuts_down = GetCuts(file) + "&& (B_M012_Subst0_K2p < 5300) && (B_M012_Subst0_K2p > 4600)";
-  return Interpol_exp(chain->GetEntries(cuts_down.c_str()), chain->GetEntries(cuts_up.c_str()));
+  
+  double all_evts = Interpol_exp(chain->GetEntries(cuts_down.c_str()), chain->GetEntries(cuts_up.c_str()));
+  return all_evts-chain->GetEntries(cuts_down.c_str())-chain->GetEntries(cuts_up.c_str());
 }
 
 
