@@ -7,9 +7,11 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"Dictionaries/Names.cxx+").c_str());
   //Utilities from independent sources
   gROOT->ProcessLine((".L "+path+"Functions/BifurcatedCB.cxx+").c_str());
+  gROOT->ProcessLine((".L "+path+"Functions/Roo2Exp.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/RooCBExp.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/RooGaussExp.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/RooDoubleGaussExp.cxx+").c_str());
+  gROOT->ProcessLine((".L "+path+"Functions/RooArgusGauss.cxx+").c_str());
   //Personal tools not depending on anything external
   gROOT->ProcessLine((".L "+path+"Functions/ErrorTools.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/TISTOS.cxx+").c_str());
@@ -53,6 +55,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"root/CutTree.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/EntriesTable.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/Err_Frac.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/ExpYield.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/Fit_NstG.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/InvertCut.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/LatexTable.C+").c_str());
