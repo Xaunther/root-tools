@@ -10,7 +10,7 @@
 #include "../Functions/TreeTools.h"
 using namespace std;
 
-void PIDTable(string filedir, string resultsfile = "PIDEff.txt", bool abspath = false)
+void PIDTable(string filedir, string resultsfile = "PIDEff.txt", bool abspath = false, string varname = "Event_PIDCalibEff")
 {
   //Read filedir
   int NFiles = 0;
@@ -33,7 +33,7 @@ void PIDTable(string filedir, string resultsfile = "PIDEff.txt", bool abspath = 
   //Loop over all files in filedir
   for(int i=0;i<NFiles;i++)
     {
-      outfile << tuple_names[i] << " | " << TMath::Abs(GetMean(tuple_names[i], "Event_PIDCalibEff", "CalibTool_PIDCalibTree")) << endl;
+      outfile << tuple_names[i] << " | " << TMath::Abs(GetMean(tuple_names[i], varname, "CalibTool_PIDCalibTree")) << endl;
       cout << "Processed " << tuple_names[i] << endl;
     }
   outfile.close();

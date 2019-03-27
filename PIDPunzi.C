@@ -133,17 +133,19 @@ void PIDPunzi(string tables, string yields, string outfilename, string varname, 
   //Read the yields, N-1 must be provided
   NN = 0;
   string* yields_str = SplitString(NN, yields, " ");
-  if(NN != N_tables-1)
+  if(NN != N_tables-2)
     {
-      cout << "Number of yields(" << NN << ") must be number of tables - 1(" << N_tables-1 << ")! " << endl;
+      cout << "Number of yields(" << NN << ") must be number of tables - 2(" << N_tables-1 << ")! " << endl;
       exit(0);
     }
   //Yields to double
   double* yields_num = new double[N_tables-1];
-  for(int i=0;i<N_tables-1;i++)
+  for(int i=0;i<N_tables-2;i++)
     {
-      yields_num[i] = stod(yields_str[i]);
+      int _N = 0;
+      yields_num[i] = stod(ReadVariables(_N, yields_str[i])[0]);
     }
+  yields_num[N_tables-2] = 1.; //Comb
   //Prepare output file
   ofstream outf;
   outf.open(outfilename.c_str());

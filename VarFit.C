@@ -36,8 +36,9 @@ void VarFit(string variablename, FitOption fitopt, string filedir, string cutfil
   //Do fit depending on request
   ws = fitf[fitopt](variablename, temptree, w_var, 0, 0, opts);
 
-  //Proceed to the plot
-  GoodPlot(ws, variablename, true, title, Xtitle, opts);
+  //Proceed to the plot. Useformula depending on the plot type
+  bool useFormula = false;
+  GoodPlot(ws, variablename, useFormula, title, Xtitle, opts);
 
   cout << temptree->GetEntries() << " events plotted" << endl;
 }

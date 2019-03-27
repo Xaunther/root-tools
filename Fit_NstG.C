@@ -1,6 +1,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <stdlib.h>
 #include "TChain.h"
 #include "TFile.h"
 #include "TTree.h"
@@ -14,217 +15,189 @@
 #include "../Functions/PlotTools.h"
 using namespace std;
 
-#define Nbkgs 6
-//Use: if needCuts, cut temp files. If not, use already created temp files
-void Cut_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "", string opts = "", bool plotMC = false);
-void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "", string opts = "", bool plotMC = false);
+#define Nbkgs 3
+//Function used to do NstG mass fits. It esentially does fits to MC backgrounds and picks up the parameter values to be used on the final datafit
+void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "", string opts = "", bool plotMC = false);
 
-void Fit_NstG(bool needCuts, bool use_weights, string varnamedata, string filedirdata, string cutfiledata, string opts, bool plotMC)
+void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata, string opts, bool plotMC)
 {
   if(opts == "")
     {
       opts = GetValueFor("Project_name", "Dictionaries/Project_variables.txt");      
     }
-  if(needCuts)
+  string w_var = "";
+  //RooFit
+  FitFunction* fitf = FitFunction_init();
+  RooWorkspace** ws = new RooWorkspace*[Nbkgs];
+  RooWorkspace* Param_ws = new RooWorkspace("Parameter WS");
+  
+  //Names dict
+  Names name_list(opts);
+  
+  //Type of fit for each sample
+  FitOption fitopt[Nbkgs];
+  //Which set of constants should be used in each MC fit
+  string opts_MC[Nbkgs];
+  //Also define PID weight variable
+  if(varnamedata == "B_M012") //Kpigamma
     {
-      Cut_NstG(use_weights, varnamedata, filedirdata, cutfiledata, opts, plotMC);
-    }
-  else
-    {
-      string w_var = "";
-      //RooFit
-      FitFunction* fitf = FitFunction_init();
-      RooWorkspace** ws = new RooWorkspace*[Nbkgs];
-      RooWorkspace* Param_ws = new RooWorkspace("Parameter WS");
-      
-      //Names dict
-      Names name_list(opts);
-
-      //Type of fit for each sample
-      FitOption fitopt[Nbkgs];
-      string opts_MC[Nbkgs];
-      if(varnamedata == "B_M012") //Kpigamma
-	{
-	  fitopt[0] = DoubleCB;
-	  fitopt[1] = CBExp;
-	  fitopt[2] = CBExp;
-	  fitopt[3] = DoubleGaussExp;
-	  fitopt[4] = CBExp;
-	  fitopt[5] = CBExp;
-	  opts_MC[0] = "NstG_KpiG";
-	  opts_MC[1] = "NstG_KpiG";
-	  opts_MC[2] = "NstG_KpiG";
-	  opts_MC[3] = "NstG_KpiG";
-	  opts_MC[4] = "NstG_KpiG";
-	  opts_MC[5] = "NstG_KpiG";
-	  if(use_weights){w_var = "Event_PIDCalibEff_pbarpi";}
-	}
-      else if(varnamedata == "B_M012_Subst0_K2p") //ppigamma
-	{
-	  fitopt[0] = DoubleCB;
-	  fitopt[1] = CBExp;
-	  fitopt[2] = CBExp;
-	  fitopt[3] = CBExp;
-	  fitopt[4] = CBExp;
-	  fitopt[5] = CBExp;
-	  opts_MC[0] = "NstGamma";
-	  opts_MC[1] = "NstGamma";
-	  opts_MC[2] = "NstGamma";
-	  opts_MC[3] = "NstGamma";
-	  opts_MC[4] = "NstGamma";
-	  opts_MC[5] = "NstGamma";
-	  if(use_weights){w_var = "Event_PIDCalibEff";}
-	}
-      else if (varnamedata == "B_M012_Subst01_Kpi2pK") //pKgamma
-	{
-	  fitopt[0] = CBExp;
-	  fitopt[1] = DoubleGaussExp;
-	  fitopt[2] = CBExp;
-	  fitopt[3] = CBExp;
-	  fitopt[4] = CBExp;
-	  fitopt[5] = CBExp;
-	  opts_MC[0] = "NstG_pKG";
-	  opts_MC[1] = "NstG_pKG";
-	  opts_MC[2] = "NstG_pKG";
-	  opts_MC[3] = "NstG_pKG";
-	  opts_MC[4] = "NstG_pKG";
-	  opts_MC[5] = "NstG_pKG";
-	  if(use_weights){w_var = "Event_PIDCalibEff_ppibar";}
-	}
-      //ELSE: LET IT DIE
-      
-      string variablename[Nbkgs];
-      variablename[0] = varnamedata;
-      variablename[1] = varnamedata;
-      variablename[2] = varnamedata;
-      variablename[3] = varnamedata;
-      variablename[4] = varnamedata;
-      variablename[5] = varnamedata;
-      /*      if(varnamedata == "B_M012")
-	{
-	  variablename[1] = "B_M012_Subst0_pi2K";
-	}
-      else if(varnamedata == "B_M012_Subst01_Kpi2pK")
-	{
-	  variablename[1] = "B_M012_Subst01_pipi2pK";
-	}
-      else if(varnamedata == "B_M012_Subst0_K2p")
-	{
-	  variablename[1] = "B_M012_Subst0_pi2p";
-	  }*/
-      //Root stuff
-      TTree** tree = new TTree*[Nbkgs];
-      TFile** file = new TFile*[Nbkgs];
-      
+      fitopt[0] = DoubleCB;
+      fitopt[1] = CBExp;
+      fitopt[2] = CBExp;
       for(int i=0;i<Nbkgs;i++)
 	{
-	  //Get tree i and fit the variable
-	  stringstream ss;
-	  ss << i;
-	  file[i] = TFile::Open(("Tuples/temp"+ss.str()+".root").c_str());
-	  tree[i] = (TTree*)file[i]->Get("DecayTree");
-	  ws[i] = fitf[fitopt[i]](variablename[i], tree[i], w_var, 0, 0, opts_MC[i]);
-	  //Plot MC if requested
-	  if(plotMC)
-	    {
-	      GoodPlot(ws[i], variablename[i], true, "", "", opts_MC[i], "_MC"+ss.str());
-	    }
-	  ss.str("");
-	  //Now we retrieve the values of the parameters and save them in our new workspace
-	  RooRealVar* dummy;
-	  if(fitopt[i] == GaussExp)
-	    {
-	      dummy = new RooRealVar(name_list.alphaL[i+1].c_str(),name_list.alphaL[i+1].c_str(), ws[i]->var(name_list.alpha.c_str())->getValV(), ws[i]->var(name_list.alpha.c_str())->getValV(), ws[i]->var(name_list.alpha.c_str())->getValV());
-	      Param_ws->import(*dummy);	      
-	    }
-	  else
-	    {
-	      dummy = new RooRealVar(name_list.alphaL[i+1].c_str(),name_list.alphaL[i+1].c_str(), ws[i]->var(name_list.alphaL[0].c_str())->getValV(), ws[i]->var(name_list.alphaL[0].c_str())->getValV(), ws[i]->var(name_list.alphaL[0].c_str())->getValV());
-	      Param_ws->import(*dummy);
-	      dummy = new RooRealVar(name_list.alphaR[i+1].c_str(),name_list.alphaR[i+1].c_str(), ws[i]->var(name_list.alphaR[0].c_str())->getValV(), ws[i]->var(name_list.alphaR[0].c_str())->getValV(), ws[i]->var(name_list.alphaR[0].c_str())->getValV());
-	      Param_ws->import(*dummy);
-	    }
-	  if(fitopt[i] == DoubleCB)
-	    {
-	      dummy = new RooRealVar(name_list.nL[i+1].c_str(),name_list.nL[i+1].c_str(), ws[i]->var(name_list.nL[0].c_str())->getValV(), ws[i]->var(name_list.nL[0].c_str())->getValV(), ws[i]->var(name_list.nL[0].c_str())->getValV());
-	      Param_ws->import(*dummy);
-	    }
-	  else if(fitopt[i] == CBExp)
-	    {
-	      dummy = new RooRealVar(name_list.nL[i+1].c_str(),name_list.nL[i+1].c_str(), ws[i]->var(name_list.n.c_str())->getValV(), ws[i]->var(name_list.n.c_str())->getValV(), ws[i]->var(name_list.n.c_str())->getValV());
-	      Param_ws->import(*dummy);
-	    }
-	  if(fitopt[i] == DoubleCB)
-	    {
-	      dummy = new RooRealVar(name_list.nR[i+1].c_str(),name_list.nR[i+1].c_str(), ws[i]->var(name_list.nR[0].c_str())->getValV(), ws[i]->var(name_list.nR[0].c_str())->getValV(), ws[i]->var(name_list.nR[0].c_str())->getValV());
-	      Param_ws->import(*dummy);
-	    }
-	  dummy = new RooRealVar(name_list.mean[i+1].c_str(),name_list.mean[i+1].c_str(), ws[i]->var(name_list.mean[0].c_str())->getValV(), ws[i]->var(name_list.mean[0].c_str())->getValV(), ws[i]->var(name_list.mean[0].c_str())->getValV());
-	  Param_ws->import(*dummy);
-	  dummy = new RooRealVar(name_list.width[i+1].c_str(),name_list.width[i+1].c_str(), ws[i]->var(name_list.width[0].c_str())->getValV(), ws[i]->var(name_list.width[0].c_str())->getValV(), ws[i]->var(name_list.width[0].c_str())->getValV());
-	  Param_ws->import(*dummy);
-	} 
-      
-      //Initialize data stuff
-      //Load TChain
-      string cutsdata = GetCuts(cutfiledata);
-      TChain* chain = GetChain(filedirdata);
-      TFile* tempfile = new TFile("Tuples/temp.root", "recreate");
-      TTree* temptree = (TTree*)chain->CopyTree(cutsdata.c_str());
-      tempfile->Write();
-      
-      RooWorkspace* Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws, "", 0, 0, opts);
-      GoodPlot(Final_ws, varnamedata, true, "", "", opts);
-      string logopts = opts+"_log";
-      if(opts==GetValueFor("Project_name", "Dictionaries/Project_variables.txt"))
-	{
-	  logopts = "NstG_ppiG_log";
+	  opts_MC[i] = "NstG_KpiG";
 	}
-      GoodPlot(Final_ws, varnamedata, true, "", "", logopts, "_log");
+      if(use_weights){w_var = "Event_PIDCalibEff_pbarpi";}
     }
-}
-
-void Cut_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata, string opts, bool plotMC)
-{
-  //Put dirs in an array
-  string filedir[Nbkgs];
-  //  filedir[0] = "../Directories/Bd2KstG_tuples.dir";
-  //  filedir[1] = "../Directories/Bd2Rho0G_tuples.dir";
-  //  filedir[2] = "../Directories/Lb2L1520G_tuples.dir";
-  //  filedir[3] = "../Directories/Lb2L1670G_tuples.dir";
-  //  filedir[4] = "../Directories/Lb2L1820G_tuples.dir";
-  //  filedir[5] = "../Directories/Lb2L1830G_tuples.dir";
-  filedir[0] = "Tuples/MC_PID/KstG_MC_cut_PID_w.root";
-  filedir[1] = "Tuples/MC_PID/RhoG_MC_cut_PID_w.root";
-  filedir[2] = "Tuples/MC_PID/L1520G_MC_cut_PID_w.root";
-  filedir[3] = "Tuples/MC_PID/L1670G_MC_cut_PID_w.root";
-  filedir[4] = "Tuples/MC_PID/L1820G_MC_cut_PID_w.root";
-  filedir[5] = "Tuples/MC_PID/L1830G_MC_cut_PID_w.root";
-  
-  //It happens, that the cuts are different for some MC...
-  string cutfile[Nbkgs];
-  cutfile[0] = "Variables/Cuts_Kpigamma.txt";
-  cutfile[1] = "Variables/Cuts_pipigamma.txt";
-  cutfile[2] = "Variables/Cuts_Kpigamma.txt";
-  cutfile[3] = "Variables/Cuts_Kpigamma.txt";
-  cutfile[4] = "Variables/Cuts_Kpigamma.txt";
-  cutfile[5] = "Variables/Cuts_Kpigamma.txt";
-  string cuts[Nbkgs];
+  else if(varnamedata == "B_M012_Subst0_K2p") //ppigamma
+    {
+      fitopt[0] = DoubleCB;
+      fitopt[1] = CBExp;
+      fitopt[2] = ArgusGauss;
+      for(int i=0;i<Nbkgs;i++)
+	{
+	  opts_MC[i] = "NstGamma";
+	}
+      if(use_weights){w_var = "Event_PIDCalibEff";}
+    }
+  else if (varnamedata == "B_M012_Subst01_Kpi2pK") //pKgamma
+    {
+      fitopt[0] = CBExp;
+      fitopt[1] = CBExp;
+      fitopt[2] = ArgusGauss;
+      for(int i=0;i<Nbkgs;i++)
+	{
+	  opts_MC[i] = "NstG_pKG";
+	}
+      if(use_weights){w_var = "Event_PIDCalibEff_ppibar";}
+    }
+  //ELSE: LET IT DIE
+  //Variable to fit. Could be that for some sample the naming is different!
+  string variablename[Nbkgs];
+  for(int i=0;i<Nbkgs;i++)
+    {
+      variablename[i] = varnamedata;
+    }
   //Root stuff
-  TChain** chain = new TChain*[Nbkgs];
   TTree** tree = new TTree*[Nbkgs];
   TFile** file = new TFile*[Nbkgs];
-
+  
   for(int i=0;i<Nbkgs;i++)
     {
       //Get tree i and fit the variable
       stringstream ss;
       ss << i;
-      cuts[i] = GetCuts(cutfile[i]);
-      chain[i] = GetChain(filedir[i]);
-      file[i] = new TFile(("Tuples/temp"+ss.str()+".root").c_str(), "recreate");
-      tree[i] = (TTree*)chain[i]->CopyTree(cuts[i].c_str());
-      file[i]->Write();
+      file[i] = TFile::Open(("Tuples/temp"+ss.str()+".root").c_str());
+      tree[i] = (TTree*)file[i]->Get("DecayTree");
+      ws[i] = fitf[fitopt[i]](variablename[i], tree[i], w_var, 0, 0, opts_MC[i]);
+      //Plot MC if requested
+      if(plotMC)
+	{
+	  GoodPlot(ws[i], variablename[i], true, "", "", opts_MC[i], "_MC"+ss.str());
+	}
+      ss.str("");
+      //Now we retrieve the values of the parameters and save them in our new workspace
+      RooRealVar* dummy;
+      //Depending on what pdf we chose... (so far only 1 Argus is defined, should define array of constants/names if more are needed)
+      if(fitopt[i] == ArgusGauss)
+	{
+	  dummy = new RooRealVar(name_list.m0_Argus.c_str(),name_list.m0_Argus.c_str(),
+				 ws[i]->var(name_list.m0_Argus.c_str())->getValV(), ws[i]->var(name_list.m0_Argus.c_str())->getValV(), ws[i]->var(name_list.m0_Argus.c_str())->getValV());
+	  Param_ws->import(*dummy);
+	  dummy = new RooRealVar(name_list.c_Argus.c_str(),name_list.c_Argus.c_str(),
+				 ws[i]->var(name_list.c_Argus.c_str())->getValV(), ws[i]->var(name_list.c_Argus.c_str())->getValV(), ws[i]->var(name_list.c_Argus.c_str())->getValV());
+	  Param_ws->import(*dummy);
+	  dummy = new RooRealVar(name_list.p_Argus.c_str(),name_list.p_Argus.c_str(),
+				 ws[i]->var(name_list.p_Argus.c_str())->getValV(), ws[i]->var(name_list.p_Argus.c_str())->getValV(), ws[i]->var(name_list.p_Argus.c_str())->getValV());
+	  Param_ws->import(*dummy);
+	  dummy = new RooRealVar(name_list.width_Argus.c_str(),name_list.width_Argus.c_str(),
+				 ws[i]->var(name_list.width_Argus.c_str())->getValV(), ws[i]->var(name_list.width_Argus.c_str())->getValV(), ws[i]->var(name_list.width_Argus.c_str())->getValV());
+	  Param_ws->import(*dummy);
+	}
+      else if(fitopt[i] == Exp){} //Only exponential
+      else if(fitopt[i] == Line){} //Straight line
+      //Family of Gaussian core and some exponential/power-law tails
+      else
+	{
+	  if(fitopt[i] == GaussExp)
+	    {
+	      dummy = new RooRealVar(name_list.alphaL[i+1].c_str(),name_list.alphaL[i+1].c_str(),
+				     ws[i]->var(name_list.alpha.c_str())->getValV(), ws[i]->var(name_list.alpha.c_str())->getValV(), ws[i]->var(name_list.alpha.c_str())->getValV());
+	      Param_ws->import(*dummy);	      
+	    }
+	  else
+	    {
+	      dummy = new RooRealVar(name_list.alphaL[i+1].c_str(),name_list.alphaL[i+1].c_str(), 
+				     ws[i]->var(name_list.alphaL[0].c_str())->getValV(), ws[i]->var(name_list.alphaL[0].c_str())->getValV(), ws[i]->var(name_list.alphaL[0].c_str())->getValV());
+	      Param_ws->import(*dummy);
+	      dummy = new RooRealVar(name_list.alphaR[i+1].c_str(),name_list.alphaR[i+1].c_str(), 
+				     ws[i]->var(name_list.alphaR[0].c_str())->getValV(), ws[i]->var(name_list.alphaR[0].c_str())->getValV(), ws[i]->var(name_list.alphaR[0].c_str())->getValV());
+	      Param_ws->import(*dummy);
+	    }
+	  if(fitopt[i] == DoubleCB)
+	    {
+	      dummy = new RooRealVar(name_list.nL[i+1].c_str(),name_list.nL[i+1].c_str(), 
+				     ws[i]->var(name_list.nL[0].c_str())->getValV(), ws[i]->var(name_list.nL[0].c_str())->getValV(), ws[i]->var(name_list.nL[0].c_str())->getValV());
+	      Param_ws->import(*dummy);
+	    }
+	  else if(fitopt[i] == CBExp)
+	    {
+	      dummy = new RooRealVar(name_list.nL[i+1].c_str(),name_list.nL[i+1].c_str(), 
+				     ws[i]->var(name_list.n.c_str())->getValV(), ws[i]->var(name_list.n.c_str())->getValV(), ws[i]->var(name_list.n.c_str())->getValV());
+	      Param_ws->import(*dummy);
+	    }
+	  if(fitopt[i] == DoubleCB)
+	    {
+	      dummy = new RooRealVar(name_list.nR[i+1].c_str(),name_list.nR[i+1].c_str(), 
+				     ws[i]->var(name_list.nR[0].c_str())->getValV(), ws[i]->var(name_list.nR[0].c_str())->getValV(), ws[i]->var(name_list.nR[0].c_str())->getValV());
+	      Param_ws->import(*dummy);
+	    }
+	  dummy = new RooRealVar(name_list.mean[i+1].c_str(),name_list.mean[i+1].c_str(), 
+				 ws[i]->var(name_list.mean[0].c_str())->getValV(), ws[i]->var(name_list.mean[0].c_str())->getValV(), ws[i]->var(name_list.mean[0].c_str())->getValV());
+	  Param_ws->import(*dummy);
+	  dummy = new RooRealVar(name_list.width[i+1].c_str(),name_list.width[i+1].c_str(), 
+				 ws[i]->var(name_list.width[0].c_str())->getValV(), ws[i]->var(name_list.width[0].c_str())->getValV(), ws[i]->var(name_list.width[0].c_str())->getValV());
+	  Param_ws->import(*dummy);
+	} 
     }
-  Fit_NstG(0, use_weights, varnamedata, filedirdata, cutfiledata, opts, plotMC);
+  
+  //Initialize data stuff
+  //Load TChain
+  string cutsdata = GetCuts(cutfiledata);
+  TChain* chain = GetChain(filedirdata);
+  TFile* tempfile = new TFile("Tuples/temp.root", "recreate");
+  TTree* temptree = (TTree*)chain->CopyTree(cutsdata.c_str());
+  tempfile->Write();
+  
+  //Maybe the fit for the signal channel clearly differs from the PID missID ones
+  RooWorkspace* Final_ws;
+  if(varnamedata=="B_M012_Subst0_K2p")
+    {
+      Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt, Nbkgs);
+    }
+  else if(varnamedata=="B_M012")
+    {
+      Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt, Nbkgs);
+    }
+  else if(varnamedata=="B_M012_Subst01_Kpi2pK")
+    {
+      Final_ws = FitGauss_Exp(varnamedata, temptree, "", 0, 0, opts);
+    }
+  else //Unknown mass variable to fit
+    {
+      cout << "Mass variable " + varnamedata + " not implemented" << endl;
+      exit(1);
+    }
+  //Plot with linear scale
+  cout << "THere" << endl;
+  GoodPlot(Final_ws, varnamedata, true, "", "", opts);
+  //Get log options (is this safe?)
+  string logopts = opts+"_log";
+  if(opts==GetValueFor("Project_name", "Dictionaries/Project_variables.txt"))
+    {
+      logopts = "NstG_ppiG_log";
+    }
+  //Plot with log scale
+  GoodPlot(Final_ws, varnamedata, true, "", "", logopts, "_log");
 }
