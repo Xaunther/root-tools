@@ -30,6 +30,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"Functions/ParticleInfo.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/Interpol_exp.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/Fits.cxx+").c_str());
+  gROOT->ProcessLine((".L "+path+"Functions/AnalFits.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/Filesaving.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/Constantize.cxx+").c_str());
 

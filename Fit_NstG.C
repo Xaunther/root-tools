@@ -8,6 +8,7 @@
 #include "RooRealVar.h"
 #include "TObject.h"
 #include "../Functions/Fits.h"
+#include "../Functions/AnalFits.h"
 #include "../Functions/TreeTools.h"
 #include "../Functions/Filereading.h"
 #include "../Dictionaries/Names.h"
@@ -16,6 +17,61 @@
 using namespace std;
 
 #define Nbkgs 3
+/************************************************************************************************************************************************/
+//Fill Option arrays. Try to modularize parts of the scripts
+void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string w_var, string varnamedata, bool use_weights)
+{
+  //Also define PID weight variable
+  if(varnamedata == "B_M012") //Kpigamma
+    {
+      fitopt[0] = DoubleCB;
+      fitopt[1] = CBExp;
+      fitopt[2] = ArgusGauss;
+      for(int i=0;i<Nbkgs;i++)
+	{
+	  opts_MC[i] = "NstG_KpiG";
+	  variablename[i] = varnamedata;
+	}
+      if(use_weights){w_var = "Event_PIDCalibEff_pbarpi";}
+    }
+  else if(varnamedata == "B_M012_Subst0_K2p") //ppigamma
+    {
+      fitopt[0] = DoubleCB;
+      fitopt[1] = CBExp;
+      fitopt[2] = ArgusGauss;
+      for(int i=0;i<Nbkgs;i++)
+	{
+	  opts_MC[i] = "NstGamma";
+	  variablename[i] = varnamedata;
+	}
+      if(use_weights){w_var = "Event_PIDCalibEff";}
+    }
+  else if (varnamedata == "B_M012_Subst01_Kpi2pK") //pKgamma
+    {
+      fitopt[0] = CBExp;
+      fitopt[1] = CBExp;
+      fitopt[2] = ArgusGauss;
+      for(int i=0;i<Nbkgs;i++)
+	{
+	  opts_MC[i] = "NstG_pKG";
+	  variablename[i] = varnamedata;
+	}
+      if(use_weights){w_var = "Event_PIDCalibEff_ppibar";}
+    }
+  return;
+}
+/************************************************************************************************************************************************/
+//Pick up the parameter requested (name_0) and add it to RooWorkspace with the name provided (name_f)
+void Extract_Var(RooWorkspace* ws, RooWorkspace* Param_ws, string name_0, string name_f)
+{
+  RooRealVar* dummy = new RooRealVar(name_f.c_str(), name_f.c_str(),
+				     ws->var(name_0.c_str())->getValV(), ws->var(name_0.c_str())->getValV(), ws->var(name_0.c_str())->getValV());
+  Param_ws->import(*dummy);
+  return;
+}
+/************************************************************************************************************************************************/
+/************************************************************************************************************************************************/
+/************************************************************************************************************************************************/
 //Function used to do NstG mass fits. It esentially does fits to MC backgrounds and picks up the parameter values to be used on the final datafit
 void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "", string opts = "", bool plotMC = false);
 
@@ -38,47 +94,9 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
   FitOption fitopt[Nbkgs];
   //Which set of constants should be used in each MC fit
   string opts_MC[Nbkgs];
-  //Also define PID weight variable
-  if(varnamedata == "B_M012") //Kpigamma
-    {
-      fitopt[0] = DoubleCB;
-      fitopt[1] = CBExp;
-      fitopt[2] = CBExp;
-      for(int i=0;i<Nbkgs;i++)
-	{
-	  opts_MC[i] = "NstG_KpiG";
-	}
-      if(use_weights){w_var = "Event_PIDCalibEff_pbarpi";}
-    }
-  else if(varnamedata == "B_M012_Subst0_K2p") //ppigamma
-    {
-      fitopt[0] = DoubleCB;
-      fitopt[1] = CBExp;
-      fitopt[2] = ArgusGauss;
-      for(int i=0;i<Nbkgs;i++)
-	{
-	  opts_MC[i] = "NstGamma";
-	}
-      if(use_weights){w_var = "Event_PIDCalibEff";}
-    }
-  else if (varnamedata == "B_M012_Subst01_Kpi2pK") //pKgamma
-    {
-      fitopt[0] = CBExp;
-      fitopt[1] = CBExp;
-      fitopt[2] = ArgusGauss;
-      for(int i=0;i<Nbkgs;i++)
-	{
-	  opts_MC[i] = "NstG_pKG";
-	}
-      if(use_weights){w_var = "Event_PIDCalibEff_ppibar";}
-    }
-  //ELSE: LET IT DIE
-  //Variable to fit. Could be that for some sample the naming is different!
   string variablename[Nbkgs];
-  for(int i=0;i<Nbkgs;i++)
-    {
-      variablename[i] = varnamedata;
-    }
+  //Initialize options
+  Fill_Opts(fitopt, opts_MC, variablename, w_var, varnamedata, use_weights);
   //Root stuff
   TTree** tree = new TTree*[Nbkgs];
   TFile** file = new TFile*[Nbkgs];
@@ -91,76 +109,62 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
       file[i] = TFile::Open(("Tuples/temp"+ss.str()+".root").c_str());
       tree[i] = (TTree*)file[i]->Get("DecayTree");
       ws[i] = fitf[fitopt[i]](variablename[i], tree[i], w_var, 0, 0, opts_MC[i]);
+      /************************/
       //Plot MC if requested
-      if(plotMC)
-	{
-	  GoodPlot(ws[i], variablename[i], true, "", "", opts_MC[i], "_MC"+ss.str());
-	}
+      if(plotMC){GoodPlot(ws[i], variablename[i], true, "", "", opts_MC[i], "_MC"+ss.str());}
       ss.str("");
       //Now we retrieve the values of the parameters and save them in our new workspace
-      RooRealVar* dummy;
       //Depending on what pdf we chose... (so far only 1 Argus is defined, should define array of constants/names if more are needed)
-      if(fitopt[i] == ArgusGauss)
+      switch(fitopt[i])
 	{
-	  dummy = new RooRealVar(name_list.m0_Argus.c_str(),name_list.m0_Argus.c_str(),
-				 ws[i]->var(name_list.m0_Argus.c_str())->getValV(), ws[i]->var(name_list.m0_Argus.c_str())->getValV(), ws[i]->var(name_list.m0_Argus.c_str())->getValV());
-	  Param_ws->import(*dummy);
-	  dummy = new RooRealVar(name_list.c_Argus.c_str(),name_list.c_Argus.c_str(),
-				 ws[i]->var(name_list.c_Argus.c_str())->getValV(), ws[i]->var(name_list.c_Argus.c_str())->getValV(), ws[i]->var(name_list.c_Argus.c_str())->getValV());
-	  Param_ws->import(*dummy);
-	  dummy = new RooRealVar(name_list.p_Argus.c_str(),name_list.p_Argus.c_str(),
-				 ws[i]->var(name_list.p_Argus.c_str())->getValV(), ws[i]->var(name_list.p_Argus.c_str())->getValV(), ws[i]->var(name_list.p_Argus.c_str())->getValV());
-	  Param_ws->import(*dummy);
-	  dummy = new RooRealVar(name_list.width_Argus.c_str(),name_list.width_Argus.c_str(),
-				 ws[i]->var(name_list.width_Argus.c_str())->getValV(), ws[i]->var(name_list.width_Argus.c_str())->getValV(), ws[i]->var(name_list.width_Argus.c_str())->getValV());
-	  Param_ws->import(*dummy);
+	case ArgusGauss: //ArgusGauss fit
+	  Extract_Var(ws[i], Param_ws, name_list.m0_Argus, name_list.m0_Argus);
+	  Extract_Var(ws[i], Param_ws, name_list.c_Argus, name_list.c_Argus);
+	  Extract_Var(ws[i], Param_ws, name_list.p_Argus, name_list.p_Argus);
+	  Extract_Var(ws[i], Param_ws, name_list.width_Argus, name_list.width_Argus);
+	  break;
+	case Exp: //Exponential fit
+	  //Empty
+	  break;
+	case Line: //Straight line fit
+	  //Empty
+	  break;
+	case GaussExp: //Gaussian with one exponential tail
+	  Extract_Var(ws[i], Param_ws, name_list.alpha, name_list.alphaL[i+1]);
+	  Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[i+1]);
+	  Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[i+1]);
+	  break;
+	case CB: //Gaussian with power-law tail
+	  Extract_Var(ws[i], Param_ws, name_list.alpha, name_list.alphaL[i+1]);
+	  Extract_Var(ws[i], Param_ws, name_list.n, name_list.nL[i+1]);	  
+          Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[i+1]);
+          Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[i+1]);
+	case CBExp: //Gaussian with power-law, exponential tails
+	  Extract_Var(ws[i], Param_ws, name_list.alphaL[0], name_list.alphaL[i+1]);
+	  Extract_Var(ws[i], Param_ws, name_list.alphaR[0], name_list.alphaR[i+1]);
+	  Extract_Var(ws[i], Param_ws, name_list.n, name_list.nL[i+1]);
+	  Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[i+1]);
+	  Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[i+1]);
+	  break;
+	case DoubleGaussExp: //Gaussian with 2 exponential tails
+	  Extract_Var(ws[i], Param_ws, name_list.alphaL[0], name_list.alphaL[i+1]);
+	  Extract_Var(ws[i], Param_ws, name_list.alphaR[0], name_list.alphaR[i+1]);
+	  Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[i+1]);
+	  Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[i+1]);
+	  break;
+	case DoubleCB: //Gaussian with 2 power-law tails
+	  Extract_Var(ws[i], Param_ws, name_list.alphaL[0], name_list.alphaL[i+1]);
+	  Extract_Var(ws[i], Param_ws, name_list.alphaR[0], name_list.alphaR[i+1]);
+	  Extract_Var(ws[i], Param_ws, name_list.nL[0], name_list.nL[i+1]);
+	  Extract_Var(ws[i], Param_ws, name_list.nR[0], name_list.nR[i+1]);
+	  Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[i+1]);
+	  Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[i+1]);
+	  break;
+	default: //Any other thing. Output a disclaimer here
+	  cout << "Fit option not implemented. Doing nothing" << endl;
+	  break;
 	}
-      else if(fitopt[i] == Exp){} //Only exponential
-      else if(fitopt[i] == Line){} //Straight line
-      //Family of Gaussian core and some exponential/power-law tails
-      else
-	{
-	  if(fitopt[i] == GaussExp)
-	    {
-	      dummy = new RooRealVar(name_list.alphaL[i+1].c_str(),name_list.alphaL[i+1].c_str(),
-				     ws[i]->var(name_list.alpha.c_str())->getValV(), ws[i]->var(name_list.alpha.c_str())->getValV(), ws[i]->var(name_list.alpha.c_str())->getValV());
-	      Param_ws->import(*dummy);	      
-	    }
-	  else
-	    {
-	      dummy = new RooRealVar(name_list.alphaL[i+1].c_str(),name_list.alphaL[i+1].c_str(), 
-				     ws[i]->var(name_list.alphaL[0].c_str())->getValV(), ws[i]->var(name_list.alphaL[0].c_str())->getValV(), ws[i]->var(name_list.alphaL[0].c_str())->getValV());
-	      Param_ws->import(*dummy);
-	      dummy = new RooRealVar(name_list.alphaR[i+1].c_str(),name_list.alphaR[i+1].c_str(), 
-				     ws[i]->var(name_list.alphaR[0].c_str())->getValV(), ws[i]->var(name_list.alphaR[0].c_str())->getValV(), ws[i]->var(name_list.alphaR[0].c_str())->getValV());
-	      Param_ws->import(*dummy);
-	    }
-	  if(fitopt[i] == DoubleCB)
-	    {
-	      dummy = new RooRealVar(name_list.nL[i+1].c_str(),name_list.nL[i+1].c_str(), 
-				     ws[i]->var(name_list.nL[0].c_str())->getValV(), ws[i]->var(name_list.nL[0].c_str())->getValV(), ws[i]->var(name_list.nL[0].c_str())->getValV());
-	      Param_ws->import(*dummy);
-	    }
-	  else if(fitopt[i] == CBExp)
-	    {
-	      dummy = new RooRealVar(name_list.nL[i+1].c_str(),name_list.nL[i+1].c_str(), 
-				     ws[i]->var(name_list.n.c_str())->getValV(), ws[i]->var(name_list.n.c_str())->getValV(), ws[i]->var(name_list.n.c_str())->getValV());
-	      Param_ws->import(*dummy);
-	    }
-	  if(fitopt[i] == DoubleCB)
-	    {
-	      dummy = new RooRealVar(name_list.nR[i+1].c_str(),name_list.nR[i+1].c_str(), 
-				     ws[i]->var(name_list.nR[0].c_str())->getValV(), ws[i]->var(name_list.nR[0].c_str())->getValV(), ws[i]->var(name_list.nR[0].c_str())->getValV());
-	      Param_ws->import(*dummy);
-	    }
-	  dummy = new RooRealVar(name_list.mean[i+1].c_str(),name_list.mean[i+1].c_str(), 
-				 ws[i]->var(name_list.mean[0].c_str())->getValV(), ws[i]->var(name_list.mean[0].c_str())->getValV(), ws[i]->var(name_list.mean[0].c_str())->getValV());
-	  Param_ws->import(*dummy);
-	  dummy = new RooRealVar(name_list.width[i+1].c_str(),name_list.width[i+1].c_str(), 
-				 ws[i]->var(name_list.width[0].c_str())->getValV(), ws[i]->var(name_list.width[0].c_str())->getValV(), ws[i]->var(name_list.width[0].c_str())->getValV());
-	  Param_ws->import(*dummy);
-	} 
-    }
+    }      
   
   //Initialize data stuff
   //Load TChain
