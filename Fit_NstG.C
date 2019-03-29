@@ -139,6 +139,7 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
 	  Extract_Var(ws[i], Param_ws, name_list.n, name_list.nL[i+1]);	  
           Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[i+1]);
           Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[i+1]);
+	  break;
 	case CBExp: //Gaussian with power-law, exponential tails
 	  Extract_Var(ws[i], Param_ws, name_list.alphaL[0], name_list.alphaL[i+1]);
 	  Extract_Var(ws[i], Param_ws, name_list.alphaR[0], name_list.alphaR[i+1]);
@@ -165,15 +166,13 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
 	  break;
 	}
     }      
-  
-  //Initialize data stuff
+    //Initialize data stuff
   //Load TChain
   string cutsdata = GetCuts(cutfiledata);
   TChain* chain = GetChain(filedirdata);
   TFile* tempfile = new TFile("Tuples/temp.root", "recreate");
   TTree* temptree = (TTree*)chain->CopyTree(cutsdata.c_str());
   tempfile->Write();
-  
   //Maybe the fit for the signal channel clearly differs from the PID missID ones
   RooWorkspace* Final_ws;
   if(varnamedata=="B_M012_Subst0_K2p")
@@ -194,7 +193,6 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
       exit(1);
     }
   //Plot with linear scale
-  cout << "THere" << endl;
   GoodPlot(Final_ws, varnamedata, true, "", "", opts);
   //Get log options (is this safe?)
   string logopts = opts+"_log";
