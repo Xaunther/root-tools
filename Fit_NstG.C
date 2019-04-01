@@ -25,7 +25,7 @@ void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string 
   if(varnamedata == "B_M012") //Kpigamma
     {
       fitopt[0] = DoubleCB;
-      fitopt[1] = CBExp;
+      fitopt[1] = Line;
       fitopt[2] = ArgusGauss;
       for(int i=0;i<Nbkgs;i++)
 	{
@@ -108,6 +108,8 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
       ss << i;
       file[i] = TFile::Open(("Tuples/temp"+ss.str()+".root").c_str());
       tree[i] = (TTree*)file[i]->Get("DecayTree");
+      cout << endl << "Starting MC fit number " << i << endl;
+      cout << "------------------------" << endl << endl;
       ws[i] = fitf[fitopt[i]](variablename[i], tree[i], w_var, 0, 0, opts_MC[i]);
       /************************/
       //Plot MC if requested
@@ -124,10 +126,10 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
 	  Extract_Var(ws[i], Param_ws, name_list.width_Argus, name_list.width_Argus);
 	  break;
 	case Exp: //Exponential fit
-	  //Empty
+	  Extract_Var(ws[i], Param_ws, name_list.exp_par, name_list.exp_par);
 	  break;
 	case Line: //Straight line fit
-	  //Empty
+	  Extract_Var(ws[i], Param_ws, name_list.slope, name_list.slope);
 	  break;
 	case GaussExp: //Gaussian with one exponential tail
 	  Extract_Var(ws[i], Param_ws, name_list.alpha, name_list.alphaL[i+1]);
@@ -175,6 +177,8 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
   tempfile->Write();
   //Maybe the fit for the signal channel clearly differs from the PID missID ones
   RooWorkspace* Final_ws;
+  cout << endl << "Starting data fit for " << varnamedata << endl;
+  cout << "-----------------------------------" << endl << endl;
   if(varnamedata=="B_M012_Subst0_K2p")
     {
       Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt, Nbkgs);
