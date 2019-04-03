@@ -53,7 +53,7 @@ void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string 
       fitopt[0] = CBExp;
       fitopt[1] = CBExp;
       fitopt[2] = ArgusGauss;
-      fitopt[3] = Line;
+      fitopt[3] = Exp;
       for(int i=0;i<Nbkgs;i++)
 	{
 	  opts_MC[i] = "NstG_pKG";
@@ -129,7 +129,7 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
 	  Extract_Var(ws[i], Param_ws, name_list.width_Argus, name_list.width_Argus);
 	  break;
 	case Exp: //Exponential fit
-	  Extract_Var(ws[i], Param_ws, name_list.exp_par, name_list.exp_par);
+	  Extract_Var(ws[i], Param_ws, name_list.exp_par[0], name_list.exp_par[i+1]);
 	  break;
 	case Line: //Straight line fit
 	  Extract_Var(ws[i], Param_ws, name_list.slope, name_list.slope);
@@ -192,7 +192,7 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
     }
   else if(varnamedata=="B_M012_Subst01_Kpi2pK")
     {
-      Final_ws = FitGauss_Exp(varnamedata, temptree, "", 0, 0, opts);
+      Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt, Nbkgs);
     }
   else //Unknown mass variable to fit
     {
