@@ -16,7 +16,7 @@
 #include "../Functions/PlotTools.h"
 using namespace std;
 
-#define Nbkgs 3
+#define Nbkgs 4
 /************************************************************************************************************************************************/
 //Fill Option arrays. Try to modularize parts of the scripts
 void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string w_var, string varnamedata, bool use_weights)
@@ -25,8 +25,9 @@ void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string 
   if(varnamedata == "B_M012") //Kpigamma
     {
       fitopt[0] = DoubleCB;
-      fitopt[1] = Line;
+      fitopt[1] = CBExp;
       fitopt[2] = ArgusGauss;
+      fitopt[3] = Line;
       for(int i=0;i<Nbkgs;i++)
 	{
 	  opts_MC[i] = "NstG_KpiG";
@@ -39,6 +40,7 @@ void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string 
       fitopt[0] = DoubleCB;
       fitopt[1] = CBExp;
       fitopt[2] = ArgusGauss;
+      fitopt[3] = Line;
       for(int i=0;i<Nbkgs;i++)
 	{
 	  opts_MC[i] = "NstGamma";
@@ -51,6 +53,7 @@ void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string 
       fitopt[0] = CBExp;
       fitopt[1] = CBExp;
       fitopt[2] = ArgusGauss;
+      fitopt[3] = Line;
       for(int i=0;i<Nbkgs;i++)
 	{
 	  opts_MC[i] = "NstG_pKG";
@@ -197,7 +200,7 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
       exit(1);
     }
   //Plot with linear scale
-  GoodPlot(Final_ws, varnamedata, true, "", "", opts);
+  GoodPlot(Final_ws, varnamedata, false, "", "", opts);
   //Get log options (is this safe?)
   string logopts = opts+"_log";
   if(opts==GetValueFor("Project_name", "Dictionaries/Project_variables.txt"))
@@ -205,5 +208,5 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
       logopts = "NstG_ppiG_log";
     }
   //Plot with log scale
-  GoodPlot(Final_ws, varnamedata, true, "", "", logopts, "_log");
+  GoodPlot(Final_ws, varnamedata, false, "", "", logopts, "_log");
 }
