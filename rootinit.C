@@ -15,6 +15,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"Functions/RooArgusGauss.cxx+").c_str());
   //Personal tools not depending on anything external
   gROOT->ProcessLine((".L "+path+"Functions/ErrorTools.cxx+").c_str());
+  gROOT->ProcessLine((".L "+path+"Functions/Extract_Var.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/TISTOS.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/Styles.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/StringTools.cxx+").c_str());
@@ -59,6 +60,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"root/Err_Frac.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/ExpYield.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/Fit_NstG.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/Fit_NstG_ppimumu.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/InvertCut.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/LatexTable.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/MakeVarList.C+").c_str());

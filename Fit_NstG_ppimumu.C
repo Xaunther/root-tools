@@ -17,61 +17,14 @@
 #include "../Functions/Extract_Var.h"
 using namespace std;
 
-#define Nbkgs 4
-/************************************************************************************************************************************************/
-//Fill Option arrays. Try to modularize parts of the scripts
-void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string w_var, string varnamedata, bool use_weights)
-{
-  //Also define PID weight variable
-  if(varnamedata == "B_M012") //Kpigamma
-    {
-      fitopt[0] = DoubleCB;
-      fitopt[1] = CBExp;
-      fitopt[2] = ArgusGauss;
-      fitopt[3] = Line;
-      for(int i=0;i<Nbkgs;i++)
-	{
-	  opts_MC[i] = "NstG_KpiG";
-	  variablename[i] = varnamedata;
-	}
-      if(use_weights){w_var = "Event_PIDCalibEff_pbarpi";}
-    }
-  else if(varnamedata == "B_M012_Subst0_K2p") //ppigamma
-    {
-      fitopt[0] = DoubleCB;
-      fitopt[1] = CBExp;
-      fitopt[2] = ArgusGauss;
-      fitopt[3] = Line;
-      for(int i=0;i<Nbkgs;i++)
-	{
-	  opts_MC[i] = "NstGamma";
-	  variablename[i] = varnamedata;
-	}
-      if(use_weights){w_var = "Event_PIDCalibEff";}
-    }
-  else if (varnamedata == "B_M012_Subst01_Kpi2pK") //pKgamma
-    {
-      fitopt[0] = CBExp;
-      fitopt[1] = CBExp;
-      fitopt[2] = ArgusGauss;
-      fitopt[3] = Exp;
-      for(int i=0;i<Nbkgs;i++)
-	{
-	  opts_MC[i] = "NstG_pKG";
-	  variablename[i] = varnamedata;
-	}
-      if(use_weights){w_var = "Event_PIDCalibEff_ppibar";}
-    }
-  return;
-}
-/************************************************************************************************************************************************/
+#define Nbkgs_ppimumu 1
 /************************************************************************************************************************************************/
 /************************************************************************************************************************************************/
 /************************************************************************************************************************************************/
 //Function used to do NstG mass fits. It esentially does fits to MC backgrounds and picks up the parameter values to be used on the final datafit
-void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "", string opts = "", bool plotMC = false);
+void Fit_NstG_ppimumu(bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "", string opts = "", bool plotMC = false);
 
-void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata, string opts, bool plotMC)
+void Fit_NstG_ppimumu(bool use_weights, string varnamedata, string filedirdata, string cutfiledata, string opts, bool plotMC)
 {
   if(opts == "")
     {
@@ -80,29 +33,31 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
   string w_var = "";
   //RooFit
   FitFunction* fitf = FitFunction_init();
-  RooWorkspace** ws = new RooWorkspace*[Nbkgs];
+  RooWorkspace** ws = new RooWorkspace*[Nbkgs_ppimumu];
   RooWorkspace* Param_ws = new RooWorkspace("Parameter WS");
   
   //Names dict
   Names name_list(opts);
   
   //Type of fit for each sample
-  FitOption fitopt[Nbkgs];
+  FitOption fitopt[Nbkgs_ppimumu];
   //Which set of constants should be used in each MC fit
-  string opts_MC[Nbkgs];
-  string variablename[Nbkgs];
+  string opts_MC[Nbkgs_ppimumu];
+  string variablename[Nbkgs_ppimumu];
   //Initialize options
-  Fill_Opts(fitopt, opts_MC, variablename, w_var, varnamedata, use_weights);
+  fitopt[0] = DoubleCB;
+  opts_MC[0] = "NstG_ppimumu";
+  variablename[0] = varnamedata;
   //Root stuff
-  TTree** tree = new TTree*[Nbkgs];
-  TFile** file = new TFile*[Nbkgs];
+  TTree** tree = new TTree*[Nbkgs_ppimumu];
+  TFile** file = new TFile*[Nbkgs_ppimumu];
   
-  for(int i=0;i<Nbkgs;i++)
+  for(int i=0;i<Nbkgs_ppimumu;i++)
     {
       //Get tree i and fit the variable
       stringstream ss;
       ss << i;
-      file[i] = TFile::Open(("Tuples/temp"+ss.str()+".root").c_str());
+      file[i] = TFile::Open(("Tuples/temp_ppimumu"+ss.str()+".root").c_str());
       tree[i] = (TTree*)file[i]->Get("DecayTree");
       cout << endl << "Starting MC fit number " << i << endl;
       cout << "------------------------" << endl << endl;
@@ -175,31 +130,11 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
   RooWorkspace* Final_ws;
   cout << endl << "Starting data fit for " << varnamedata << endl;
   cout << "-----------------------------------" << endl << endl;
-  if(varnamedata=="B_M012_Subst0_K2p")
-    {
-      Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt, Nbkgs);
-    }
-  else if(varnamedata=="B_M012")
-    {
-      Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt, Nbkgs);
-    }
-  else if(varnamedata=="B_M012_Subst01_Kpi2pK")
-    {
-      Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt, Nbkgs);
-    }
-  else //Unknown mass variable to fit
-    {
-      cout << "Mass variable " + varnamedata + " not implemented" << endl;
-      exit(1);
-    }
+  Final_ws = FitLb2ppiJPsi(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt, Nbkgs_ppimumu);
   //Plot with linear scale
   GoodPlot(Final_ws, varnamedata, false, "", "", opts);
   //Get log options (is this safe?)
   string logopts = opts+"_log";
-  if(opts==GetValueFor("Project_name", "Dictionaries/Project_variables.txt"))
-    {
-      logopts = "NstG_ppiG_log";
-    }
   //Plot with log scale
   GoodPlot(Final_ws, varnamedata, false, "", "", logopts, "_log");
 }
