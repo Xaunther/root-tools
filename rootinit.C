@@ -81,6 +81,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"root/TISTOS.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/Trigger_effs.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/TupleCorr.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/UnbinnedReweight.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/VarFit.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/Vodka.C+").c_str());
 }
