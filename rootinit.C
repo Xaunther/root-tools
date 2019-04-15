@@ -77,6 +77,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"root/RenameBranch.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/ROC_Area.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/sPlot.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/sWeight.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/TISTOS.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/Trigger_effs.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/TupleCorr.C+").c_str());
