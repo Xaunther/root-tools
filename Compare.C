@@ -7,7 +7,7 @@
 #include "../Functions/Filereading.h"
 
 using namespace std;
-void Compare(string filename1, string filename2, string variable, string cutfile1, string cutfile2, string treename1 = "", string treename2 = "", string wvar1 = "1", string wvar2 = "1")
+void Compare(string filename1, string filename2, string var1, string var2, string cutfile1, string cutfile2, string treename1 = "", string treename2 = "", string wvar1 = "1", string wvar2 = "1")
 {
   //Open files and tuples
   TChain* chain1 = GetChain(filename1, treename1);
@@ -16,8 +16,8 @@ void Compare(string filename1, string filename2, string variable, string cutfile
   string cuts2 = GetCuts(cutfile2);
   TCanvas* c1 = new TCanvas();
   
-  chain1->Draw(variable.c_str(), ("("+cuts1+")*"+wvar1).c_str(), "HISTO NORM");
-  chain2->Draw(variable.c_str(), ("("+cuts2+")*"+wvar2).c_str(), "HISTO NORM SAME");
+  chain1->Draw(var1.c_str(), ("("+cuts1+")*"+wvar1).c_str(), "HISTO NORM");
+  chain2->Draw(var2.c_str(), ("("+cuts2+")*"+wvar2).c_str(), "HISTO NORM SAME");
 
   TH1* hist1 = chain1->GetHistogram();
   TH1* hist2 = chain2->GetHistogram();
@@ -31,6 +31,6 @@ void Compare(string filename1, string filename2, string variable, string cutfile
   hist1->SetFillStyle(3004);
   hist2->SetFillStyle(3005);
 
-  c1->SaveAs(("plots/compare_"+variable+".pdf").c_str());
+  c1->SaveAs(("plots/compare_"+var1+"_"+var2+".pdf").c_str());
 
 }

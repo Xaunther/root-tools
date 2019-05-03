@@ -146,7 +146,7 @@ void MassSub_ppimumu(string dirfile, string outfile)
   //We have 4 particles in the final state, but only mass subs will be done to the first two (hadrons)
   //Particle names
   string part_names[4];
-  part_names[0] = "Kplus";
+  part_names[0] = "pplus";
   part_names[1] = "piminus";
   part_names[2] = "muplus";
   part_names[3] = "muminus";
