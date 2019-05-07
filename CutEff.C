@@ -4,7 +4,6 @@
 #include <string>
 #include <sstream>
 #include "TTree.h"
-#include "TChain.h"
 #include "TH1F.h"
 #include "TFile.h"
 #include "TCanvas.h"
@@ -30,45 +29,16 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
     {
       allprecuts = "1";
     }
-  int* N_final = new int[N_cuts+1];
-  int N0;
+  double* N_final = new double[N_cuts+1];
+  double N0;
 
-  //Data chain
-  TChain* chain = GetChain(dirfile);
-
-  //If weights are requested
-  double* w_f = new double[N_cuts+1];
-  double w_0 = 1.;
-  if(weight != "")
-    {
-      w_0 = GetMean(dirfile, weight);
-    }
   //Simply compute #of evts before and after
-  N0 = chain->GetEntries(allprecuts.c_str());
+  N0 = GetMeanEntries(dirfile, "", allprecuts, weight);
   for(int i=0;i<N_cuts;i++)
     {
-      N_final[i] = chain->GetEntries((allprecuts+" && "+cuts[i]).c_str());
-      //If weights are requested, we need the mean after the cuts
-      if(weight != "")
-	{
-	  w_f[i] = GetMean(dirfile, weight, "", allprecuts+" && "+cuts[i]);
-	}
-      //Otherwise, just 1
-      else
-	{
-	  w_f[i] = 1.;
-	}
+      N_final[i] = GetMeanEntries(dirfile, "", allprecuts+" && "+cuts[i], weight);
     }
-  N_final[N_cuts] =chain->GetEntries((allprecuts+" && "+allcuts).c_str());
-  if(weight != "")
-    {
-      w_f[N_cuts] = GetMean(dirfile, weight, "", allprecuts+" && "+allcuts);
-    }
-  //Otherwise, just 1
-  else
-    {
-      w_f[N_cuts] = 1.;
-    }
+  N_final[N_cuts] =GetMeanEntries(dirfile, "", allprecuts+" && "+allcuts, weight);
   //Now, produce a gorgeous output #4dalulz
   ofstream fout;
   fout.open(outfile.c_str());
@@ -86,9 +56,9 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
   int maxL = GetMaxLength(cuts, N_cuts);
   for(int i=0;i<N_cuts;i++)
     {
-      fout << cuts[i] << setw(maxL+5-int(cuts[i].size())) << "  |  " << (w_f[i]/w_0)*(N_final[i]/double(N0)) << endl;
+      fout << cuts[i] << setw(maxL+5-int(cuts[i].size())) << "  |  " << N_final[i]/N0 << endl;
     }
-  fout << "Global" << setw(maxL+5-6) << "  |  " << (w_f[N_cuts]/w_0)*(N_final[N_cuts]/double(N0)) << endl;
+  fout << "Global" << setw(maxL+5-6) << "  |  " << N_final[N_cuts]/N0 << endl;
   fout.close();
 
 }
