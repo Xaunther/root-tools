@@ -21,9 +21,9 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
   string allprecuts = GetCuts(precutfile);
 
   int N_cuts = 0;
-  string* cuts = SplitString(N_cuts, allcuts, " && ");
+  string* cuts = SplitString(N_cuts, allcuts, " * ");
   int N_precuts = 0;
-  string* precuts = SplitString(N_precuts, allprecuts, " && ");
+  string* precuts = SplitString(N_precuts, allprecuts, " * ");
 
   if(allprecuts == "")
     {
@@ -36,9 +36,9 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
   N0 = GetMeanEntries(dirfile, "", allprecuts, weight);
   for(int i=0;i<N_cuts;i++)
     {
-      N_final[i] = GetMeanEntries(dirfile, "", allprecuts+" && "+cuts[i], weight);
+      N_final[i] = GetMeanEntries(dirfile, "", allprecuts+" * "+cuts[i], weight);
     }
-  N_final[N_cuts] =GetMeanEntries(dirfile, "", allprecuts+" && "+allcuts, weight);
+  N_final[N_cuts] =GetMeanEntries(dirfile, "", allprecuts+" * "+allcuts, weight);
   //Now, produce a gorgeous output #4dalulz
   ofstream fout;
   fout.open(outfile.c_str());
