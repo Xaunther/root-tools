@@ -10,7 +10,7 @@
 #include "../Functions/TreeTools.h"
 using namespace std;
 
-void PIDTable(string filedir, string resultsfile = "PIDEff.txt", bool abspath = false, string varname = "Event_PIDCalibEff")
+void PIDTable(string filedir, string resultsfile = "PIDEff.txt", bool abspath = false, string varname = "Event_PIDCalibEff", string wfile = "", string weight = "1")
 {
   //Read filedir
   int NFiles = 0;
@@ -30,19 +30,62 @@ void PIDTable(string filedir, string resultsfile = "PIDEff.txt", bool abspath = 
     }
   ofstream outfile;
   outfile.open(resultsfile.c_str());
-  //Loop over all files in filedir
-  for(int i=0;i<NFiles;i++)
+  //Usual procedure when no weights are needed
+  if(weight=="1")
     {
-      //Deal with empty files
-      if(TreeExists(tuple_names[i],"CalibTool_PIDCalibTree"))
+      //Loop over all files in filedir
+      for(int i=0;i<NFiles;i++)
 	{
-	  outfile << tuple_names[i] << " | " << TMath::Abs(GetMean(tuple_names[i], varname, "CalibTool_PIDCalibTree")) << endl;
+	  //Deal with empty files
+	  if(TreeExists(tuple_names[i],"CalibTool_PIDCalibTree"))
+	    {
+	      outfile << tuple_names[i] << " | " << TMath::Abs(GetMeanEntries(tuple_names[i], "CalibTool_PIDCalibTree", varname)) << endl;
+	    }
+	  else
+	    {
+	      outfile << tuple_names[i] << " | 0." << endl;	  
+	    }
+	  cout << "Processed " << tuple_names[i] << endl;
 	}
-      else
+    }
+  //If weights are needed, these are stored in a different ntuple with the same number of entries. Since the pidcalib ntuples just contain the pid info...
+  //So we manually compute the efficiency
+  else if(TreeExists(wfile))
+    {
+      //Read ntuple with weights
+      TChain* wchain = GetChain(wfile, "", false);
+      //Loop over all files in filedir
+      for(int i=0;i<NFiles;i++)
 	{
-	  outfile << tuple_names[i] << " | 0." << endl;	  
-	}
-      cout << "Processed " << tuple_names[i] << endl;
+	  //Deal with empty files
+	  if(TreeExists(tuple_names[i],"CalibTool_PIDCalibTree"))
+	    {
+	      //Read PID ntuple
+	      TChain* chain = GetChain(tuple_names[i], "CalibTool_PIDCalibTree", false);
+	      //Setup branches and sums
+	      float w, eff;
+	      wchain->SetBranchAddress(weight.c_str(), &w);
+	      chain ->SetBranchAddress(varname.c_str(), &eff);
+	      double sumf = 0.;
+	      double sum0 = 0.;
+	      //Loop over entries and make the sum
+	      for(int j=0;j<chain->GetEntries();j++)
+		{
+		  chain ->GetEntry(j);
+		  wchain->GetEntry(j);
+		  sumf += w*eff;
+		  sum0 += w;
+		}
+	      outfile << tuple_names[i] << " | " << sumf/sum0 << endl;
+	      delete chain;
+	    }
+	  else
+	    {
+	      outfile << tuple_names[i] << " | 0." << endl;	  
+	    }
+	  cout << "Processed " << tuple_names[i] << endl;
+	}      
+      delete wchain;
     }
   outfile.close();
 }
