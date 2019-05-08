@@ -2,7 +2,7 @@
 //Then read the efficiencies for each channel for the previous cuts (kinematic, vetoes...) Produced by CutEff
 //Will allow for the user to provide a string with the initiali expected yield (space separated)
 //Will then combine initial yields with all the efficiencies to get the final yields for each
-//Compute Punzi figure of merit (with sigma=5 as standard) and first channel will be treated as signal (so N-1 initial yields need to be provided)
+//Compute Punzi figure of merit (with sigma=5 as standard) and first channel will be treated as signal (so N-2 initial yields need to be provided)
 //Finally, this will print the column and row results in a file. Very simple way. It will be later picked on by a python script which reads the PID config used and will create the corresponding BDT cuts.
 //AMAZING!!!
 #include <string>
@@ -77,7 +77,6 @@ void PIDPunzi(string tables, string yields, string outfilename, string varname, 
       
   for(int i=0;i<N_tables;i++)
     {
-      bool mag_used;
       //Check first file to see if magnet separation is applied
       N_cutcombs[i] = 0;
       rootname[i] = ReadVariables(N_cutcombs[i], tablename[i]);
@@ -85,12 +84,10 @@ void PIDPunzi(string tables, string yields, string outfilename, string varname, 
       if(rootname[i][0].find("_PID_Mag") != string::npos)
 	{
 	  mag_w[i] = 0.5;
-	  mag_used = true;
 	}
       else
 	{
 	  mag_w[i] = 1.;
-	  mag_used = false;
 	}
 
       //Size of the 2-D PID table, depending on the magnet config
@@ -130,7 +127,7 @@ void PIDPunzi(string tables, string yields, string outfilename, string varname, 
       Punzi[k] = new double[table_size];
     }
 
-  //Read the yields, N-1 must be provided
+  //Read the yields, N-2 must be provided. (All but signal and sidebands)
   NN = 0;
   string* yields_str = SplitString(NN, yields, " ");
   if(NN != N_tables-2)
