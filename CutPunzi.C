@@ -23,10 +23,23 @@ cutN minN maxN stepsN
 #include "TMath.h"
 #include "../Functions/TreeTools.h"
 #include "../Functions/StringTools.h"
-#include "../Functions/ArrayTools.h"
 #include "../Functions/Filereading.h"
 using namespace std;
 
+//Small script to draw a progress bar :)
+void DrawProgress(double progress)
+{
+  const int barWidth = 70;
+  cout << "[";
+  int pos = barWidth * progress;
+  for (int i = 0; i < barWidth; ++i) {
+    if (i < pos) cout << "=";
+    else if (i == pos) cout << ">";
+    else cout << " ";
+  }
+  cout << "] " << int(progress * 100.0) << " %\r";
+  cout.flush();
+}
 void CutPunzi(string sigfile, string bkgfile, string instrfile, string bkgyieldfile, string dumpname, string cutname, string precutsfile = "", string sigtree = "", string bkgtree = "", string sigw = "1", string bkgw = "1")
 {
   //Define sigma of Punzi (5 is usual)
@@ -61,12 +74,13 @@ void CutPunzi(string sigfile, string bkgfile, string instrfile, string bkgyieldf
       //Count combs so far
       combs *= steps[i];
     }
-  //Create list of results, it has steps1*steps2*...*stepsN elements
-  double* punzifom = new double[combs];
 
   // DATE START!!! (THANKS UNDERTALE)
+  cout << "Will perform " << combs << " combinations. Please stand by..." << endl;
   //Open dump file
   ofstream dumpf;
+  int bestcomb = 0;
+  double bestpunzi = 0;
   dumpf.open(dumpname.c_str());
   dumpf << "precuts = " << precuts << endl;
   //Let'sa go
@@ -88,17 +102,18 @@ void CutPunzi(string sigfile, string bkgfile, string instrfile, string bkgyieldf
 	}
       //Compute Punzi
       //Upper part
-      punzifom[i] = GetMeanEntries(sigchain, thiscuts, sigw);
+      double punzifom = GetMeanEntries(sigchain, thiscuts, sigw);
       //Bottom part
-      punzifom[i] = punzifom[i] / (sigma/2. + TMath::Sqrt(yield0*GetMeanEntries(bkgchain, thiscuts, bkgw)));
+      punzifom = punzifom / (sigma/2. + TMath::Sqrt(yield0*GetMeanEntries(bkgchain, thiscuts, bkgw)));
       //Save Punzi in dumpfile
-      dumpf << " | " << punzifom[i] << endl;
+      dumpf << " | " << punzifom << endl;
+      if(punzifom > bestpunzi){bestcomb = i; bestpunzi = punzifom;}
+      DrawProgress(double(i)/combs);
     }
   //Close dumpfile
   dumpf.close();
 
   //Get best cut and save it in the desired file
-  int bestcomb = GetMaxPos(punzifom, combs);
   ofstream cutf;
   cutf.open(cutname.c_str());
   for(int j=0;j<N;j++)
