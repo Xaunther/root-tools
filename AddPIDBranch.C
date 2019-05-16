@@ -32,7 +32,7 @@ void AddPIDBranch(string tupleinfile, string tupleoutfile, string treename = "",
   inchain->SetBranchAddress("Event_PIDCalibEff",&eff);
   //Create new branches
   TBranch* binv1 = tree->Branch("Event_PIDCalibEff_pbarpi", &inv1, "Event_PIDCalibEff_pbarpi/D");
-  TBranch* binv2 = tree->Branch("Event_PIDCalibEff_ppibar", &inv2, "Event_PIDCalibEff_pbarpi/D");
+  TBranch* binv2 = tree->Branch("Event_PIDCalibEff_ppibar", &inv2, "Event_PIDCalibEff_ppibar/D");
 
   for(int i=0;i<inchain->GetEntries();i++)
     {
