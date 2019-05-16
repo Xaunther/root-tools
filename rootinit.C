@@ -54,6 +54,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"root/Compare.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/Create_Cuts.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/CutEff.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/CutPunzi.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/CutSig.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/CutTree.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/EntriesTable.C+").c_str());

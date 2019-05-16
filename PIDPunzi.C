@@ -14,8 +14,6 @@
 #include "../Functions/Filereading.h"
 using namespace std;
 
-#define sigma 5
-
 int* Get2Indices(string word);
 void PIDPunzi(string tables, string yields, string outfilename, string varname = "Event_PIDCalibEff", string treename = "CalibTool_PIDCalibTree");
 
@@ -60,6 +58,7 @@ int* Get2Indices(string word)
 }
 void PIDPunzi(string tables, string yields, string outfilename, string varname, string treename)
 {
+  const double sigma = 5.;
   //Get array with the tables
   int N_tables = 0;
   int table_size = 0;
