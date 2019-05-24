@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "TTree.h"
+#include "TTreeFormula.h"
 #include "TH1F.h"
 #include "TFile.h"
 #include <string>
@@ -13,7 +14,7 @@
 #include "../Functions/Filereading.h"
 using namespace std;
 
-void BDTApply(string fileapplied, string outputfilename, bool logdira = false, string filename = "Variables/BDTVariables.txt", string BDTweights = "TMVAClassification")
+void BDTApply(string fileapplied, string outputfilename, bool excludeBDTvars = false, string filename = "Variables/BDTVariables.txt", string BDTweights = "TMVAClassification")
 {
   int N_variables = 0;
   int N_extravars = 0;
@@ -50,21 +51,14 @@ void BDTApply(string fileapplied, string outputfilename, bool logdira = false, s
   //Variables used in training
   for(int i=0;i<N_variables;i++)
     {
-      if (variable_list[i] == "B_DIRA_OWNPV" && logdira)
-	{
-	  string logvarname = "log_B_DIRA_OWNPV := log(1-B_DIRA_OWNPV)";
-	  reader->TMVA::Reader::AddVariable(logvarname.c_str(), &var[i]);
-	}
-      else
-	{
-	  reader->TMVA::Reader::AddVariable(variable_list[i].c_str(), &var[i]);
-	}
+      reader->TMVA::Reader::AddVariable(variable_list[i].c_str(), &var[i]);
     }
   //TMVA method
   //The Folder is the one used by default
   reader->TMVA::Reader::BookMVA("BDT method", ("default/weights/"+BDTweights+"_BDT.weights.xml").c_str());
 
   //Variables from data
+  TTreeFormula** formulavars = new TTreeFormula*[N_variables];
   Double_t* uservar = new Double_t[N_variables + N_extravars];
   UInt_t* useruint = new UInt_t[N_extrauint];
   ULong64_t* userulong64 = new ULong64_t[N_extraulong64];
@@ -73,8 +67,15 @@ void BDTApply(string fileapplied, string outputfilename, bool logdira = false, s
   Bool_t* userbool = new Bool_t[N_extrabool];
   for(int i=0;i<N_variables;i++)
     {
-      datatree->SetBranchAddress(variable_list[i].c_str(), &uservar[i]);
-      tree->Branch(variable_list[i].c_str(), &uservar[i]);
+      if(!excludeBDTvars)
+	{	  
+	  datatree->SetBranchAddress(variable_list[i].c_str(), &uservar[i]);
+	  tree->Branch(variable_list[i].c_str(), &uservar[i]);
+	}
+      else
+	{
+	  formulavars[i] = new TTreeFormula(variable_list[i].c_str(), variable_list[i].c_str(), datatree);
+	}
     }
   for(int i=0;i<N_extravars;i++)
     {
@@ -124,10 +125,18 @@ void BDTApply(string fileapplied, string outputfilename, bool logdira = false, s
       //Here we can perform operations if we made the log or smth
       for (int j=0;j<N_variables;j++)
 	{
-	  var[j] = uservar[j];
+	  if(!excludeBDTvars)
+	    {
+	      var[j] = uservar[j];
+	    }
+	  else
+	    {
+	      var[j] = formulavars[j]->EvalInstance();
+	    }
 	}
 
       BDT_response = reader->TMVA::Reader::EvaluateMVA("BDT method");
+      cout << BDT_response << endl;
       tree->Fill();
     }
   tree->Write();
