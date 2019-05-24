@@ -52,7 +52,7 @@ void BDTTrain2(string sig_file, string bkg_file, string sig_cutfile, string bkg_
   TTree* datatree = GetTree(bkg_file);
 
   cout << "----------------------------------------------------------------------------" << endl;
-  cout << "Starting training with " << sigtree->GetEntries(sig_cuts.c_str()) << " signal events and " << datatree->GetEntries(bkg_cutfile.c_str()) << " background events" << endl;
+  cout << "Starting training with " << sigtree->GetEntries(sig_cuts.c_str()) << " signal events and " << datatree->GetEntries(bkg_cuts.c_str()) << " background events" << endl;
   cout << "----------------------------------------------------------------------------" << endl;
 
   TFile* addedsigtree = new TFile("Tuples/BDTsigtest.root", "RECREATE");
