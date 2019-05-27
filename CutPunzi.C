@@ -44,10 +44,8 @@ void DrawProgress(double progress)
   cout << "] " << int(progress * 100.0) << " %\r";
   cout.flush();
 }
-void CutPunzi(string sigfile, string bkgfile, string datafile, string instrfile, string bkgyieldfile, string dumpname, string cutname, string precutsfile = "", string sigtree = "", string bkgtree = "", string datatree = "", string sigw = "1", string bkgw = "1", string massvar = "B_M", string opts = "")
+void CutPunzi(string sigfile, string bkgfile, string datafile, string instrfile, string bkgyieldfile, string dumpname, string cutname, string precutsfile = "", string sigtree = "", string bkgtree = "", string datatree = "", string sigw = "1", string bkgw = "1", string massvar = "B_M", string opts = "", const double sigma = 5.)
 {
-  //Define sigma of Punzi (5 is usual)
-  const double sigma = 5.;
   //Read signal and background chains
   TChain* sigchain = GetChain(sigfile, sigtree);
   TChain* bkgchain = GetChain(bkgfile, bkgtree);
