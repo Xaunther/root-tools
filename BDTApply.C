@@ -14,6 +14,8 @@
 #include "../Functions/Filereading.h"
 using namespace std;
 
+//BDTApply is the original function, which requires input  on which variables need to be saved. These must be listed in different files which are described below, classified by variable type. It also provides a way to use formulas for the BDT, setting excludeBDTvars = true
+//BDTApply2 is a new function which uses TTreeFormulas for the BDT variables, and creates new ntuple with ALL PREVIOUS VARIABLES + BDT_response. So no need to provide lists, just the BDT vars
 void BDTApply(string fileapplied, string outputfilename, bool excludeBDTvars = false, string filename = "Variables/BDTVariables.txt", string BDTweights = "TMVAClassification")
 {
   int N_variables = 0;

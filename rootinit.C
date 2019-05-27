@@ -43,6 +43,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"root/AddPIDBranch.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/AppendVars.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/BDTApply.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/BDTApply2.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/BDTCut.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/BDTMerit.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/BDTTrain.C+").c_str());
