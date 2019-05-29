@@ -115,7 +115,7 @@ void CutPunzi(string sigfile, string bkgfile, string datafile, string instrfile,
       //Upper part
       double punzifom = GetMeanEntries(sigchain, thiscuts, sigw);
       //Bottom part
-      punzifom = punzifom / (sigma/2. + TMath::Sqrt(yield0*GetMeanEntries(bkgchain, thiscuts, bkgw)+GetMeanEntries(datachain, thiscuts)));
+      punzifom = punzifom / (sigma/2. + TMath::Sqrt(yield0*GetMeanEntries(bkgchain, thiscuts, bkgw)+datachain->GetEntries(thiscuts.c_str())));
       //Save Punzi in dumpfile
       dumpf << " | " << punzifom << endl;
       if(punzifom > bestpunzi){bestcomb = i; bestpunzi = punzifom;}
