@@ -17,7 +17,7 @@ using namespace std;
 
 //BDTApply is the original function, which requires input  on which variables need to be saved. These must be listed in different files which are described below, classified by variable type. It also provides a way to use formulas for the BDT, setting excludeBDTvars = true
 //BDTApply2 is a new function which uses TTreeFormulas for the BDT variables, and creates new ntuple with ALL PREVIOUS VARIABLES + BDT_response. So no need to provide lists, just the BDT vars
-void BDTApply2(string fileapplied, string outputfilename, string filename = "Variables/BDTVariables.txt", string BDTweights = "TMVAClassification")
+void BDTApply2(string fileapplied, string outputfilename, string filename = "Variables/BDTVariables.txt", string BDTweights = "TMVAClassification", string BDTvarname = "BDT_response")
 {
   //Read Variables
   int N_variables = 0;
@@ -55,7 +55,7 @@ void BDTApply2(string fileapplied, string outputfilename, string filename = "Var
 
   //Add branch to store BDT response
   double BDT_response;
-  TBranch* bdt_branch = tree->Branch("BDT_response", &BDT_response, "BDT_response/D");
+  TBranch* bdt_branch = tree->Branch(BDTvarname.c_str(), &BDT_response, (BDTvarname+"/D").c_str());
 
   //Apply BDT
   for(long k=0; k<datatree->GetEntries(); k++)

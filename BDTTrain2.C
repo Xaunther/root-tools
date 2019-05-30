@@ -19,9 +19,9 @@ using namespace std;
 
 //BDTTrain es la función original, se usa en algunos análisis y no es demasiado general, pero es dificil ahora tocar todo para que cuadre
 //BDTTrain2 generaliza la función anterior, reduciendo los argumentos a cosas mas necesarias
-void BDTTrain2(string sig_file, string bkg_filelist, string sig_cutfile = "", string bkg_cutfile = "", string varfile = "Variables/BDTVariables.txt", string factoryname = "TMVAClassification", string bkgweighlist = "1");
+void BDTTrain2(string sig_file, string bkg_filelist, string sig_cutfile = "", string bkg_cutfile = "", string varfile = "Variables/BDTVariables.txt", string factoryname = "TMVAClassification", string bkgweighlist = "1", string sigw = "1");
 
-void BDTTrain2(string sig_file, string bkg_filelist, string sig_cutfile, string bkg_cutfile, string varfile, string factoryname, string bkgweightlist)
+void BDTTrain2(string sig_file, string bkg_filelist, string sig_cutfile, string bkg_cutfile, string varfile, string factoryname, string bkgweightlist, string sigw)
 {
   //Initialize constants
   Constants const_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
@@ -84,6 +84,8 @@ void BDTTrain2(string sig_file, string bkg_filelist, string sig_cutfile, string 
       dl->AddVariable(variable_list[i].c_str(), 'D');
     }
   
+  //Add signal weight
+  dl->SetSignalWeightExpression(sigw.c_str());
   //Prepare training
   dl->PrepareTrainingAndTestTree("", "", (const_list.BDT_Prepare_options).c_str());
 
