@@ -15,7 +15,7 @@
 using namespace std;
 
 int* Get2Indices(string word);
-void PIDPunzi(string tables, string yields, string outfilename, string varname = "Event_PIDCalibEff", string treename = "CalibTool_PIDCalibTree");
+void PIDPunzi(string tables, string yields, string outfilename, string varname = "Event_PIDCalibEff", string treename = "CalibTool_PIDCalibTree", const double sigma = 5.);
 
 
 int* Get2Indices(string word)
@@ -56,9 +56,8 @@ int* Get2Indices(string word)
   return ind;
 
 }
-void PIDPunzi(string tables, string yields, string outfilename, string varname, string treename)
+void PIDPunzi(string tables, string yields, string outfilename, string varname, string treename, const double sigma)
 {
-  const double sigma = 5.;
   //Get array with the tables
   int N_tables = 0;
   int table_size = 0;
@@ -129,9 +128,10 @@ void PIDPunzi(string tables, string yields, string outfilename, string varname, 
   //Read the yields, N-2 must be provided. (All but signal and sidebands)
   NN = 0;
   string* yields_str = SplitString(NN, yields, " ");
+  if(yields==""){NN = 0;}
   if(NN != N_tables-2)
     {
-      cout << "Number of yields(" << NN << ") must be number of tables - 2(" << N_tables-1 << ")! " << endl;
+      cout << "Number of yields(" << NN << ") must be number of tables - 2(" << N_tables-2 << ")! " << endl;
       exit(0);
     }
   //Yields to double
