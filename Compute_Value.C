@@ -18,7 +18,7 @@ Long64_t DoOperation(TChain* chain, string file)
   
   //double all_evts = Interpol_exp(chain->GetEntries(cuts_down.c_str()), chain->GetEntries(cuts_up.c_str()));
   //return all_evts-chain->GetEntries(cuts_down.c_str())-chain->GetEntries(cuts_up.c_str());
-  return chain->GetEntries("(B_M012_Subst0_K2p < 5300) && (B_M012_Subst0_K2p > 5900)");
+  return chain->GetEntries((GetCuts(file) + " * (B_M012_Subst0_K2p > 5300) * (B_M012_Subst0_K2p < 5900)").c_str());
 }
 
 
