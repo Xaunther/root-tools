@@ -78,6 +78,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"root/PlotVar.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/RenameBranch.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/ROC_Area.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/ScaleYields.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/sPlot.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/sWeight.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/TISTOS.C+").c_str());
@@ -86,4 +87,5 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"root/UnbinnedReweight.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/VarFit.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/Vodka.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/WriteFromWS.C+").c_str());
 }
