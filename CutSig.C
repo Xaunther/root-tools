@@ -1,5 +1,4 @@
-//This script computes a Significance f.o.m. for a set of cuts. All possible combinations.
-//CutPunzi can be tweaked to also compute this f.o.m., but it does not support multiple bkg sources and this one does use data (it is designed for peaking contributions only)
+//This script is used to compute a Punzi figure of merit, but it is designed so it can be tweaked and used to use different foms
 //It returns both a log file with the values, so one can peek them. And a file with such best set of cuts
 //The instructions must be given in a separate file, with this format. The separators will be blank spaces, so beware...
 /**********************************************************************
@@ -16,8 +15,27 @@ cutN minN maxN stepsN
 //B_M01_Subst01_Kpi2piK>892||B_M01_Subst01_Kpi2piK<
 //When using "OR"s like in this case, the values put by hand must stand between max(<) and min(>). Just choose the resonance mass :)
 
-//The algorithm uses signal ntuple (usually MC), peaking bkg ntuple (usually our bkg MC) and combinatorial (data).
-//If we do not use data, the cuts tend to be rather.... tight
+//The algorithm needs an ntuple that will be the signal, and its efficiency will be used
+//Also need to provide a list (blank space separated) of bkg MC files. For each MC sample provided a corresponding yield file must be given as another list. This list might be empty
+//Then, also need to provide data. No corresponding yield file must be provided, but a certain mass variable and options must be given to determine the mass window through the dictionary
+//Precuts are passed so that the provided ntuples with the precuts match the yields provided
+//Tree names might be explicitly provided (as a list in the case of bkg MC, the list can be shorter than the list of samples, only the first n provided will be given the explicit name and the rest will get the one determined by treenames.dic)
+//Signal weight variable can be specified
+//A list of weight variables for MC bkg can be specified. If the list is shorter, the last ones will not get a weight (just 1)
+//Sigma for the Punzi fom can be provided (default is 5)
+//Power for the B can be provided (default is 1/2)
+
+/**********************************************************************
+General Formula: e/(sigma/2+(y1+y2+y3+... + D)^p)
+Now, the general formula does not make much sense, one has to be clever to use the known figure of merits. Typical examples are here:
+1) Punzi FOM where B is obtained from MC (e/(sigma/2+sqrt(B1+B2+B3...))): Do not provide datafile, provide list of bkgs, set whatever sigma you fancy and power = 1/2
+2) Punzi FOM where B is obtained from data (e/(sigma/2+sqrt(B))): Do not provide list of bkgs, provide data, set whatever sigma you fancy and power = 1/2. This one is biased since the data actually provides S+B instead of just B, use only when S << B)
+3) Significance where S+B is obtained from data (e/sqrt(S+B)): Do not provide list of bkgs, provide data, set sigma = 0 and power = 1/2
+4) Significance where B is obtained from MC (e/sqrt(S+B1+B2+B3...)): Do not provide datafile, provide as list of bkgs the signal AND the bkgs, set sigma = 0 and power = 1/2
+5) Significance 2, where B is obtained from MC (e/sqrt(B1+B2+B3...)): Do not provide datafile, provide list of bkgs and set sigma = 0, power = 1/2
+6) Signal purity, where B is obtained from MC (e/(B1+B2+B3+...)): Do not provide datafile, provide list of bkgs, set sigma = 0 and power = 1.
+... And any more combinations you can think of
+ **********************************************************************/
 #include <string>
 #include <stdlib.h>
 #include <fstream>
@@ -33,24 +51,43 @@ cutN minN maxN stepsN
 #include "../Dictionaries/Constants.h"
 using namespace std;
 
-void CutSig(string sigfile, string bkglist, string instrfile, string sigyieldfile, string bkgyieldlist, string dumpname, string cutname, string precutsfile = "", string sigtree = "", string bkgtree = "", string sigw = "1", string bkgw = "1", const double spb_pow = 0.5);
-void CutSig(string sigfile, string bkglist, string instrfile, string sigyieldfile, string bkgyieldlist, string dumpname, string cutname, string precutsfile, string sigtree, string bkgtree, string sigw, string bkgw, const double spb_pow)
+void CutSig(string sigfile, string bkglist, string datafile, string instrfile, string bkgyieldlist, string dumpname, string cutname, string precutsfile = "", string sigtree = "", string bkgtreelist = "", string datatree = "", string sigw = "1", string bkgwlist = "1", const double sigma = 5., const double spb_pow = 0.5);
+void CutSig(string sigfile, string bkglist, string datafile, string instrfile, string bkgyieldlist, string dumpname, string cutname, string precutsfile, string sigtree, string bkgtreelist, string datatree, string sigw, string bkgwlist, const double sigma, const double spb_pow)
 {
-  //Read signal and background chains
+  int NN = 0; //DUMMY!!
+
+  //Read signal chain
   TChain* sigchain = GetChain(sigfile, sigtree);
+  /**********************************************************************/
+  //Read bkg chain
   int Nbkg = 0;
   //Need to split in array for bkg
   string* bkgfile = SplitString(Nbkg, bkglist, " ");
+  string* bkgtree = SplitString(NN, bkgtreelist, " ");
   TChain** bkgchain = new TChain*[Nbkg];
   for(int i=0;i<Nbkg;i++)
     {
-      bkgchain[i] = GetChain(bkgfile[i], bkgtree); //Same treename for all, might be improved if needed
+      if(i<NN)
+	{
+	  bkgchain[i] = GetChain(bkgfile[i], bkgtree[i]);
+	}
+      else
+	{
+	  bkgchain[i] = GetChain(bkgfile[i]);
+	}
     }
+  //Will not use list of trees anymore
+  delete[] bkgtree;
+  /**********************************************************************/
+  //Read data chain
+  TChain* datachain = GetChain(datafile, datatree);
+  /**********************************************************************/
   //Read precuts
   string precuts = GetCuts(precutsfile);
   if(precuts == ""){precuts = "(1)";}
+  /**********************************************************************/
   //Read initial bkg yields
-  int NN = 0; //DUMMY!!
+  NN = 0;
   string* bkgyieldfile = SplitString(NN, bkgyieldlist, " ");
   //Raise error if different
   if(NN!=Nbkg)
@@ -58,15 +95,22 @@ void CutSig(string sigfile, string bkglist, string instrfile, string sigyieldfil
       cout << "Error! Number of bkg files (" << Nbkg << ") and bkg yields (" << NN << ") must coincide! Stopping..." << endl;
       exit(1);
     }
+  /**********************************************************************/
+  //Read list of bkg weights
+  NN = 0;
+  string* _bkgw = SplitString(NN, bkgwlist, " ");
+  string* bkgw = new string[Nbkg]; for(int i=0;i<NN;i++){bkgw[i]=_bkgw[i];}
+  delete[] _bkgw;
+  /**********************************************************************/
   //Now READ!
   double* bkgyield0 = new double[Nbkg];
   for(int i=0;i<Nbkg;i++)
     {
       NN=0;
-      bkgyield0[i] = stod(ReadVariables(NN, bkgyieldfile[i])[0])/GetMeanEntries(bkgchain[i], precuts, bkgw);
+      bkgyield0[i] = stod(ReadVariables(NN, bkgyieldfile[i])[0])/GetMeanEntries(bkgchain[i], precuts, bkgw[i]);
     }
   NN=0;
-  double sigyield0 = stod(ReadVariables(NN, sigyieldfile)[0])/GetMeanEntries(sigchain, precuts, sigw);
+  /**********************************************************************/
   //Read instructions file, has 4 columns
   int N = 0;
   //Read line by line, then split in the different arrays
@@ -87,6 +131,7 @@ void CutSig(string sigfile, string bkglist, string instrfile, string sigyieldfil
       //Count combs so far
       combs *= steps[i];
     }
+  /**********************************************************************/
   // DATE START!!! (THANKS UNDERTALE)
   cout << "Will perform " << combs << " combinations. Please stand by..." << endl;
   //Open dump file
@@ -112,17 +157,27 @@ void CutSig(string sigfile, string bkglist, string instrfile, string sigyieldfil
 	  ss.str("");
 	  remnant = remnant/steps[j];
 	}
-      //Compute Punzi
-      //Compute S
-      double fom = GetMeanEntries(sigchain, thiscuts, sigw)*sigyield0;
+      /**********************************************************************/
+      //Compute efficiency
+      double eff = GetMeanEntries(sigchain, thiscuts, sigw);
       //Initialize B
       double B = 0;
       for(int j=0;j<Nbkg;j++)
 	{
-	  B += bkgyield0[j]*GetMeanEntries(bkgchain[j], thiscuts, bkgw);
+	  if(bkgchain[j]->GetEntries()>0)
+	    {
+	      B += bkgyield0[j]*GetMeanEntries(bkgchain[j], thiscuts, bkgw[j]);
+	    }
 	}
-      //Bottom part
-      fom = fom / TMath::Power(fom + B, spb_pow);
+      //Compute B
+      double D = 0;
+      if(datachain->GetEntries()>0)
+	{
+	  D = datachain->GetEntries(thiscuts.c_str());
+	}
+      //Compute Punzi
+      double fom = eff / (sigma/2. + TMath::Power(B+D, spb_pow));
+      /**********************************************************************/
       //Save fom in dumpfile
       dumpf << " | " << fom << endl;
       if(fom > bestfom){bestcomb = i; bestfom = fom;}
