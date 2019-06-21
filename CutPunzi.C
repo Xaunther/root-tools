@@ -27,23 +27,10 @@ cutN minN maxN stepsN
 #include "../Functions/StringTools.h"
 #include "../Functions/Filereading.h"
 #include "../Functions/Dictreading.h"
+#include "../Functions/ProgressBar.h"
 #include "../Dictionaries/Constants.h"
 using namespace std;
 
-//Small script to draw a progress bar :)
-void DrawProgress(double progress)
-{
-  const int barWidth = 70;
-  cout << "[";
-  int pos = barWidth * progress;
-  for (int i = 0; i < barWidth; ++i) {
-    if (i < pos) cout << "=";
-    else if (i == pos) cout << ">";
-    else cout << " ";
-  }
-  cout << "] " << int(progress * 100.0) << " %\r";
-  cout.flush();
-}
 void CutPunzi(string sigfile, string bkgfile, string datafile, string instrfile, string bkgyieldfile, string dumpname, string cutname, string precutsfile = "", string sigtree = "", string bkgtree = "", string datatree = "", string sigw = "1", string bkgw = "1", string massvar = "B_M", string opts = "", const double sigma = 5.)
 {
   //Read signal and background chains
