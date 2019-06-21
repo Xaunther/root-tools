@@ -51,8 +51,8 @@ Now, the general formula does not make much sense, one has to be clever to use t
 #include "../Dictionaries/Constants.h"
 using namespace std;
 
-void CutSig(string sigfile, string bkglist, string datafile, string instrfile, string bkgyieldlist, string dumpname, string cutname, string precutsfile = "", string sigtree = "", string bkgtreelist = "", string datatree = "", string sigw = "1", string bkgwlist = "1", const double sigma = 5., const double spb_pow = 0.5);
-void CutSig(string sigfile, string bkglist, string datafile, string instrfile, string bkgyieldlist, string dumpname, string cutname, string precutsfile, string sigtree, string bkgtreelist, string datatree, string sigw, string bkgwlist, const double sigma, const double spb_pow)
+void CutSig(string sigfile, string bkglist, string datafile, string instrfile, string bkgyieldlist, string dumpname, string cutname, string precutsfile = "", string sigtree = "", string bkgtreelist = "", string datatree = "", string sigw = "1", string bkgwlist = "1", string massvar = "B_M", string opts = "", const double sigma = 5., const double spb_pow = 0.5);
+void CutSig(string sigfile, string bkglist, string datafile, string instrfile, string bkgyieldlist, string dumpname, string cutname, string precutsfile, string sigtree, string bkgtreelist, string datatree, string sigw, string bkgwlist, string massvar, string opts, const double sigma, const double spb_pow)
 {
   int NN = 0; //DUMMY!!
 
@@ -132,6 +132,19 @@ void CutSig(string sigfile, string bkglist, string datafile, string instrfile, s
       combs *= steps[i];
     }
   /**********************************************************************/
+  //Get Mass window (used for all but greatest effect is for data, or should be
+  //First, options
+  if(opts=="")
+    {
+      opts = GetValueFor("Project_name", "Dictionaries/Project_variables.txt");
+    }
+  Constants const_list(opts);
+  //Second, cuts
+  stringstream ss;
+  ss << precuts << " * (" << massvar << " > " << const_list.xmin << ") * (" << massvar << " < " << const_list.xmax << ")";
+  precuts = ss.str();
+  ss.str("");
+  /**********************************************************************/
   // DATE START!!! (THANKS UNDERTALE)
   cout << "Will perform " << combs << " combinations. Please stand by..." << endl;
   //Open dump file
@@ -150,7 +163,6 @@ void CutSig(string sigfile, string bkglist, string datafile, string instrfile, s
       //Get this cut combination and go writing in the dumpfile
       for(int j=0;j<N;j++)
 	{
-	  stringstream ss;
 	  ss << thiscuts << " * (" << cut[j] << minV[j] + (maxV[j]-minV[j])/(steps[j]-1)*(remnant%steps[j]) << ")";
 	  dumpf << " * (" << cut[j] << minV[j] + (maxV[j]-minV[j])/(steps[j]-1)*(remnant%steps[j]) << ")";
 	  thiscuts = ss.str();
