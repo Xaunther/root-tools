@@ -20,7 +20,7 @@ using namespace std;
 #define Nbkgs 4
 /************************************************************************************************************************************************/
 //Fill Option arrays. Try to modularize parts of the scripts
-void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string w_var, string varnamedata, bool use_weights)
+void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string& w_var, string varnamedata, bool use_weights)
 {
   //Also define PID weight variable
   if(varnamedata == "B_M012") //Kpigamma
@@ -31,20 +31,20 @@ void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string 
       fitopt[3] = Line;
       for(int i=0;i<Nbkgs;i++)
 	{
-	  opts_MC[i] = "NstG_KpiG";
+	  opts_MC[i] = "NstG_KpiG_MC";
 	  variablename[i] = varnamedata;
 	}
       if(use_weights){w_var = "Event_PIDCalibEff_pbarpi";}
     }
   else if(varnamedata == "B_M012_Subst0_K2p") //ppigamma
     {
-      fitopt[0] = DoubleCB;
+      fitopt[0] = CBExp;
       fitopt[1] = CBExp;
       fitopt[2] = ArgusGauss;
       fitopt[3] = Line;
       for(int i=0;i<Nbkgs;i++)
 	{
-	  opts_MC[i] = "NstGamma";
+	  opts_MC[i] = "NstGamma_MC";
 	  variablename[i] = varnamedata;
 	}
       if(use_weights){w_var = "Event_PIDCalibEff";}
@@ -57,7 +57,7 @@ void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string 
       fitopt[3] = Exp;
       for(int i=0;i<Nbkgs;i++)
 	{
-	  opts_MC[i] = "NstG_pKG";
+	  opts_MC[i] = "NstG_pKG_MC";
 	  variablename[i] = varnamedata;
 	}
       if(use_weights){w_var = "Event_PIDCalibEff_ppibar";}
