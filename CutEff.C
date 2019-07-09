@@ -8,6 +8,8 @@
 #include "TFile.h"
 #include "TCanvas.h"
 #include "TLeaf.h"
+#include "TChain.h"
+#include "TMath.h"
 #include "../Functions/Filereading.h"
 #include "../Functions/Dictreading.h"
 #include "../Functions/TreeTools.h"
@@ -32,13 +34,15 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
   double* N_final = new double[N_cuts+1];
   double N0;
 
+  //Open chain here
+  TChain* chain = GetChain(dirfile);
   //Simply compute #of evts before and after
-  N0 = GetMeanEntries(dirfile, "", allprecuts, weight);
+  N0 = GetMeanEntries(chain, allprecuts, weight);
   for(int i=0;i<N_cuts;i++)
     {
-      N_final[i] = GetMeanEntries(dirfile, "", allprecuts+" * "+cuts[i], weight);
+      N_final[i] = GetMeanEntries(chain, allprecuts+" * "+cuts[i], weight);
     }
-  N_final[N_cuts] =GetMeanEntries(dirfile, "", allprecuts+" * "+allcuts, weight);
+  N_final[N_cuts] =GetMeanEntries(chain, allprecuts+" * "+allcuts, weight);
   //Now, produce a gorgeous output #4dalulz
   ofstream fout;
   fout.open(outfile.c_str());
@@ -59,6 +63,7 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
       fout << cuts[i] << setw(maxL+5-int(cuts[i].size())) << "  |  " << N_final[i]/N0 << endl;
     }
   fout << "Global" << setw(maxL+5-6) << "  |  " << N_final[N_cuts]/N0 << endl;
+  fout << "Error" << setw(maxL+5-5) << "  |  " << TMath::Sqrt(N_final[N_cuts]/N0*(1-N_final[N_cuts]/N0)/(N0*chain->GetEntries())) << endl;
   fout.close();
 
 }
