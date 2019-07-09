@@ -76,6 +76,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"root/PlotTable.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/PlotUsedVars.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/PlotVar.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/Ratio_NstG.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/RenameBranch.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/ROC_Area.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/ScaleYields.C+").c_str());
