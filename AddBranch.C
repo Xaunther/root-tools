@@ -1,64 +1,46 @@
+//New AddBranch function. Plan is to remove old version and stick with this one as it is more general
 #include <iostream>
 #include <fstream>
-#include "TTree.h"
-#include "TH1F.h"
-#include "TFile.h"
 #include <string>
-#include "TCanvas.h"
-#include "TLeaf.h"
 #include <sstream>
-#include "TMath.h"
+#include "TChain.h"
+#include "TFile.h"
+#include "TTree.h"
+#include "TTreeFormula.h"
+#include "TBranch.h"
+#include "../Functions/TreeTools.h"
 using namespace std;
-void AddBranch(string branchname, string tupleinfile, string tupleoutfile, string treename, string var1, string var2 = "", string var3 = "", string var4 = "", string var5 = "")
+void AddBranch(string branchname, string tupleinfile, string tupleoutfile, string formula, string treename = "")
 {
-  double branchvalue; //One should adapt the variable type to the branch requested Kplus_ProbNNp
+  double branchvalue; //Stick to a double output for now... 
 
   //Data chain
-  TFile* infile = new TFile(tupleinfile.c_str());
-  TTree* intree = (TTree*)infile->Get(treename.c_str());
+  TChain* inchain = GetChain(tupleinfile, treename);
 
-  string var[5];
-  var[0] = var1;
-  var[1] = var2;
-  var[2] = var3;
-  var[3] = var4;
-  var[4] = var5;
+  //Define TTreeFormula
+  TTreeFormula* formulavar = new TTreeFormula(formula.c_str(), formula.c_str(), inchain);
 
-  int N_vars = 0;
-  double varvalue[5];
-
-  for(int i=0;i<5;i++)
-    {
-      if(var[i]!="")
-	{
-	  intree->SetBranchAddress(var[i].c_str(),&varvalue[N_vars]);
-	  N_vars++;
-	}
-    }
-
-  //Add new branch with year
-  //For data
+  //Add new branch
   TFile* file = new TFile(tupleoutfile.c_str(), "RECREATE");
-  TTree* tree = intree->CloneTree();
+  TTree* tree = inchain->CloneTree();
   TBranch* newbranch = tree->Branch(branchname.c_str(), &branchvalue, (branchname+"/D").c_str());
 
-  for(int i=0;i<intree->GetEntries();i++)
+  //Loop over all events and get value
+  for(int i=0;i<inchain->GetEntries();i++)
     {
-      intree->GetEntry(i);
+      inchain->GetEntry(i);
       tree->GetEntry(i);
       //Insert formula, if any
-      //Pseudorapidity (eta = -0.5*log((1-x)/(1+x)), x = PZ/P) var1 = P, var2 = PZ
-      branchvalue = -TMath::Log((1-varvalue[1]/varvalue[0])/(1+varvalue[1]/varvalue[0]))/2;
+      branchvalue = formulavar->EvalInstance();
       newbranch->Fill();
-      if(i%(intree->GetEntries()/10)==0)
+      if(i%(inchain->GetEntries()/10)==0)
 	{
-	  cout << "Processing event: " << i << " / " << intree->GetEntries() << endl;
+	  cout << "Processing event: " << i << " / " << inchain->GetEntries() << endl;
 	}
     }
   tree->Print();
   tree->Write();
 
   file->Close();
-  infile->Close();
   cout << "New branch added" << endl;
 }
