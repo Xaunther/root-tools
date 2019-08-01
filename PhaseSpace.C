@@ -70,15 +70,18 @@ void PhaseSpace(double mothermass, string daughtermasses, string pnames, string 
       mother_P_chain->SetBranchAddress((mother_P_prefix+"X").c_str(), &mother_P[0]);
       mother_P_chain->SetBranchAddress((mother_P_prefix+"Y").c_str(), &mother_P[1]);
       mother_P_chain->SetBranchAddress((mother_P_prefix+"Z").c_str(), &mother_P[2]);
-    }
-  //Generate events, izy. Save them in tree. Can only generate either the minimum of the number requested and the events in the mother P distribution
-  if(mother_P_filename != "")
-    {
+      //Can only generate either the minimum of the number requested and the events in the mother P distribution
       if(mother_P_chain->GetEntries()<N_evts)
 	{
 	  N_evts = mother_P_chain->GetEntries();
 	}
     }
+  else
+    {
+      //Remove warning...
+      mother_P_chain = new TChain();
+    }
+  //Generate events, izy. Save them in tree. 
   for (int n=0;n<N_evts;n++)
     {
       //Re-roll momentum
