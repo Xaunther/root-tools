@@ -22,8 +22,8 @@ void AddBranch(string branchname, string tupleinfile, string tupleoutfile, strin
 
   //Add new branch
   TFile* file = new TFile(tupleoutfile.c_str(), "RECREATE");
-  TTree* tree = inchain->CloneTree();
-  TBranch* newbranch = tree->Branch(branchname.c_str(), &branchvalue, (branchname+"/D").c_str());
+  TTree* tree = inchain->CloneTree(0);
+  tree->Branch(branchname.c_str(), &branchvalue, (branchname+"/D").c_str());
 
   //Loop over all events and get value
   for(int i=0;i<inchain->GetEntries();i++)
@@ -32,7 +32,7 @@ void AddBranch(string branchname, string tupleinfile, string tupleoutfile, strin
       tree->GetEntry(i);
       //Insert formula, if any
       branchvalue = formulavar->EvalInstance();
-      newbranch->Fill();
+      tree->Fill();
       if(i%(inchain->GetEntries()/10)==0)
 	{
 	  cout << "Processing event: " << i << " / " << inchain->GetEntries() << endl;

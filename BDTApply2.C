@@ -29,7 +29,7 @@ void BDTApply2(string fileapplied, string outputfilename, string filename = "Var
 
   //Open output file (clone input tree)
   TFile* target = new TFile(outputfilename.c_str(), "RECREATE");
-  TTree* tree = datatree->CloneTree();
+  TTree* tree = datatree->CloneTree(0);
 
   //Instance TMVA READER
   TMVA::Tools::Instance();
@@ -55,7 +55,7 @@ void BDTApply2(string fileapplied, string outputfilename, string filename = "Var
 
   //Add branch to store BDT response
   double BDT_response;
-  TBranch* bdt_branch = tree->Branch(BDTvarname.c_str(), &BDT_response, (BDTvarname+"/D").c_str());
+  tree->Branch(BDTvarname.c_str(), &BDT_response, (BDTvarname+"/D").c_str());
 
   //Apply BDT
   for(long k=0; k<datatree->GetEntries(); k++)
@@ -74,11 +74,11 @@ void BDTApply2(string fileapplied, string outputfilename, string filename = "Var
 	}
       //Evaluate BDT
       BDT_response = reader->TMVA::Reader::EvaluateMVA("BDT method");
-      bdt_branch->Fill();
+      tree->Fill();
     }
   tree->Write();
   
-  data->Close();
   target->Close();
+  data->Close();
 }
 
