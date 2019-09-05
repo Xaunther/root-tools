@@ -16,6 +16,7 @@ void rootinit(std::string path)
   //Personal tools not depending on anything external
   gROOT->ProcessLine((".L "+path+"Functions/ErrorTools.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/Extract_Var.cxx+").c_str());
+  gROOT->ProcessLine((".L "+path+"Functions/Probability.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/ProgressBar.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/TISTOS.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/Styles.cxx+").c_str());

@@ -2,6 +2,7 @@
 #include <iostream>
 #include "../Functions/TreeTools.h"
 #include "../Functions/Filereading.h"
+#include "../Functions/Probability.h"
 #include "TChain.h"
 #include "TFile.h"
 #include "TTree.h"
@@ -44,14 +45,24 @@ void CheckMultiplicity(string filedir, string cutfile = "")
   int j;
   for(int i=0;i<N;i++)
     {
-      double av_weight = 0;
+      //For each event we have to compute the joint probability of each of its candidates. Call a function to do so
+      double* w_array = new double[repeated_evtnumber[i]];
       for(j = N_entry;j<N_entry+repeated_evtnumber[i];j++)
 	{
 	  temptree->GetEntry(j);
-	  av_weight+=formulavar->EvalInstance();
+	  w_array[j-N_entry] = formulavar->EvalInstance();
+	  //Make sure it is between 0 and 1
+	  if(w_array[j-N_entry]<0)
+	    {
+	      w_array[j-N_entry] = 0.;
+	    }
+	  else if(w_array[j-N_entry]>1)
+	    {
+	      w_array[j-N_entry] = 1.;
+	    }
 	}
       N_entry = j;
-      multiplicity += av_weight/double(repeated_evtnumber[i]);
+      multiplicity += JointProbIndependent(w_array, repeated_evtnumber[i]);
       
       if(repeated_evtnumber[i] > 1)
 	{
