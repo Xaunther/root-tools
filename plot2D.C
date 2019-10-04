@@ -41,8 +41,8 @@ void plot2D(string datafile, MyStyles::palette palette, string title = "")
   //Deal with the titles
   int title_index = 0;
   string* _titles = SplitString(title_index, title, ";");
-  string* titles = new string[3];
-  int max_index = (title_index > 3) ? 3 : title_index;
+  string* titles = new string[4];
+  int max_index = (title_index > 4) ? 4 : title_index;
   for(int i=0;i<max_index;i++)
     {
       //Only the first three
@@ -58,6 +58,7 @@ void plot2D(string datafile, MyStyles::palette palette, string title = "")
   h->SetTitle (titles[0].c_str());
   h->SetXTitle(titles[1].c_str());
   h->SetYTitle(titles[2].c_str());
+  h->SetZTitle(titles[3].c_str());
   h->GetZaxis()->SetTitleOffset(1.);
 
   for (int i=1;i<NxBins;i++)
