@@ -10,13 +10,14 @@
 #include <iostream>
 #include "../Functions/Dictreading.h"
 #include "../Functions/Filereading.h"
+#include "../Functions/StringTools.h"
 using namespace std;
 
 //Constantitllsos
 #define NxBins 15
 #define NyBins 15
 
-void plot2D(string datafile, MyStyles::palette palette)
+void plot2D(string datafile, MyStyles::palette palette, string title = "")
 {
   //Central value of the bins
   double xBins[NxBins+1] = {-0.05, 0.05, 0.15, 0.25, 0.35, 0.425, 0.475, 0.525, 0.575, 0.625, 0.675, 0.725, 0.775, 0.825, 0.875, 0.95};
@@ -25,7 +26,7 @@ void plot2D(string datafile, MyStyles::palette palette)
   //Set Style
   MyStyles::SetPalette(palette);
 
-  TH2F* h = new TH2F("caca1", "Combinatorial background yield", NxBins, xBins, NyBins, yBins);
+  TH2F* h = new TH2F("caca1", "Particle ID figure of merit", NxBins, xBins, NyBins, yBins);
   
   int Nentries = 0;
   int Ncols = 3;
@@ -37,15 +38,26 @@ void plot2D(string datafile, MyStyles::palette palette)
       h->Fill(data[i][0], data[i][1], data[i][2]);
     }
   cout << Nentries << " events" << endl;
+  //Deal with the titles
+  int title_index = 0;
+  string* _titles = SplitString(title_index, title, ";");
+  string* titles = new string[3];
+  int max_index = (title_index > 3) ? 3 : title_index;
+  for(int i=0;i<max_index;i++)
+    {
+      //Only the first three
+      
+      titles[i] = _titles[i];
+    }
   TLine l;
   TCanvas* c1 = new TCanvas();
   gStyle->SetOptStat(0);
   c1->cd();
   c1->SetRightMargin(0.15);
   h->Draw("COLZ");
-  h->GetXaxis()->SetTitle("ProbNNpi(1-ProbNNp)(1-ProbNNk) > x");
-  h->GetYaxis()->SetTitle("ProbNNp(1-ProbNNpi)(1-ProbNNk) > y");
-  h->GetZaxis()->SetTitle("log(B_{comb})");
+  h->SetTitle (titles[0].c_str());
+  h->SetXTitle(titles[1].c_str());
+  h->SetYTitle(titles[2].c_str());
   h->GetZaxis()->SetTitleOffset(1.);
 
   for (int i=1;i<NxBins;i++)
@@ -57,6 +69,9 @@ void plot2D(string datafile, MyStyles::palette palette)
       l.DrawLine(-0.05,(yBins[i]+yBins[i])/2,0.95,(yBins[i]+yBins[i])/2);
     }
 
-  c1->SaveAs(("plots/"+datafile+".pdf").c_str());
+  //Extract filename from directory
+  int dir_size = 0;
+  string* dirname = SplitString(dir_size, datafile, "/");
+  c1->SaveAs(("plots/"+dirname[dir_size-1]+".pdf").c_str());
   return;
 }
