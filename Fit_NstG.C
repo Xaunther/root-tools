@@ -20,7 +20,7 @@ using namespace std;
 #define Nbkgs 4
 /************************************************************************************************************************************************/
 //Fill Option arrays. Try to modularize parts of the scripts
-void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string& w_var, string varnamedata, bool use_weights)
+void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string* w_var, string varnamedata, bool use_weights)
 {
   //Also define PID weight variable
   if(varnamedata == "B_M012") //Kpigamma
@@ -33,8 +33,11 @@ void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string&
 	{
 	  opts_MC[i] = "NstG_KpiG_MC";
 	  variablename[i] = varnamedata;
+	  if(use_weights)
+	    {
+	      w_var[i] = "Event_PIDCalibEff_pbarpi_global_weight";
+	    }
 	}
-      if(use_weights){w_var = "Event_PIDCalibEff_pbarpi";}
     }
   else if(varnamedata == "B_M012_Subst0_K2p") //ppigamma
     {
@@ -46,8 +49,11 @@ void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string&
 	{
 	  opts_MC[i] = "NstGamma_MC";
 	  variablename[i] = varnamedata;
+	  if(use_weights)
+	    {
+	      w_var[i] = "Event_PIDCalibEff_global_weight";
+	    }
 	}
-      if(use_weights){w_var = "Event_PIDCalibEff";}
     }
   else if (varnamedata == "B_M012_Subst01_Kpi2pK") //pKgamma
     {
@@ -59,8 +65,11 @@ void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string&
 	{
 	  opts_MC[i] = "NstG_pKG_MC";
 	  variablename[i] = varnamedata;
+	  if(use_weights)
+	    {
+	      w_var[i] = "Event_PIDCalibEff_ppibar_global_weight";
+	    }
 	}
-      if(use_weights){w_var = "Event_PIDCalibEff_ppibar";}
     }
   return;
 }
@@ -77,7 +86,7 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
     {
       opts = GetValueFor("Project_name", "Dictionaries/Project_variables.txt");      
     }
-  string w_var = "";
+  string* w_var = new string[Nbkgs];
   //RooFit
   FitFunction* fitf = FitFunction_init();
   RooWorkspace** ws = new RooWorkspace*[Nbkgs];
@@ -106,7 +115,7 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
       tree[i] = (TTree*)file[i]->Get("DecayTree");
       cout << endl << "Starting MC fit number " << i << endl;
       cout << "------------------------" << endl << endl;
-      ws[i] = fitf[fitopt[i]](variablename[i], tree[i], w_var, 0, 0, opts_MC[i]);
+      ws[i] = fitf[fitopt[i]](variablename[i], tree[i], w_var[i], 0, 0, opts_MC[i]);
       /************************/
       //Plot MC if requested
       if(plotMC){GoodPlot(ws[i], variablename[i], true, "", "", opts_MC[i], "_MC"+ss.str());}
@@ -166,6 +175,7 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
     }      
     //Initialize data stuff
   //Load TChain
+  /*
   string cutsdata = GetCuts(cutfiledata);
   TChain* chain = GetChain(filedirdata);
   TFile* tempfile = new TFile("Tuples/temp.root", "recreate");
@@ -202,4 +212,5 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
     }
   //Plot with log scale
   GoodPlot(Final_ws, varnamedata, false, "", "", logopts, "_log");
+  */
 }
