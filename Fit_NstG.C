@@ -26,7 +26,7 @@ void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string*
   if(varnamedata == "B_M012") //Kpigamma
     {
       fitopt[0] = DoubleCB;
-      fitopt[1] = CBExp;
+      fitopt[1] = DoubleGaussExp;
       fitopt[2] = ArgusGauss;
       fitopt[3] = Line;
       for(int i=0;i<Nbkgs;i++)
@@ -175,7 +175,6 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
     }      
     //Initialize data stuff
   //Load TChain
-  /*
   string cutsdata = GetCuts(cutfiledata);
   TChain* chain = GetChain(filedirdata);
   TFile* tempfile = new TFile("Tuples/temp.root", "recreate");
@@ -212,5 +211,4 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
     }
   //Plot with log scale
   GoodPlot(Final_ws, varnamedata, false, "", "", logopts, "_log");
-  */
 }
