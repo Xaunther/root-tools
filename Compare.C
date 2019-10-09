@@ -64,25 +64,24 @@ int main(int argc, char** argv)
       break;
     case 7:
       Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
-		  *(new string(argv[7])));
+	      *(new string(argv[7])));
       break;
     case 8:
       Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
-		  *(new string(argv[7])), *(new string(argv[8])));
+	      *(new string(argv[7])), *(new string(argv[8])));
       break;
     case 9:
       Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
-		  *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])));
+	      *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])));
       break;
     case 10:
       Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
-		  *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])));
+	      *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])));
       break;
     case 11:
       Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
-		  *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])));
+	      *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])));
       break;
-
     default:
       cout << "Wrong number of arguments (" << argc << ") for Compare" << endl;
       return(1);

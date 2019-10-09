@@ -50,26 +50,25 @@ int main(int argc, char** argv)
   switch(argc)
     {
     case 3:
-      AddBranch(*(new string(argv[1])), fitopt, *(new string(argv[3])));
+      VarFit(*(new string(argv[1])), fitopt, *(new string(argv[3])));
       break;
     case 4:
-      AddBranch(*(new string(argv[1])), fitopt, *(new string(argv[3])), *(new string(argv[4])));
+      VarFit(*(new string(argv[1])), fitopt, *(new string(argv[3])), *(new string(argv[4])));
       break;
     case 5:
-      AddBranch(*(new string(argv[1])), fitopt, *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+      VarFit(*(new string(argv[1])), fitopt, *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
       break;
     case 6:
-      AddBranch(*(new string(argv[1])), fitopt, *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
+      VarFit(*(new string(argv[1])), fitopt, *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
       break;
     case 7:
-      AddBranch(*(new string(argv[1])), fitopt, *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])));
+      VarFit(*(new string(argv[1])), fitopt, *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])));
       break;
     case 8:
-      AddBranch(*(new string(argv[1])), fitopt, *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])));
+      VarFit(*(new string(argv[1])), fitopt, *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])));
       break;
-
     default:
-      cout << "Wrong number of arguments (" << argc << ") for AddBranch" << endl;
+      cout << "Wrong number of arguments (" << argc << ") for VarFit" << endl;
       return(1);
       break;
     }

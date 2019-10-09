@@ -81,3 +81,23 @@ void CheckMultiplicity(string filedir, string cutfile = "")
   cout << "Multiplicity: " << GetMeanEntries(temptree, cuts)*double(temptree->GetEntries())/multiplicity << endl;
   file->Close();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc)
+    {
+    case 1:
+      CheckMultiplicity(*(new string(argv[1])));
+      break;
+    case 2:
+      CheckMultiplicity(*(new string(argv[1])), *(new string(argv[2])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for CheckMultiplicity" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

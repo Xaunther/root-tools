@@ -27,12 +27,6 @@ int main(int argc, char** argv)
 {
   switch(argc)
     {
-    case 1:
-      InvertCut(*(new string(argv[1])));
-      break;
-    case 2:
-      InvertCut(*(new string(argv[1])), *(new string(argv[2])));
-      break;
     case 3:
       InvertCut(*(new string(argv[1])), *(new string(argv[2])), stoi(*(new string(argv[3]))));
       break;

@@ -123,7 +123,7 @@ int main(int argc, char** argv)
       break;
     case 8:
       BDTTrain2(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])),
-		  *(new string(argv[8])));
+		*(new string(argv[8])));
       break;
     default:
       cout << "Wrong number of arguments (" << argc << ") for BDTTrain2" << endl;

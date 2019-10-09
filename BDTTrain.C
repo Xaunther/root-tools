@@ -100,3 +100,44 @@ void BDTTrain(string massvar, string sample, string extracuts_sig, bool HMonly, 
   //  addedsigtree->Close();
   //  addedbkgtree->Close();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  bool HMonly = false;
+  bool logdira = false;
+  switch(argc)
+    {
+    case 2:
+      BDTTrain(*(new string(argv[1])), *(new string(argv[2])));
+      break;
+    case 3:
+      BDTTrain(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+      break;
+    case 4:
+      if(argv[4] = "true" || argv[4] = "1"){HMonly = true;}
+      BDTTrain(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), HMonly);
+      break;
+    case 5:
+      if(argv[4] = "true" || argv[4] = "1"){HMonly = true;}
+      if(argv[5] = "true" || argv[5] = "1"){logdira = true;}
+      BDTTrain(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), HMonly, logdira);
+      break;
+    case 6:
+      if(argv[4] = "true" || argv[4] = "1"){HMonly = true;}
+      if(argv[5] = "true" || argv[5] = "1"){logdira = true;}
+      BDTTrain(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), HMonly, logdira, *(new string(argv[6])));
+      break;
+    case 7:
+      if(argv[4] = "true" || argv[4] = "1"){HMonly = true;}
+      if(argv[5] = "true" || argv[5] = "1"){logdira = true;}
+      BDTTrain(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), HMonly, logdira, *(new string(argv[6])), *(new string(argv[7])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for BDTTrain" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

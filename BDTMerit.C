@@ -141,3 +141,30 @@ void BDTMerit(RunNumber run_number, double init_value, double final_value, int s
     }
   fout.close();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  RunNumber run_number = StringToRunNumber(*(new string(argv[1])));
+  switch(argc)
+    {
+    case 3:
+      BDTMerit(run_number, stod(*(new string(argv[2]))), stod(*(new string(argv[3]))));
+      break;
+    case 4:
+      BDTMerit(run_number, stod(*(new string(argv[2]))), stod(*(new string(argv[3]))), stoi(*(new string(argv[4]))));
+      break;
+    case 5:
+      BDTMerit(run_number, stod(*(new string(argv[2]))), stod(*(new string(argv[3]))), stoi(*(new string(argv[4]))), *(new string(argv[5])));
+      break;
+    case 6:
+      BDTMerit(run_number, stod(*(new string(argv[2]))), stod(*(new string(argv[3]))), stoi(*(new string(argv[4]))), *(new string(argv[5])), *(new string(argv[6])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for BDTMerit" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

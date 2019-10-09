@@ -100,3 +100,29 @@ void PhaseSpace(double mothermass, string daughtermasses, string pnames, string 
   tree->Write();
   outfile->Close();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc)
+    {
+    case 4:
+      PhaseSpace(stod(*(new string(argv[1]))), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+      break;
+    case 5:
+      PhaseSpace(stod(*(new string(argv[1]))), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), stoi(*(new string(argv[5]))));
+      break;
+    case 6:
+      PhaseSpace(stod(*(new string(argv[1]))), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), stoi(*(new string(argv[5]))), *(new string(argv[6])));
+      break;
+    case 7:
+      PhaseSpace(stod(*(new string(argv[1]))), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), stoi(*(new string(argv[5]))), *(new string(argv[6])), *(new string(argv[7])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for PhaseSpace" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

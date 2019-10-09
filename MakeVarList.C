@@ -17,19 +17,19 @@ int main(int argc, char** argv)
   switch(argc)
     {
     case 0:
-      PlotCorrVar();
+      MakeVarList();
       break;
     case 1:
-      PlotCorrVar(*(new string(argv[1])));
+      MakeVarList(*(new string(argv[1])));
       break;
     case 2:
-      PlotCorrVar(*(new string(argv[1])), stoi(*(new string(argv[2]))));
+      MakeVarList(*(new string(argv[1])), stoi(*(new string(argv[2]))));
       break;
     case 3:
-      PlotCorrVar(*(new string(argv[1])), stoi(*(new string(argv[2]))), *(new string(argv[3])));
+      MakeVarList(*(new string(argv[1])), stoi(*(new string(argv[2]))), *(new string(argv[3])));
       break;
     default:
-      cout << "Wrong number of arguments (" << argc << ") for PlotCorrVar" << endl;
+      cout << "Wrong number of arguments (" << argc << ") for MakeVarList" << endl;
       return(1);
       break;
     }

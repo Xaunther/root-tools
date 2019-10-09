@@ -138,3 +138,36 @@ void Fit_NstG_ppimumu(bool use_weights, string varnamedata, string filedirdata, 
   //Plot with log scale
   GoodPlot(Final_ws, varnamedata, false, "", "", logopts, "_log");
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  bool use_weights = false;
+  bool plotMC = false;
+  switch(argc)
+    {
+    case 3:
+      if(argv[1] == "true" || argv[1] == "1"){use_weights = true;}
+      Fit_NstG_ppimumu(use_weights, *(new string(argv[2])), *(new string(argv[3])));
+      break;
+    case 4:
+      if(argv[1] == "true" || argv[1] == "1"){use_weights = true;}
+      Fit_NstG_ppimumu(use_weights, *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+      break;
+    case 5:
+      if(argv[1] == "true" || argv[1] == "1"){use_weights = true;}
+      Fit_NstG_ppimumu(use_weights,, *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+      break;
+    case 6:
+      if(argv[1] == "true" || argv[1] == "1"){use_weights = true;}
+      if(argv[6] == "true" || argv[6] == "1"){plotMC = true;}
+      Fit_NstG_ppimumu(use_weights,, *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), plotMC);
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for Fit_NstG_ppimumu" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif
