@@ -43,7 +43,7 @@ void PlotUsedVars(string cutfile = "Variables/Cuts.txt", string plotopt = "", st
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 0:
       PlotUsedVars();

@@ -94,7 +94,7 @@ void PIDTable(string filedir, string resultsfile = "PIDEff.txt", bool abspath = 
 int main(int argc, char** argv)
 {
   bool abspath = false;
-  switch(argc)
+  switch(argc-1)
     {
     case 1:
       PIDTable(*(new string(argv[1])));

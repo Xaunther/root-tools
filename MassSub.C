@@ -450,7 +450,7 @@ void MassSub_KstG_Gauss(string dirfile, string outfile)
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 1:
       MassSub(*(new string(argv[1])));

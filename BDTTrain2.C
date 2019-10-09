@@ -101,7 +101,7 @@ void BDTTrain2(string sig_file, string bkg_filelist, string sig_cutfile, string 
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 2:
       BDTTrain2(*(new string(argv[1])), *(new string(argv[2])));

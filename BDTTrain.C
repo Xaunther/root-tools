@@ -106,7 +106,7 @@ int main(int argc, char** argv)
 {
   bool HMonly = false;
   bool logdira = false;
-  switch(argc)
+  switch(argc-1)
     {
     case 2:
       BDTTrain(*(new string(argv[1])), *(new string(argv[2])));

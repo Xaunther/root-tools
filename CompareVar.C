@@ -66,7 +66,7 @@ void CompareVar(string variablename, string filedir1, string opts)
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 3:
       CompareVar(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));

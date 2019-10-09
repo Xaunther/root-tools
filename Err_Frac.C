@@ -45,7 +45,7 @@ void Err_Frac(int steps = 100, string filename = "Tuples/BDT-results_OP.root", s
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 0:
       Err_Frac();

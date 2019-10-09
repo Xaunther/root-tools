@@ -53,7 +53,7 @@ void Compute_Value(string datadir, string filetoloop, string outfilename = "resu
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 2:
       Compute_Value(*(new string(argv[1])), *(new string(argv[2])));

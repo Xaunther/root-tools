@@ -151,7 +151,7 @@ void BDTApply(string fileapplied, string outputfilename, bool excludeBDTvars = f
 int main(int argc, char** argv)
 {
   bool excludeBDTvars = false;
-  switch(argc)
+  switch(argc-1)
     {
     case 2:
       BDTApply(*(new string(argv[1])), *(new string(argv[2])));

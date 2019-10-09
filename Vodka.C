@@ -101,7 +101,7 @@ void Vodka(string filename1, string filename2, string treename1, string treename
 int main(int argc, char** argv)
 {
   bool binned = false;
-  switch(argc)
+  switch(argc-1)
     {
     case 5:
       Vodka(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));

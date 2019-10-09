@@ -108,7 +108,7 @@ void UnbinnedReweight(string sample, string model, string varname_sample, string
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 5:
       UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));

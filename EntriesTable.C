@@ -57,7 +57,7 @@ void EntriesTable(string samples, string varcut, double var_min, double var_max,
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 4:
       EntriesTable(*(new string(argv[1])), *(new string(argv[2])), stod(*(new string(argv[3]))), stod(*(new string(argv[4]))));

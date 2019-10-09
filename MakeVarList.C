@@ -14,7 +14,7 @@ void MakeVarList(string infile = "temp.txt", int col = 3, string outfile = "temp
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 0:
       MakeVarList();

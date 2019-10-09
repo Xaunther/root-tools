@@ -55,7 +55,7 @@ void BDT_BvsS(string filename, double yfactor = 1, double xfactor = 1, double ol
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 1:
       BDT_BvsS(*(new string(argv[1])));

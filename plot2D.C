@@ -81,7 +81,7 @@ void plot2D(string datafile, MyStyles::palette palette, string title = "")
 int main(int argc, char** argv)
 {
   MyStyles::palette palette = MyStyles::StringToPalette(*(new string(argv[2])));
-  switch(argc)
+  switch(argc-1)
     {
     case 2:
       plot2D(*(new string(argv[1])), palette);

@@ -51,7 +51,7 @@ void CutTree(string outputfile, string cutsfilename = "", string tupledir = "", 
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 1:
       CutTree(*(new string(argv[1])));

@@ -23,7 +23,7 @@ void ROC_Area(string filename, string histname = "default/Method_BDT/BDT/MVA_BDT
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 1:
       ROC_Area(*(new string(argv[1])));

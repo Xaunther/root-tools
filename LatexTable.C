@@ -44,7 +44,7 @@ int main(int argc, char** argv)
 {
   bool newfile = false;
   FitOption fitopt = StringToFitOption(*(new string(argv[2])));
-  switch(argc)
+  switch(argc-1)
     {
     case 4:
       if(*(new string(argv[4])) == "true" || *(new string(argv[4])) == "1"){newfile = true;}

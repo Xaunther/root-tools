@@ -46,7 +46,7 @@ void RenameBranch(string outname, string tupledir = "Directories/Lb2016DataMagUp
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 1:
       RenameBranch(*(new string(argv[1])));

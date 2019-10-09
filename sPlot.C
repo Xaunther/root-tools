@@ -180,7 +180,7 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
 int main(int argc, char** argv)
 {
   FitOption fitopt = StringToFitOption(*(new string(argv[4])));
-  switch(argc)
+  switch(argc-1)
     {
     case 4:
       sPlot(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), fitopt);

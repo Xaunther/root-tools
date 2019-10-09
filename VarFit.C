@@ -47,7 +47,7 @@ void VarFit(string variablename, FitOption fitopt, string filedir, string cutfil
 int main(int argc, char** argv)
 {
   FitOption fitopt = StringToFitOption(*(new string(argv[2])));
-  switch(argc)
+  switch(argc-1)
     {
     case 3:
       VarFit(*(new string(argv[1])), fitopt, *(new string(argv[3])));

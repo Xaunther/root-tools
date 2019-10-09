@@ -85,7 +85,7 @@ void CheckMultiplicity(string filedir, string cutfile = "")
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 1:
       CheckMultiplicity(*(new string(argv[1])));

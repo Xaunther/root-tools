@@ -43,7 +43,7 @@ void ScaleYields(string yieldlist, string totyieldfile, string suffix, string se
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 2:
       ScaleYields(*(new string(argv[1])), *(new string(argv[2])));

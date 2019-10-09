@@ -143,7 +143,7 @@ void Fit_NstG_ppimumu(string varnamedata, string filedirdata, string cutfiledata
 int main(int argc, char** argv)
 {
   bool plotMC = false;
-  switch(argc)
+  switch(argc-1)
     {
     case 2:
       Fit_NstG_ppimumu(*(new string(argv[1])), *(new string(argv[2])));

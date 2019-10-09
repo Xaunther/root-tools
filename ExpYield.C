@@ -20,7 +20,7 @@ void ExpYield(string yield_file, string eff_file, string out_file, string cut = 
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 3:
       ExpYield(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));

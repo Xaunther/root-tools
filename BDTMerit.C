@@ -145,7 +145,7 @@ void BDTMerit(RunNumber run_number, double init_value, double final_value, int s
 int main(int argc, char** argv)
 {
   RunNumber run_number = StringToRunNumber(*(new string(argv[1])));
-  switch(argc)
+  switch(argc-1)
     {
     case 3:
       BDTMerit(run_number, stod(*(new string(argv[2]))), stod(*(new string(argv[3]))));

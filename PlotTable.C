@@ -67,7 +67,7 @@ void PlotTable(string tablesdir, string plot_opts = "APL", double x_factor = 1.,
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 1:
       PlotTable(*(new string(argv[1])));

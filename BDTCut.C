@@ -68,7 +68,7 @@ void BDTCut(string tupledir = "Directories/Alltuples.dir", string tupledirbkg = 
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 0:
       BDTCut();

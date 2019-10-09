@@ -123,7 +123,7 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 2:
       TISTOS(*(new string(argv[1])), *(new string(argv[2])));

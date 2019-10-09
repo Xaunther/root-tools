@@ -132,7 +132,7 @@ void sWeight(string varname, string tupledir, string outfilename, FitOption fito
 int main(int argc, char** argv)
 {
   FitOption fitopt = StringToFitOption(*(new string(argv[4])));
-  switch(argc)
+  switch(argc-1)
     {
     case 4:
       sWeight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), fitopt);

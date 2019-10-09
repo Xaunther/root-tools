@@ -104,7 +104,7 @@ void AppendVars(string file1, string file2, string outfile, string cutfile1 = ""
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc)
+  switch(argc-1)
     {
     case 3:
       AppendVars(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
