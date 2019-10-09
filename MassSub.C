@@ -74,8 +74,6 @@ void MassSub_NstG(string dirfile, string outfile)
 
   //Mass values
   double _m;
-  double m_01[3][3];
-  double m_012[3][3][2];
   //4-momentum of p1, p2, p3 (p[i]
   TLorentzVector* p = new TLorentzVector[3];
   //3-momentum of p1, p2, p3 (particle i component j)
@@ -175,8 +173,6 @@ void MassSub_ppimumu(string dirfile, string outfile)
 
   //Mass values
   double _m;
-  double m_01[3][3];
-  double m_012[3][3][1]; //Only interested in dimuon
   //4-momentum of p1, p2, p3 p4(p[i])
   TLorentzVector* p = new TLorentzVector[4];
   //3-momentum of p1, p2, p3 (particle i component j)
@@ -279,8 +275,6 @@ void MassSub_NstG_Gauss(string dirfile, string outfile)
 
   //Mass values
   double _m;
-  double m_01[3][3];
-  double m_012[3][3][2];
   //4-momentum of p1, p2, p3 (p[i]
   TLorentzVector* p = new TLorentzVector[3];
   //3-momentum of p1, p2, p3 (particle i component j)
@@ -382,8 +376,6 @@ void MassSub_KstG_Gauss(string dirfile, string outfile)
 
   //Mass values
   double _m;
-  double m_01[3][3];
-  double m_012[3][3][2];
   //4-momentum of p1, p2, p3 (p[i]
   TLorentzVector* p = new TLorentzVector[3];
   //3-momentum of p1, p2, p3 (particle i component j)
