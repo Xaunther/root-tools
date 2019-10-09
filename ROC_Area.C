@@ -19,3 +19,23 @@ void ROC_Area(string filename, string histname = "default/Method_BDT/BDT/MVA_BDT
   cout << endl << "Area of the curve: " << area << endl << endl;
   file->Close();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc)
+    {
+    case 1:
+      ROC_Area(*(new string(argv[1])));
+      break;
+    case 2:
+      ROC_Area(*(new string(argv[1])), *(new string(argv[2])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for ROC_Area" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

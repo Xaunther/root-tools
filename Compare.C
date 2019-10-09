@@ -53,3 +53,41 @@ void Compare(string filename1, string filename2, string var1, string var2, strin
   c1->SaveAs(("plots/compare_"+var1+"_"+var2+".pdf").c_str());
 
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc)
+    {
+    case 6:
+      Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
+      break;
+    case 7:
+      Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
+		  *(new string(argv[7])));
+      break;
+    case 8:
+      Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
+		  *(new string(argv[7])), *(new string(argv[8])));
+      break;
+    case 9:
+      Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
+		  *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])));
+      break;
+    case 10:
+      Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
+		  *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])));
+      break;
+    case 11:
+      Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
+		  *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])));
+      break;
+
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for Compare" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

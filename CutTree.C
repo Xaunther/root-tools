@@ -50,3 +50,35 @@ void CutTree(string outputfile, string cutsfilename = "", string tupledir = "", 
   cout << "Tree cut" << endl;
   cutfile->Close();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc)
+    {
+    case 1:
+      CutTree(*(new string(argv[1])));
+      break;
+    case 2:
+      CutTree(*(new string(argv[1])), *(new string(argv[2])));
+      break;
+    case 3:
+      CutTree(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+      break;
+    case 4:
+      CutTree(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+      break;
+    case 5:
+      CutTree(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), stoi(*(new string(argv[5]))));
+      break;
+    case 6:
+      CutTree(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), stoi(*(new string(argv[5]))), stoi(*(new string(argv[6]))));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for CutTree" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

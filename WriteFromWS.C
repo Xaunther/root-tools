@@ -35,3 +35,26 @@ void WriteFromWS(string wsfilename, string varname, string outfilename, string w
   outf << ws->var(varname.c_str())->getValV();
   outf.close();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc)
+    {
+    case 3:
+      WriteFromWS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+      break;
+    case 4:
+      WriteFromWS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+      break;
+    case 5:
+      WriteFromWS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for WriteFromWS" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

@@ -63,3 +63,20 @@ void OutputSearch(string filename)
     }
   outfile << endl;
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc)
+    {
+    case 1:
+      OutputSearch(*(new string(argv[1])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for OutputSearch" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

@@ -132,3 +132,33 @@ void sWeight(string varname, string tupledir, string outfilename, FitOption fito
   outtree->Write();
   outfile->Close();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  FitOption fitopt = StringToFitOption(*(new string(argv[4])));
+  switch(argc)
+    {
+    case 4:
+      sWeight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), fitopt);
+      break;
+    case 5:
+      sWeight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), fitopt, *(new string(argv[5])));
+      break;
+    case 6:
+      sWeight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), fitopt, *(new string(argv[5])), *(new string(argv[6])));
+      break;
+    case 7:
+      sWeight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), fitopt, *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])));
+      break;
+    case 8:
+      sWeight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), fitopt, *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for sWeight" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

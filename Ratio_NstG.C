@@ -96,3 +96,20 @@ void Ratio_NstG()
   //Output result
   cout << "Result of BF(Lb->ppiG)/BF(Lb->pKG): " << BR << " S" << endl;
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc)
+    {
+    case 0:
+      Ratio_NstG();
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for Ratio_NstG" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

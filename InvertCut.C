@@ -21,3 +21,26 @@ void InvertCut(string filein, string fileout, int pos)
   //Write cuts into file!
   SaveVariables(cuts, N, fileout);
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc)
+    {
+    case 1:
+      InvertCut(*(new string(argv[1])));
+      break;
+    case 2:
+      InvertCut(*(new string(argv[1])), *(new string(argv[2])));
+      break;
+    case 3:
+      InvertCut(*(new string(argv[1])), *(new string(argv[2])), stoi(*(new string(argv[3]))));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for InvertCut" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

@@ -104,3 +104,36 @@ void UnbinnedReweight(string sample, string model, string varname_sample, string
   outtree->Write();
   outfile->Close();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc)
+    {
+    case 5:
+      UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+      break;
+    case 6:
+      UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])),
+		       *(new string(argv[6])));
+      break;
+    case 7:
+      UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])),
+		       *(new string(argv[6])), *(new string(argv[7])));
+      break;
+    case 8:
+      UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])),
+		       *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])));
+      break;
+    case 9:
+      UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])),
+		       *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for UnbinnedReweight" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

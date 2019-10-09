@@ -96,3 +96,25 @@ void Vodka(string filename1, string filename2, string treename1, string treename
       cout << "Background test: " << testtree->GetHistogram()->KolmogorovTest(traintree->GetHistogram()) << endl;
     }
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc)
+    {
+    case 5:
+      Vodka(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+      break;
+    case 6:
+      bool binned = false;
+      if(argv[6]=="true" || argv[6]=="1"){binned = true;}
+      Vodka(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), binned);
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for Vodka" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

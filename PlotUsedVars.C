@@ -39,3 +39,29 @@ void PlotUsedVars(string cutfile = "Variables/Cuts.txt", string plotopt = "", st
     }
   c1->Close();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc)
+    {
+    case 0:
+      PlotUsedVars();
+      break;
+    case 1:
+      PlotUsedVars(*(new string(argv[1])));
+      break;
+    case 2:
+      PlotUsedVars(*(new string(argv[1])), *(new string(argv[2])));
+      break;
+    case 3:
+      PlotUsedVars(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for PlotUsedVars" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif
