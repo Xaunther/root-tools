@@ -64,7 +64,7 @@ int main(int argc, char** argv)
       BDT_BvsS(*(new string(argv[1])), stod(*(new string(argv[2]))));
       break;
     case 3:
-      BDT_BvsS(*(new string(argv[1])), stod(*(new string(argv[2]))), stod(*(new string(argv[3])))));
+      BDT_BvsS(*(new string(argv[1])), stod(*(new string(argv[2]))), stod(*(new string(argv[3]))));
       break;      
     case 4:
       BDT_BvsS(*(new string(argv[1])), stod(*(new string(argv[2]))), stod(*(new string(argv[3]))), stod(*(new string(argv[4]))));

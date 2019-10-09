@@ -211,28 +211,31 @@ int main(int argc, char** argv)
     {
       bool use_weights = false;
       bool plotMC = false;
-    case 3:
-      if(argv[1] == "true" || argv[1] == "1"){use_weights = true;}
-      Fit_NstG(use_weights, *(new string(argv[2])), *(new string(argv[3])));
-      break;
-    case 4:
-      if(argv[1] == "true" || argv[1] == "1"){use_weights = true;}
-      Fit_NstG(use_weights, *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
-      break;
-    case 5:
-      if(argv[1] == "true" || argv[1] == "1"){use_weights = true;}
-      Fit_NstG(use_weights, *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
-      break;
-    case 6:
-      if(argv[1] == "true" || argv[1] == "1"){use_weights = true;}
-      if(argv[6] == "true" || argv[6] == "1"){plotMC = true;}
-      Fit_NstG(use_weights, *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), plotMC);
-      break;
-    default:
-      cout << "Wrong number of arguments (" << argc << ") for Fit_NstG" << endl;
-      return(1);
-      break;
+      switch(argc)
+	{
+	case 3:
+	  if(*(new string(argv[1])) == "true" || *(new string(argv[1])) == "1"){use_weights = true;}
+	  Fit_NstG(use_weights, *(new string(argv[2])), *(new string(argv[3])));
+	  break;
+	case 4:
+	  if(*(new string(argv[1])) == "true" || *(new string(argv[1])) == "1"){use_weights = true;}
+	  Fit_NstG(use_weights, *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+	  break;
+	case 5:
+	  if(*(new string(argv[1])) == "true" || *(new string(argv[1])) == "1"){use_weights = true;}
+	  Fit_NstG(use_weights, *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+	  break;
+	case 6:
+	  if(*(new string(argv[1])) == "true" || *(new string(argv[1])) == "1"){use_weights = true;}
+	  if(*(new string(argv[6])) == "true" || *(new string(argv[6])) == "1"){plotMC = true;}
+	  Fit_NstG(use_weights, *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), plotMC);
+	  break;
+	default:
+	  cout << "Wrong number of arguments (" << argc << ") for Fit_NstG" << endl;
+	  return(1);
+	  break;
+	}
+      return 0;
     }
-  return 0;
 }
 #endif

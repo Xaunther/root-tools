@@ -15,7 +15,7 @@
 using namespace std;
 
 int* Get2Indices(string word);
-void PIDPunzi(string tables, string yields, string outfilename, string varname = "Event_PIDCalibEff", string treename = "CalibTool_PIDCalibTree", const double sigma = 5.);
+void PIDPunzi(string tables, string yields, string outfilename, const double sigma = 5.);
 
 
 int* Get2Indices(string word)
@@ -28,7 +28,6 @@ int* Get2Indices(string word)
       string find_str = "_PIDCuts_";
       string find_str2 = ".txt";
       int find_str_size = find_str.size();
-      int find_str_size2 = find_str2.size();
       int find_str_pos = word.find(find_str);
       int find_str_end1 = word.find("_", find_str_pos+find_str_size);
       string find_substr1 = word.substr(find_str_pos+find_str_size,
@@ -56,7 +55,7 @@ int* Get2Indices(string word)
   return ind;
 
 }
-void PIDPunzi(string tables, string yields, string outfilename, string varname, string treename, const double sigma)
+void PIDPunzi(string tables, string yields, string outfilename, const double sigma)
 {
   //Get array with the tables
   int N_tables = 0;
@@ -173,13 +172,7 @@ int main(int argc, char** argv)
       PIDPunzi(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
       break;
     case 4:
-      PIDPunzi(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
-      break;
-    case 5:
-      PIDPunzi(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
-      break;
-    case 6:
-      PIDPunzi(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), stod(*(new string(argv[6]))));
+      PIDPunzi(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), stod(*(new string(argv[4]))));
       break;
     default:
       cout << "Wrong number of arguments (" << argc << ") for PIDPunzi" << endl;

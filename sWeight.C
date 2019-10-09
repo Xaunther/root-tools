@@ -33,9 +33,6 @@ void sWeight(string varname, string tupledir, string outfilename, FitOption fito
   //Array of fitting fitted fit functions                                                                                                                                          
   FitFunction* fitf = FitFunction_init();
 
-  //Array of colours for the background. Add more if required
-  EColor bkg_colours[] = {kGreen, kYellow, kMagenta, kOrange, kViolet};
-  
   //Read the data
   TChain* chain = GetChain(tupledir);
   string cuts = GetCuts(cutfile);
@@ -61,8 +58,6 @@ void sWeight(string varname, string tupledir, string outfilename, FitOption fito
   //Constantize all except yields
   Constantize(ws);
 
-  //Retrieve wVar
-  RooRealVar* wVar = ws->var(varname.c_str());
   //Retrieve signal and bkg yields
   RooRealVar* fsig = new RooRealVar();
   RooRealVar** fbkg = new RooRealVar*[N_bkgs];

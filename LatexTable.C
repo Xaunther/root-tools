@@ -16,8 +16,6 @@ void LatexTable(string variablename, FitOption fitopt, string filedir, bool newf
   FitFunction* fitf = FitFunction_init();
   RooWorkspace* ws = new RooWorkspace();
 
-  int N_files = 0;
-  string* filenames = ReadVariables(N_files, filedir);
   //Load TChain
   string cuts = GetCuts(cutfile);
 
@@ -49,28 +47,28 @@ int main(int argc, char** argv)
   switch(argc)
     {
     case 4:
-      if(argv[4] == "true" || argv[4] == "1"){newfile = true;}
+      if(*(new string(argv[4])) == "true" || *(new string(argv[4])) == "1"){newfile = true;}
       LatexTable(*(new string(argv[1])), fitopt, *(new string(argv[3])), newfile);
       break;
     case 5:
-      if(argv[4] == "true" || argv[4] == "1"){newfile = true;}
+      if(*(new string(argv[4])) == "true" || *(new string(argv[4])) == "1"){newfile = true;}
       LatexTable(*(new string(argv[1])), fitopt, *(new string(argv[3])), newfile, *(new string(argv[5])));
       break;
     case 6:
-      if(argv[4] == "true" || argv[4] == "1"){newfile = true;}
+      if(*(new string(argv[4])) == "true" || *(new string(argv[4])) == "1"){newfile = true;}
       LatexTable(*(new string(argv[1])), fitopt, *(new string(argv[3])), newfile, *(new string(argv[5])), *(new string(argv[6])));
       break;
     case 7:
-      if(argv[4] == "true" || argv[4] == "1"){newfile = true;}
+      if(*(new string(argv[4])) == "true" || *(new string(argv[4])) == "1"){newfile = true;}
       LatexTable(*(new string(argv[1])), fitopt, *(new string(argv[3])), newfile, *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])));
       break;
     case 8:
-      if(argv[4] == "true" || argv[4] == "1"){newfile = true;}
+      if(*(new string(argv[4])) == "true" || *(new string(argv[4])) == "1"){newfile = true;}
       LatexTable(*(new string(argv[1])), fitopt, *(new string(argv[3])), newfile, *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), 
 		*(new string(argv[8])));
       break;
     case 9:
-      if(argv[4] == "true" || argv[4] == "1"){newfile = true;}
+      if(*(new string(argv[4])) == "true" || *(new string(argv[4])) == "1"){newfile = true;}
       LatexTable(*(new string(argv[1])), fitopt, *(new string(argv[3])), newfile, *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), 
 		*(new string(argv[8])),	*(new string(argv[9])));
       break;

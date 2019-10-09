@@ -115,22 +115,22 @@ int main(int argc, char** argv)
       BDTTrain(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
       break;
     case 4:
-      if(argv[4] = "true" || argv[4] = "1"){HMonly = true;}
+      if(*(new string(argv[4])) == "true" || *(new string(argv[4])) == "1"){HMonly = true;}
       BDTTrain(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), HMonly);
       break;
     case 5:
-      if(argv[4] = "true" || argv[4] = "1"){HMonly = true;}
-      if(argv[5] = "true" || argv[5] = "1"){logdira = true;}
+      if(*(new string(argv[4])) == "true" || *(new string(argv[4])) == "1"){HMonly = true;}
+      if(*(new string(argv[5])) == "true" || *(new string(argv[5])) == "1"){logdira = true;}
       BDTTrain(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), HMonly, logdira);
       break;
     case 6:
-      if(argv[4] = "true" || argv[4] = "1"){HMonly = true;}
-      if(argv[5] = "true" || argv[5] = "1"){logdira = true;}
+      if(*(new string(argv[4])) == "true" || *(new string(argv[4])) == "1"){HMonly = true;}
+      if(*(new string(argv[5])) == "true" || *(new string(argv[5])) == "1"){logdira = true;}
       BDTTrain(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), HMonly, logdira, *(new string(argv[6])));
       break;
     case 7:
-      if(argv[4] = "true" || argv[4] = "1"){HMonly = true;}
-      if(argv[5] = "true" || argv[5] = "1"){logdira = true;}
+      if(*(new string(argv[4])) == "true" || *(new string(argv[4])) == "1"){HMonly = true;}
+      if(*(new string(argv[5])) == "true" || *(new string(argv[5])) == "1"){logdira = true;}
       BDTTrain(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), HMonly, logdira, *(new string(argv[6])), *(new string(argv[7])));
       break;
     default:

@@ -110,6 +110,10 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
 
   fout << "Trigger eff: " << double(N_TISTOS)/N_TIS << endl;
   fout << endl;
+  cout << "N_TIS: "      << N_TIS      << endl;
+  cout << "N_TISTOS: "   << N_TISTOS   << endl;
+  cout << "N_TISorTOS: " << N_TISorTOS << endl;
+  cout << "N_TOS: "      << N_TOS      << endl;
 
   fout.close();
   

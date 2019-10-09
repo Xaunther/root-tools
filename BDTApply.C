@@ -157,15 +157,15 @@ int main(int argc, char** argv)
       BDTApply(*(new string(argv[1])), *(new string(argv[2])));
       break;
     case 3:
-      if(argv[3] == "true" || argv[3] == "1"){excludeBDTvars = true;}
+      if(*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1"){excludeBDTvars = true;}
       BDTApply(*(new string(argv[1])), *(new string(argv[2])), excludeBDTvars);
       break;
     case 4:
-      if(argv[3] == "true" || argv[3] == "1"){excludeBDTvars = true;}
+      if(*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1"){excludeBDTvars = true;}
       BDTApply(*(new string(argv[1])), *(new string(argv[2])), excludeBDTvars, *(new string(argv[4])));
       break;
     case 5:
-      if(argv[3] == "true" || argv[3] == "1"){excludeBDTvars = true;}
+      if(*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1"){excludeBDTvars = true;}
       BDTApply(*(new string(argv[1])), *(new string(argv[2])), excludeBDTvars, *(new string(argv[4])), *(new string(argv[5])));
       break;
     default:

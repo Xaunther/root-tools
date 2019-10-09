@@ -22,9 +22,9 @@ using namespace std;
 /************************************************************************************************************************************************/
 /************************************************************************************************************************************************/
 //Function used to do NstG mass fits. It esentially does fits to MC backgrounds and picks up the parameter values to be used on the final datafit
-void Fit_NstG_ppimumu(bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "", string opts = "", bool plotMC = false);
+void Fit_NstG_ppimumu(string varnamedata, string filedirdata, string cutfiledata = "", string opts = "", bool plotMC = false);
 
-void Fit_NstG_ppimumu(bool use_weights, string varnamedata, string filedirdata, string cutfiledata, string opts, bool plotMC)
+void Fit_NstG_ppimumu(string varnamedata, string filedirdata, string cutfiledata, string opts, bool plotMC)
 {
   if(opts == "")
     {
@@ -142,26 +142,21 @@ void Fit_NstG_ppimumu(bool use_weights, string varnamedata, string filedirdata, 
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  bool use_weights = false;
   bool plotMC = false;
   switch(argc)
     {
+    case 2:
+      Fit_NstG_ppimumu(*(new string(argv[1])), *(new string(argv[2])));
+      break;
     case 3:
-      if(argv[1] == "true" || argv[1] == "1"){use_weights = true;}
-      Fit_NstG_ppimumu(use_weights, *(new string(argv[2])), *(new string(argv[3])));
+      Fit_NstG_ppimumu(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
       break;
     case 4:
-      if(argv[1] == "true" || argv[1] == "1"){use_weights = true;}
-      Fit_NstG_ppimumu(use_weights, *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+      Fit_NstG_ppimumu(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
       break;
     case 5:
-      if(argv[1] == "true" || argv[1] == "1"){use_weights = true;}
-      Fit_NstG_ppimumu(use_weights,, *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
-      break;
-    case 6:
-      if(argv[1] == "true" || argv[1] == "1"){use_weights = true;}
-      if(argv[6] == "true" || argv[6] == "1"){plotMC = true;}
-      Fit_NstG_ppimumu(use_weights,, *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), plotMC);
+      if(*(new string(argv[6])) == "true" || *(new string(argv[6])) == "1"){plotMC = true;}
+      Fit_NstG_ppimumu(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), plotMC);
       break;
     default:
       cout << "Wrong number of arguments (" << argc << ") for Fit_NstG_ppimumu" << endl;

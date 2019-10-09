@@ -59,7 +59,7 @@ void PhaseSpace(double mothermass, string daughtermasses, string pnames, string 
 	}
     }
   double weight;
-  TBranch* br_weight = tree->Branch("evt_weight", &weight, "evt_weight/D");
+  tree->Branch("evt_weight", &weight, "evt_weight/D");
 
   //Set up mother momentum
   TChain* mother_P_chain;

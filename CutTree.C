@@ -18,9 +18,6 @@ void CutTree(string outputfile, string cutsfilename = "", string tupledir = "", 
   string cuts = GetCuts(cutsfilename);
   cout << cuts << endl;
 
-  int N_files = 0;
-  string* filenames = ReadVariables(N_files, tupledir);
-
   //Variables Used
   int N_variables = 0;
   string* variable_list = ReadVariables(N_variables, variablefile);

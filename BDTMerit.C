@@ -23,7 +23,6 @@ void BDTMerit(RunNumber run_number, double init_value, double final_value, int s
   Constants const_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
 
   //Going to plot 1 variable and then extend it with a loop
-  int NFiles = 0;
   TChain* datatree = GetChain("../Directories/BDToutput.dir", "DecayTree");
   TChain* MCtree = GetChain(filename);
   string HMcut = "B_M > 5600";

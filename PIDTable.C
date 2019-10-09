@@ -103,19 +103,19 @@ int main(int argc, char** argv)
       PIDTable(*(new string(argv[1])), *(new string(argv[2])));
       break;
     case 3:
-      if(argv[3] == "true" || argv[3] == "1"){abspath = true;}
+      if(*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1"){abspath = true;}
       PIDTable(*(new string(argv[1])), *(new string(argv[2])), abspath);
       break;
     case 4:
-      if(argv[3] == "true" || argv[3] == "1"){abspath = true;}
+      if(*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1"){abspath = true;}
       PIDTable(*(new string(argv[1])), *(new string(argv[2])), abspath, *(new string(argv[4])));
       break;
     case 5:
-      if(argv[3] == "true" || argv[3] == "1"){abspath = true;}
+      if(*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1"){abspath = true;}
       PIDTable(*(new string(argv[1])), *(new string(argv[2])), abspath, *(new string(argv[4])), *(new string(argv[5])));
       break;
     case 6:
-      if(argv[3] == "true" || argv[3] == "1"){abspath = true;}
+      if(*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1"){abspath = true;}
       PIDTable(*(new string(argv[1])), *(new string(argv[2])), abspath, *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
       break;
     default:
