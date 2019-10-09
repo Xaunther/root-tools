@@ -97,3 +97,39 @@ void BDTTrain2(string sig_file, string bkg_filelist, string sig_cutfile, string 
   factory->TestAllMethods();
   factory->EvaluateAllMethods();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc-1)
+    {
+    case 2:
+      BDTTrain2(*(new string(argv[1])), *(new string(argv[2])));
+      break;
+    case 3:
+      BDTTrain2(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+      break;
+    case 4:
+      BDTTrain2(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+      break;
+    case 5:
+      BDTTrain2(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+      break;
+    case 6:
+      BDTTrain2(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
+      break;
+    case 7:
+      BDTTrain2(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])));
+      break;
+    case 8:
+      BDTTrain2(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])),
+		*(new string(argv[8])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for BDTTrain2" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

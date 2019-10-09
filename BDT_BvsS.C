@@ -51,3 +51,35 @@ void BDT_BvsS(string filename, double yfactor = 1, double xfactor = 1, double ol
   EffLine->Draw("same");
   c1->SaveAs(output.c_str());
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc-1)
+    {
+    case 1:
+      BDT_BvsS(*(new string(argv[1])));
+      break;
+    case 2:
+      BDT_BvsS(*(new string(argv[1])), stod(*(new string(argv[2]))));
+      break;
+    case 3:
+      BDT_BvsS(*(new string(argv[1])), stod(*(new string(argv[2]))), stod(*(new string(argv[3]))));
+      break;      
+    case 4:
+      BDT_BvsS(*(new string(argv[1])), stod(*(new string(argv[2]))), stod(*(new string(argv[3]))), stod(*(new string(argv[4]))));
+      break;
+    case 5:
+      BDT_BvsS(*(new string(argv[1])), stod(*(new string(argv[2]))), stod(*(new string(argv[3]))), stod(*(new string(argv[4]))), stod(*(new string(argv[5]))));
+      break;
+    case 6:
+      BDT_BvsS(*(new string(argv[1])), stod(*(new string(argv[2]))), stod(*(new string(argv[3]))), stod(*(new string(argv[4]))), stod(*(new string(argv[5]))), *(new string(argv[6])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for BDT_BvsS" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

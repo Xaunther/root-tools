@@ -175,3 +175,30 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
   c3->SaveAs(("plots/"+wVarname+"_orig.pdf").c_str());
   c4->SaveAs(("plots/"+wVarname+"_sWeight.pdf").c_str());
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  FitOption fitopt = StringToFitOption(*(new string(argv[4])));
+  switch(argc-1)
+    {
+    case 4:
+      sPlot(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), fitopt);
+      break;
+    case 5:
+      sPlot(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), fitopt, *(new string(argv[5])));
+      break;
+    case 6:
+      sPlot(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), fitopt, *(new string(argv[5])), *(new string(argv[6])));
+      break;
+    case 7:
+      sPlot(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), fitopt, *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for sPlot" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

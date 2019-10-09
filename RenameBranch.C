@@ -42,3 +42,23 @@ void RenameBranch(string outname, string tupledir = "Directories/Lb2016DataMagUp
   chain->Merge(outname.c_str());
   cout << "Data merged" << endl;
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc-1)
+    {
+    case 1:
+      RenameBranch(*(new string(argv[1])));
+      break;
+    case 2:
+      RenameBranch(*(new string(argv[1])), *(new string(argv[2])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for RenameBranch" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

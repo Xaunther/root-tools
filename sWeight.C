@@ -33,9 +33,6 @@ void sWeight(string varname, string tupledir, string outfilename, FitOption fito
   //Array of fitting fitted fit functions                                                                                                                                          
   FitFunction* fitf = FitFunction_init();
 
-  //Array of colours for the background. Add more if required
-  EColor bkg_colours[] = {kGreen, kYellow, kMagenta, kOrange, kViolet};
-  
   //Read the data
   TChain* chain = GetChain(tupledir);
   string cuts = GetCuts(cutfile);
@@ -61,8 +58,6 @@ void sWeight(string varname, string tupledir, string outfilename, FitOption fito
   //Constantize all except yields
   Constantize(ws);
 
-  //Retrieve wVar
-  RooRealVar* wVar = ws->var(varname.c_str());
   //Retrieve signal and bkg yields
   RooRealVar* fsig = new RooRealVar();
   RooRealVar** fbkg = new RooRealVar*[N_bkgs];
@@ -132,3 +127,33 @@ void sWeight(string varname, string tupledir, string outfilename, FitOption fito
   outtree->Write();
   outfile->Close();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  FitOption fitopt = StringToFitOption(*(new string(argv[4])));
+  switch(argc-1)
+    {
+    case 4:
+      sWeight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), fitopt);
+      break;
+    case 5:
+      sWeight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), fitopt, *(new string(argv[5])));
+      break;
+    case 6:
+      sWeight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), fitopt, *(new string(argv[5])), *(new string(argv[6])));
+      break;
+    case 7:
+      sWeight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), fitopt, *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])));
+      break;
+    case 8:
+      sWeight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), fitopt, *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for sWeight" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

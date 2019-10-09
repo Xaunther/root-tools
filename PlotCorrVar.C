@@ -40,3 +40,38 @@ void PlotCorrVar(string histopt = "", string drawopt = "", string varfile = "Var
 	}
     }
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc-1)
+    {
+    case 0:
+      PlotCorrVar();
+      break;
+    case 1:
+      PlotCorrVar(*(new string(argv[1])));
+      break;
+    case 2:
+      PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])));
+      break;
+    case 3:
+      PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+      break;
+    case 4:
+      PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+      break;
+    case 5:
+      PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+      break;
+    case 6:
+      PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for PlotCorrVar" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

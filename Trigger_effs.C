@@ -51,3 +51,20 @@ void Trigger_effs(string mode)
       cout << endl << endl;
     }
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc-1)
+    {
+    case 1:
+      Trigger_effs(*(new string(argv[1])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for Trigger_effs" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

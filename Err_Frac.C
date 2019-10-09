@@ -41,3 +41,29 @@ void Err_Frac(int steps = 100, string filename = "Tuples/BDT-results_OP.root", s
   cout << endl << filename << " | " << errf << endl << endl;
   file->Close();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc-1)
+    {
+    case 0:
+      Err_Frac();
+      break;
+    case 1:
+      Err_Frac(stoi(*(new string(argv[1]))));
+      break;
+    case 2:
+      Err_Frac(stoi(*(new string(argv[1]))), *(new string(argv[2])));
+      break;
+    case 3:
+      Err_Frac(stoi(*(new string(argv[1]))), *(new string(argv[2])), *(new string(argv[3])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for Err_Frac" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

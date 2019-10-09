@@ -89,3 +89,40 @@ void PIDTable(string filedir, string resultsfile = "PIDEff.txt", bool abspath = 
     }
   outfile.close();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  bool abspath = false;
+  switch(argc-1)
+    {
+    case 1:
+      PIDTable(*(new string(argv[1])));
+      break;
+    case 2:
+      PIDTable(*(new string(argv[1])), *(new string(argv[2])));
+      break;
+    case 3:
+      if(*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1"){abspath = true;}
+      PIDTable(*(new string(argv[1])), *(new string(argv[2])), abspath);
+      break;
+    case 4:
+      if(*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1"){abspath = true;}
+      PIDTable(*(new string(argv[1])), *(new string(argv[2])), abspath, *(new string(argv[4])));
+      break;
+    case 5:
+      if(*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1"){abspath = true;}
+      PIDTable(*(new string(argv[1])), *(new string(argv[2])), abspath, *(new string(argv[4])), *(new string(argv[5])));
+      break;
+    case 6:
+      if(*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1"){abspath = true;}
+      PIDTable(*(new string(argv[1])), *(new string(argv[2])), abspath, *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for PIDTable" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

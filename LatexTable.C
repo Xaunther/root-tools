@@ -16,8 +16,6 @@ void LatexTable(string variablename, FitOption fitopt, string filedir, bool newf
   FitFunction* fitf = FitFunction_init();
   RooWorkspace* ws = new RooWorkspace();
 
-  int N_files = 0;
-  string* filenames = ReadVariables(N_files, filedir);
   //Load TChain
   string cuts = GetCuts(cutfile);
 
@@ -40,3 +38,45 @@ void LatexTable(string variablename, FitOption fitopt, string filedir, bool newf
   ws = fitf[fitopt](variablename, temptree, w_var, 0, 0, opts);
   SaveLatex(ws, fitopt, newfile, col1, outfile);
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  bool newfile = false;
+  FitOption fitopt = StringToFitOption(*(new string(argv[2])));
+  switch(argc-1)
+    {
+    case 4:
+      if(*(new string(argv[4])) == "true" || *(new string(argv[4])) == "1"){newfile = true;}
+      LatexTable(*(new string(argv[1])), fitopt, *(new string(argv[3])), newfile);
+      break;
+    case 5:
+      if(*(new string(argv[4])) == "true" || *(new string(argv[4])) == "1"){newfile = true;}
+      LatexTable(*(new string(argv[1])), fitopt, *(new string(argv[3])), newfile, *(new string(argv[5])));
+      break;
+    case 6:
+      if(*(new string(argv[4])) == "true" || *(new string(argv[4])) == "1"){newfile = true;}
+      LatexTable(*(new string(argv[1])), fitopt, *(new string(argv[3])), newfile, *(new string(argv[5])), *(new string(argv[6])));
+      break;
+    case 7:
+      if(*(new string(argv[4])) == "true" || *(new string(argv[4])) == "1"){newfile = true;}
+      LatexTable(*(new string(argv[1])), fitopt, *(new string(argv[3])), newfile, *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])));
+      break;
+    case 8:
+      if(*(new string(argv[4])) == "true" || *(new string(argv[4])) == "1"){newfile = true;}
+      LatexTable(*(new string(argv[1])), fitopt, *(new string(argv[3])), newfile, *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), 
+		*(new string(argv[8])));
+      break;
+    case 9:
+      if(*(new string(argv[4])) == "true" || *(new string(argv[4])) == "1"){newfile = true;}
+      LatexTable(*(new string(argv[1])), fitopt, *(new string(argv[3])), newfile, *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), 
+		*(new string(argv[8])),	*(new string(argv[9])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for LatexTable" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

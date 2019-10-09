@@ -64,3 +64,35 @@ void BDTCut(string tupledir = "Directories/Alltuples.dir", string tupledirbkg = 
   newFilebkg->Close();
   newFileMC->Close();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc-1)
+    {
+    case 0:
+      BDTCut();
+      break;
+    case 1:
+      BDTCut(*(new string(argv[1])));
+      break;
+    case 2:
+      BDTCut(*(new string(argv[1])), *(new string(argv[2])));
+      break;
+    case 3:
+      BDTCut(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+      break;
+    case 4:
+      BDTCut(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+      break;
+    case 5:
+      BDTCut(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for BDTCut" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

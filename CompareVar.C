@@ -62,3 +62,20 @@ void CompareVar(string variablename, string filedir1, string opts)
   //  tempfile1->Close();
   //  tempfile2->Close();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc-1)
+    {
+    case 3:
+      CompareVar(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for CompareVar" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

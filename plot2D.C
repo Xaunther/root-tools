@@ -76,3 +76,24 @@ void plot2D(string datafile, MyStyles::palette palette, string title = "")
   c1->SaveAs(("plots/"+dirname[dir_size-1]+".pdf").c_str());
   return;
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  MyStyles::palette palette = MyStyles::StringToPalette(*(new string(argv[2])));
+  switch(argc-1)
+    {
+    case 2:
+      plot2D(*(new string(argv[1])), palette);
+      break;
+    case 3:
+      plot2D(*(new string(argv[1])), palette, *(new string(argv[3])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for plot2D" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

@@ -100,3 +100,23 @@ void TupleCorr(string tuplelist, string treelist, string cutlist = "")
     }
   return;
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc-1)
+    {
+    case 2:
+      TupleCorr(*(new string(argv[1])), *(new string(argv[2])));
+      break;
+    case 3:
+      TupleCorr(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for TupleCorr" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

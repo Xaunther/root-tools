@@ -110,8 +110,41 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
 
   fout << "Trigger eff: " << double(N_TISTOS)/N_TIS << endl;
   fout << endl;
+  cout << "N_TIS: "      << N_TIS      << endl;
+  cout << "N_TISTOS: "   << N_TISTOS   << endl;
+  cout << "N_TISorTOS: " << N_TISorTOS << endl;
+  cout << "N_TOS: "      << N_TOS      << endl;
 
   fout.close();
   
   cutfile->Close();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc-1)
+    {
+    case 2:
+      TISTOS(*(new string(argv[1])), *(new string(argv[2])));
+      break;
+    case 3:
+      TISTOS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+      break;
+    case 4:
+      TISTOS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+      break;
+    case 5:
+      TISTOS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+      break;
+    case 6:
+      TISTOS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for TISTOS" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

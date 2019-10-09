@@ -22,9 +22,9 @@ using namespace std;
 /************************************************************************************************************************************************/
 /************************************************************************************************************************************************/
 //Function used to do NstG mass fits. It esentially does fits to MC backgrounds and picks up the parameter values to be used on the final datafit
-void Fit_NstG_ppimumu(bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "", string opts = "", bool plotMC = false);
+void Fit_NstG_ppimumu(string varnamedata, string filedirdata, string cutfiledata = "", string opts = "", bool plotMC = false);
 
-void Fit_NstG_ppimumu(bool use_weights, string varnamedata, string filedirdata, string cutfiledata, string opts, bool plotMC)
+void Fit_NstG_ppimumu(string varnamedata, string filedirdata, string cutfiledata, string opts, bool plotMC)
 {
   if(opts == "")
     {
@@ -138,3 +138,31 @@ void Fit_NstG_ppimumu(bool use_weights, string varnamedata, string filedirdata, 
   //Plot with log scale
   GoodPlot(Final_ws, varnamedata, false, "", "", logopts, "_log");
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  bool plotMC = false;
+  switch(argc-1)
+    {
+    case 2:
+      Fit_NstG_ppimumu(*(new string(argv[1])), *(new string(argv[2])));
+      break;
+    case 3:
+      Fit_NstG_ppimumu(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+      break;
+    case 4:
+      Fit_NstG_ppimumu(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+      break;
+    case 5:
+      if(*(new string(argv[6])) == "true" || *(new string(argv[6])) == "1"){plotMC = true;}
+      Fit_NstG_ppimumu(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), plotMC);
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for Fit_NstG_ppimumu" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

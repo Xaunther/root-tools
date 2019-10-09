@@ -63,3 +63,29 @@ void PlotTable(string tablesdir, string plot_opts = "APL", double x_factor = 1.,
   c1->SaveAs(pdfname.c_str());
   return;
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc-1)
+    {
+    case 1:
+      PlotTable(*(new string(argv[1])));
+      break;
+    case 2:
+      PlotTable(*(new string(argv[1])), *(new string(argv[2])));
+      break;
+    case 3:
+      PlotTable(*(new string(argv[1])), *(new string(argv[2])), stod(*(new string(argv[3]))));
+      break;
+    case 4:
+      PlotTable(*(new string(argv[1])), *(new string(argv[2])), stod(*(new string(argv[3]))), stod(*(new string(argv[4]))));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for PlotTable" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

@@ -7,6 +7,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"Dictionaries/Names.cxx+").c_str());
   //Utilities from independent sources
   gROOT->ProcessLine((".L "+path+"Functions/BifurcatedCB.cxx+").c_str());
+  gROOT->ProcessLine((".L "+path+"Functions/gaussian_quadrature_64.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/Roo2Exp.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/Roo2SumExp.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Functions/RooCBExp.cxx+").c_str());

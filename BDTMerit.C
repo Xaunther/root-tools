@@ -23,7 +23,6 @@ void BDTMerit(RunNumber run_number, double init_value, double final_value, int s
   Constants const_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
 
   //Going to plot 1 variable and then extend it with a loop
-  int NFiles = 0;
   TChain* datatree = GetChain("../Directories/BDToutput.dir", "DecayTree");
   TChain* MCtree = GetChain(filename);
   string HMcut = "B_M > 5600";
@@ -141,3 +140,30 @@ void BDTMerit(RunNumber run_number, double init_value, double final_value, int s
     }
   fout.close();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  RunNumber run_number = StringToRunNumber(*(new string(argv[1])));
+  switch(argc-1)
+    {
+    case 3:
+      BDTMerit(run_number, stod(*(new string(argv[2]))), stod(*(new string(argv[3]))));
+      break;
+    case 4:
+      BDTMerit(run_number, stod(*(new string(argv[2]))), stod(*(new string(argv[3]))), stoi(*(new string(argv[4]))));
+      break;
+    case 5:
+      BDTMerit(run_number, stod(*(new string(argv[2]))), stod(*(new string(argv[3]))), stoi(*(new string(argv[4]))), *(new string(argv[5])));
+      break;
+    case 6:
+      BDTMerit(run_number, stod(*(new string(argv[2]))), stod(*(new string(argv[3]))), stoi(*(new string(argv[4]))), *(new string(argv[5])), *(new string(argv[6])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for BDTMerit" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

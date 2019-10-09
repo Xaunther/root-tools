@@ -39,3 +39,26 @@ void ScaleYields(string yieldlist, string totyieldfile, string suffix, string se
       outf.close();
     }
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc-1)
+    {
+    case 2:
+      ScaleYields(*(new string(argv[1])), *(new string(argv[2])));
+      break;
+    case 3:
+      ScaleYields(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+      break;
+    case 4:
+      ScaleYields(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for ScaleYields" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif

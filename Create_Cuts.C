@@ -44,3 +44,20 @@ void Create_Cuts()
     }
   return;
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch(argc-1)
+    {
+    case 4:
+      Create_Cuts();
+      break;
+    default:
+      cout << "Wrong number of arguments (" << argc << ") for Create_Cuts" << endl;
+      return(1);
+      break;
+    }
+  return 0;
+}
+#endif
