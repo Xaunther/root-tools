@@ -28,6 +28,7 @@ void WriteFromWS(string wsfilename, string varname, string outfilename, string w
     }
   //Read file and its ws
   TFile* f_ws = new TFile(wsfilename.c_str());
+  cout << " caca " << endl;
   RooWorkspace* ws = (RooWorkspace*)f_ws->Get(wsname.c_str());
   //Write requested value in output file
   ofstream outf;

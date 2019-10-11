@@ -70,6 +70,7 @@ add_executable(TupleCorr.out TupleCorr.C)
 add_executable(UnbinnedReweight.out UnbinnedReweight.C)
 add_executable(VarFit.out VarFit.C)
 add_executable(Vodka.out Vodka.C)
+add_executable(WriteFromDic.out WriteFromDic.C)
 add_executable(WriteFromWS.out WriteFromWS.C)
 
 #Linking to compile
@@ -121,4 +122,5 @@ target_link_libraries(TupleCorr.out aalfonso-dict aalfonso-func)
 target_link_libraries(UnbinnedReweight.out aalfonso-dict aalfonso-func)
 target_link_libraries(VarFit.out aalfonso-dict aalfonso-func)
 target_link_libraries(Vodka.out aalfonso-dict aalfonso-func)
+target_link_libraries(WriteFromDic.out aalfonso-dict aalfonso-func)
 target_link_libraries(WriteFromWS.out aalfonso-dict aalfonso-func)

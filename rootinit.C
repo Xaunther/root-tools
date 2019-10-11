@@ -89,5 +89,6 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"root/UnbinnedReweight.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/VarFit.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/Vodka.C+").c_str());
+  gROOT->ProcessLine((".L "+path+"root/WriteFromDic.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/WriteFromWS.C+").c_str());
 }

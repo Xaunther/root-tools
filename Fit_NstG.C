@@ -60,7 +60,7 @@ void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string*
       fitopt[0] = CBExp;
       fitopt[1] = CBExp;
       fitopt[2] = ArgusGauss;
-      fitopt[3] = Exp;
+      fitopt[3] = Line;
       for(int i=0;i<Nbkgs;i++)
 	{
 	  opts_MC[i] = "NstG_pKG_MC";
@@ -190,11 +190,11 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
     }
   else if(varnamedata=="B_M012")
     {
-      Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt, Nbkgs);
+      Final_ws = FitLb2NstG_Kpi(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt, Nbkgs);
     }
   else if(varnamedata=="B_M012_Subst01_Kpi2pK")
     {
-      Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt, Nbkgs);
+      Final_ws = FitLb2NstG_pK(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt, Nbkgs);
     }
   else //Unknown mass variable to fit
     {
