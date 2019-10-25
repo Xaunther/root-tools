@@ -10,9 +10,9 @@
 using namespace std;
 
 //Function to check multiplicity in an ntuple. It identifies consecutive entries with same evtnumber as coming from the same event. If they are not consecutive they are marked as coming from different events (as an ntuple might be formed of several subjobs)
-void CheckMultiplicity(string filedir, string cutfile = "")
+void CheckMultiplicity(string filedir, string cutfile = "1", string treename = "")
 {
-  TChain* chain = GetChain(filedir);
+  TChain* chain = GetChain(filedir, treename);
   string cuts = GetCuts(cutfile);
   TFile* file = TFile::Open("Tuples/temp.root", "recreate");
   TTree* temptree = (TTree*)chain->CopyTree(cuts.c_str()); //Copy all events with weight > 0
@@ -21,7 +21,11 @@ void CheckMultiplicity(string filedir, string cutfile = "")
   ULong64_t currentevt = 0;
   int* repeated_evtnumber = new int[temptree->GetEntries()];
   int N = 0;
-
+  bool full_comp = true;
+  double meanentries = GetMeanEntries(temptree);
+  //Check whether the cuts are cuts or weights
+  if(meanentries - int(meanentries) < 10E-9){full_comp = false;}
+  
   //Define TTreeFormula. Returns weight of each event
   TTreeFormula* formulavar = new TTreeFormula(cuts.c_str(), cuts.c_str(), temptree);
 
@@ -47,10 +51,12 @@ void CheckMultiplicity(string filedir, string cutfile = "")
     {
       //For each event we have to compute the joint probability of each of its candidates. Call a function to do so
       double* w_array = new double[repeated_evtnumber[i]];
+      double av_weight = 0;
       for(j = N_entry;j<N_entry+repeated_evtnumber[i];j++)
 	{
 	  temptree->GetEntry(j);
 	  w_array[j-N_entry] = formulavar->EvalInstance();
+	  av_weight+=formulavar->EvalInstance();
 	  //Make sure it is between 0 and 1
 	  if(w_array[j-N_entry]<0)
 	    {
@@ -62,8 +68,16 @@ void CheckMultiplicity(string filedir, string cutfile = "")
 	    }
 	}
       N_entry = j;
-      multiplicity += JointProbIndependent(w_array, repeated_evtnumber[i]);
-      
+      //So here we have two possibilities. If the cuts are binary, we can use a simpler function to compute the result
+      //If they're not (weights) we have to compute the joint probability fully. It crashes for repeated_evtnumber[i] > x, where 10 < x <= 18
+      if(full_comp)
+	{
+	  multiplicity += JointProbIndependent(w_array, repeated_evtnumber[i]);
+	}
+      else
+	{
+	  multiplicity += av_weight/double(repeated_evtnumber[i]);
+	}
       if(repeated_evtnumber[i] > 1)
 	{
 	  N_repeated++;
@@ -92,6 +106,9 @@ int main(int argc, char** argv)
       break;
     case 2:
       CheckMultiplicity(*(new string(argv[1])), *(new string(argv[2])));
+      break;
+    case 3:
+      CheckMultiplicity(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
       break;
     default:
       cout << "Wrong number of arguments (" << argc << ") for CheckMultiplicity" << endl;
