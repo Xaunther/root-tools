@@ -17,7 +17,7 @@
 #include "../Functions/Extract_Var.h"
 using namespace std;
 
-#define Nbkgs 4
+#define Nbkgs 5
 /************************************************************************************************************************************************/
 //Fill Option arrays. Try to modularize parts of the scripts
 void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string* w_var, string varnamedata, bool use_weights)
@@ -29,6 +29,7 @@ void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string*
       fitopt[1] = DoubleGaussExp;
       fitopt[2] = ArgusGauss;
       fitopt[3] = Line;
+      fitopt[4] = DoubleCB;
       for(int i=0;i<Nbkgs;i++)
 	{
 	  opts_MC[i] = "NstG_KpiG_MC";
@@ -45,6 +46,7 @@ void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string*
       fitopt[1] = CBExp;
       fitopt[2] = ArgusGauss;
       fitopt[3] = Line;
+      fitopt[4] = CBExp;
       for(int i=0;i<Nbkgs;i++)
 	{
 	  opts_MC[i] = "NstGamma_MC";
@@ -61,6 +63,7 @@ void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string*
       fitopt[1] = CBExp;
       fitopt[2] = ArgusGauss;
       fitopt[3] = Line;
+      fitopt[4] = DoubleCB;
       for(int i=0;i<Nbkgs;i++)
 	{
 	  opts_MC[i] = "NstG_pKG_MC";
