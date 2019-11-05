@@ -19,3 +19,7 @@ UraniaDev*
 
 #Emacs shit
 *~
+
+#Sublime shittier
+*.sublime-project
+*.sublime-workspace
