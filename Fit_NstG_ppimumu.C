@@ -118,6 +118,7 @@ void Fit_NstG_ppimumu(string varnamedata, string filedirdata, string cutfiledata
       cout << "Fit option not implemented. Doing nothing" << endl;
       break;
     }
+    file[i]->Close();
   }
   //Initialize data stuff
   //Load TChain
@@ -137,6 +138,17 @@ void Fit_NstG_ppimumu(string varnamedata, string filedirdata, string cutfiledata
   string logopts = opts + "_log";
   //Plot with log scale
   GoodPlot(Final_ws, varnamedata, "", "", logopts, "_log");
+
+  /*-------------Close up------------------*/
+  tempfile->Close();
+  CloseChain(chain);
+  delete[] ws;
+  delete Param_ws;
+  delete[] tree;
+  delete[] file;
+  delete tempfile;
+  delete fitf;
+  /*---------------------------------------*/
 }
 
 #if !defined(__CLING__)
@@ -155,7 +167,7 @@ int main(int argc, char** argv)
     Fit_NstG_ppimumu(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
     break;
   case 5:
-    if (*(new string(argv[6])) == "true" || *(new string(argv[6])) == "1") {plotMC = true;}
+    if (*(new string(argv[5])) == "true" || *(new string(argv[5])) == "1") {plotMC = true;}
     Fit_NstG_ppimumu(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), plotMC);
     break;
   default:
