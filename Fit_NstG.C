@@ -25,11 +25,11 @@ void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string*
   //Also define PID weight variable
   if (varnamedata == "B_M012") //Kpigamma
   {
-    fitopt[0] = DoubleCB;
-    fitopt[1] = DoubleGaussExp;
-    fitopt[2] = ArgusGauss;
-    fitopt[3] = Line;
-    fitopt[4] = DoubleCB;
+    fitopt[0] = DoubleCB; //KstG - like
+    fitopt[1] = Nothing; //LambdaG - like
+    fitopt[2] = ArgusGauss; //KpipiG - like
+    fitopt[3] = Nothing; //Kpipi0X - like
+    fitopt[4] = Nothing; //NstG
     for (int i = 0; i < Nbkgs; i++)
     {
       opts_MC[i] = "NstG_KpiG_MC";
@@ -100,6 +100,7 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
 
   //Type of fit for each sample
   FitOption fitopt[Nbkgs];
+  FitOption fitopt_trimmed[Nbkgs];
   //Which set of constants should be used in each MC fit
   string opts_MC[Nbkgs];
   string variablename[Nbkgs];
@@ -113,6 +114,7 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
   for (int i = 0; i < Nbkgs; i++)
   {
     if(fitopt[i] == Nothing){continue;} //Only fit when requested
+    fitopt_trimmed[fitcounter] = fitopt[i];
     //Get tree i and fit the variable
     stringstream ss;
     ss << i;
@@ -192,15 +194,15 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
   cout << "-----------------------------------" << endl << endl;
   if (varnamedata == "B_M012_Subst0_K2p")
   {
-    Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt, fitcounter);
+    Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt_trimmed, fitcounter);
   }
   else if (varnamedata == "B_M012")
   {
-    Final_ws = FitLb2NstG_Kpi(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt, fitcounter);
+    Final_ws = FitLb2NstG_Kpi(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt_trimmed, fitcounter);
   }
   else if (varnamedata == "B_M012_Subst01_Kpi2pK")
   {
-    Final_ws = FitLb2NstG_pK(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt, fitcounter);
+    Final_ws = FitLb2NstG_pK(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt_trimmed, fitcounter);
   }
   else //Unknown mass variable to fit
   {
