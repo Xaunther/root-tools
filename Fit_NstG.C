@@ -138,42 +138,42 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
       Extract_Var(ws[i], Param_ws, name_list.width_Argus, name_list.width_Argus);
       break;
     case Exp: //Exponential fit
-      Extract_Var(ws[i], Param_ws, name_list.exp_par[0], name_list.exp_par[fitcounter + 1]);
+      Extract_Var(ws[i], Param_ws, name_list.exp_par[0], name_list.exp_par[fitcounter]);
       break;
     case Line: //Straight line fit
       Extract_Var(ws[i], Param_ws, name_list.slope, name_list.slope);
       break;
     case GaussExp: //Gaussian with one exponential tail
-      Extract_Var(ws[i], Param_ws, name_list.alpha, name_list.alphaL[fitcounter + 2]);
-      Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[fitcounter + 2]);
-      Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[fitcounter + 2]);
+      Extract_Var(ws[i], Param_ws, name_list.alpha, name_list.alphaL[fitcounter]);
+      Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[fitcounter]);
+      Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[fitcounter]);
       break;
     case CB: //Gaussian with power-law tail
-      Extract_Var(ws[i], Param_ws, name_list.alpha, name_list.alphaL[fitcounter + 2]);
-      Extract_Var(ws[i], Param_ws, name_list.n, name_list.nL[fitcounter + 2]);
-      Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[fitcounter + 2]);
-      Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[fitcounter + 2]);
+      Extract_Var(ws[i], Param_ws, name_list.alpha, name_list.alphaL[fitcounter]);
+      Extract_Var(ws[i], Param_ws, name_list.n, name_list.nL[fitcounter]);
+      Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[fitcounter]);
+      Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[fitcounter]);
       break;
     case CBExp: //Gaussian with power-law, exponential tails
-      Extract_Var(ws[i], Param_ws, name_list.alphaL[0], name_list.alphaL[fitcounter + 2]);
-      Extract_Var(ws[i], Param_ws, name_list.alphaR[0], name_list.alphaR[fitcounter + 2]);
-      Extract_Var(ws[i], Param_ws, name_list.n, name_list.nL[fitcounter + 2]);
-      Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[fitcounter + 2]);
-      Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[fitcounter + 2]);
+      Extract_Var(ws[i], Param_ws, name_list.alphaL[0], name_list.alphaL[fitcounter]);
+      Extract_Var(ws[i], Param_ws, name_list.alphaR[0], name_list.alphaR[fitcounter]);
+      Extract_Var(ws[i], Param_ws, name_list.n, name_list.nL[fitcounter]);
+      Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[fitcounter]);
+      Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[fitcounter]);
       break;
     case DoubleGaussExp: //Gaussian with 2 exponential tails
-      Extract_Var(ws[i], Param_ws, name_list.alphaL[0], name_list.alphaL[fitcounter + 2]);
-      Extract_Var(ws[i], Param_ws, name_list.alphaR[0], name_list.alphaR[fitcounter + 2]);
-      Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[fitcounter + 2]);
-      Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[fitcounter + 2]);
+      Extract_Var(ws[i], Param_ws, name_list.alphaL[0], name_list.alphaL[fitcounter]);
+      Extract_Var(ws[i], Param_ws, name_list.alphaR[0], name_list.alphaR[fitcounter]);
+      Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[fitcounter]);
+      Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[fitcounter]);
       break;
     case DoubleCB: //Gaussian with 2 power-law tails
-      Extract_Var(ws[i], Param_ws, name_list.alphaL[0], name_list.alphaL[fitcounter + 2]);
-      Extract_Var(ws[i], Param_ws, name_list.alphaR[0], name_list.alphaR[fitcounter + 2]);
-      Extract_Var(ws[i], Param_ws, name_list.nL[0], name_list.nL[fitcounter + 2]);
-      Extract_Var(ws[i], Param_ws, name_list.nR[0], name_list.nR[fitcounter + 2]);
-      Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[fitcounter + 2]);
-      Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[fitcounter + 2]);
+      Extract_Var(ws[i], Param_ws, name_list.alphaL[0], name_list.alphaL[fitcounter]);
+      Extract_Var(ws[i], Param_ws, name_list.alphaR[0], name_list.alphaR[fitcounter]);
+      Extract_Var(ws[i], Param_ws, name_list.nL[0], name_list.nL[fitcounter]);
+      Extract_Var(ws[i], Param_ws, name_list.nR[0], name_list.nR[fitcounter]);
+      Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[fitcounter]);
+      Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[fitcounter]);
       break;
     default: //Any other thing. Output a disclaimer here
       cout << "Fit option not implemented. Doing nothing" << endl;
