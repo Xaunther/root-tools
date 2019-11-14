@@ -32,6 +32,7 @@ void Fit_NstG(string varnamedata, string filedirdata, string cutfiledata, string
   TTree* temptree = (TTree*)chain->CopyTree(cutsdata.c_str());
   tempfile->Write();
 
+  RooWorkspace* Final_ws;
   //This function is used to channel the 3 mass variable fits for NstG: ppiG, KpiG, pKG
   if (varnamedata == "B_M012_Subst0_K2p")
     {
@@ -62,12 +63,9 @@ void Fit_NstG(string varnamedata, string filedirdata, string cutfiledata, string
   GoodPlot(Final_ws, varnamedata, "", "", logopts, "_log");
 
   //Clean up
+  delete Final_ws;
   tempfile->Close();
   CloseChain(chain);
-  delete Final_ws;
-  delete tempfile;
-  delete temptree;
-  delete chain;
 }
 
 #if !defined(__CLING__)
