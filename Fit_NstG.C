@@ -17,234 +17,76 @@
 #include "../Functions/Extract_Var.h"
 using namespace std;
 
-#define Nbkgs 5
-/************************************************************************************************************************************************/
-//Fill Option arrays. Try to modularize parts of the scripts
-void Fill_Opts(FitOption* fitopt, string* opts_MC, string* variablename, string* w_var, string varnamedata, bool use_weights)
-{
-  //Also define PID weight variable
-  if(varnamedata == "B_M012") //Kpigamma
-    {
-      fitopt[0] = DoubleCB;
-      fitopt[1] = DoubleGaussExp;
-      fitopt[2] = ArgusGauss;
-      fitopt[3] = Line;
-      fitopt[4] = DoubleCB;
-      for(int i=0;i<Nbkgs;i++)
-	{
-	  opts_MC[i] = "NstG_KpiG_MC";
-	  variablename[i] = varnamedata;
-	  if(use_weights)
-	    {
-	      w_var[i] = "Event_PIDCalibEff_pbarpi_global_weight";
-	    }
-	}
-    }
-  else if(varnamedata == "B_M012_Subst0_K2p") //ppigamma
-    {
-      fitopt[0] = CBExp;
-      fitopt[1] = CBExp;
-      fitopt[2] = ArgusGauss;
-      fitopt[3] = Line;
-      fitopt[4] = CBExp;
-      for(int i=0;i<Nbkgs;i++)
-	{
-	  opts_MC[i] = "NstGamma_MC";
-	  variablename[i] = varnamedata;
-	  if(use_weights)
-	    {
-	      w_var[i] = "Event_PIDCalibEff_global_weight";
-	    }
-	}
-    }
-  else if (varnamedata == "B_M012_Subst01_Kpi2pK") //pKgamma
-    {
-      fitopt[0] = CBExp;
-      fitopt[1] = CBExp;
-      fitopt[2] = ArgusGauss;
-      fitopt[3] = Line;
-      fitopt[4] = DoubleCB;
-      for(int i=0;i<Nbkgs;i++)
-	{
-	  opts_MC[i] = "NstG_pKG_MC";
-	  variablename[i] = varnamedata;
-	  if(use_weights)
-	    {
-	      w_var[i] = "Event_PIDCalibEff_ppibar_global_weight";
-	    }
-	}
-    }
-  return;
-}
-/************************************************************************************************************************************************/
-/************************************************************************************************************************************************/
-/************************************************************************************************************************************************/
 /************************************************************************************************************************************************/
 //Function used to do NstG mass fits. It esentially does fits to MC backgrounds and picks up the parameter values to be used on the final datafit
-void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata = "", string opts = "", bool plotMC = false);
+void Fit_NstG(string varnamedata, string filedirdata, string cutfiledata = "", string opts = "");
 
-void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata, string opts, bool plotMC)
+void Fit_NstG(string varnamedata, string filedirdata, string cutfiledata, string opts)
 {
-  if(opts == "")
-    {
-      opts = GetValueFor("Project_name", "Dictionaries/Project_variables.txt");      
-    }
-  string* w_var = new string[Nbkgs];
-  //RooFit
-  FitFunction* fitf = FitFunction_init();
-  RooWorkspace** ws = new RooWorkspace*[Nbkgs];
-  RooWorkspace* Param_ws = new RooWorkspace("Parameter WS");
-  
-  //Names dict
-  Names name_list(opts);
-  
-  //Type of fit for each sample
-  FitOption fitopt[Nbkgs];
-  //Which set of constants should be used in each MC fit
-  string opts_MC[Nbkgs];
-  string variablename[Nbkgs];
-  //Initialize options
-  Fill_Opts(fitopt, opts_MC, variablename, w_var, varnamedata, use_weights);
-  //Root stuff
-  TTree** tree = new TTree*[Nbkgs];
-  TFile** file = new TFile*[Nbkgs];
-  
-  for(int i=0;i<Nbkgs;i++)
-    {
-      //Get tree i and fit the variable
-      stringstream ss;
-      ss << i;
-      file[i] = TFile::Open(("Tuples/temp"+ss.str()+".root").c_str());
-      tree[i] = (TTree*)file[i]->Get("DecayTree");
-      cout << endl << "Starting MC fit number " << i << endl;
-      cout << "------------------------" << endl << endl;
-      ws[i] = fitf[fitopt[i]](variablename[i], tree[i], w_var[i], 0, 0, opts_MC[i]);
-      /************************/
-      //Plot MC if requested
-      if(plotMC){GoodPlot(ws[i], variablename[i], true, "", "", opts_MC[i], "_MC"+ss.str());}
-      ss.str("");
-      //Now we retrieve the values of the parameters and save them in our new workspace
-      //Depending on what pdf we chose... (so far only 1 Argus is defined, should define array of constants/names if more are needed)
-      switch(fitopt[i])
-	{
-	case ArgusGauss: //ArgusGauss fit
-	  Extract_Var(ws[i], Param_ws, name_list.m0_Argus, name_list.m0_Argus);
-	  Extract_Var(ws[i], Param_ws, name_list.c_Argus, name_list.c_Argus);
-	  Extract_Var(ws[i], Param_ws, name_list.p_Argus, name_list.p_Argus);
-	  Extract_Var(ws[i], Param_ws, name_list.width_Argus, name_list.width_Argus);
-	  break;
-	case Exp: //Exponential fit
-	  Extract_Var(ws[i], Param_ws, name_list.exp_par[0], name_list.exp_par[i+1]);
-	  break;
-	case Line: //Straight line fit
-	  Extract_Var(ws[i], Param_ws, name_list.slope, name_list.slope);
-	  break;
-	case GaussExp: //Gaussian with one exponential tail
-	  Extract_Var(ws[i], Param_ws, name_list.alpha, name_list.alphaL[i+1]);
-	  Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[i+1]);
-	  Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[i+1]);
-	  break;
-	case CB: //Gaussian with power-law tail
-	  Extract_Var(ws[i], Param_ws, name_list.alpha, name_list.alphaL[i+1]);
-	  Extract_Var(ws[i], Param_ws, name_list.n, name_list.nL[i+1]);	  
-          Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[i+1]);
-          Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[i+1]);
-	  break;
-	case CBExp: //Gaussian with power-law, exponential tails
-	  Extract_Var(ws[i], Param_ws, name_list.alphaL[0], name_list.alphaL[i+1]);
-	  Extract_Var(ws[i], Param_ws, name_list.alphaR[0], name_list.alphaR[i+1]);
-	  Extract_Var(ws[i], Param_ws, name_list.n, name_list.nL[i+1]);
-	  Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[i+1]);
-	  Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[i+1]);
-	  break;
-	case DoubleGaussExp: //Gaussian with 2 exponential tails
-	  Extract_Var(ws[i], Param_ws, name_list.alphaL[0], name_list.alphaL[i+1]);
-	  Extract_Var(ws[i], Param_ws, name_list.alphaR[0], name_list.alphaR[i+1]);
-	  Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[i+1]);
-	  Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[i+1]);
-	  break;
-	case DoubleCB: //Gaussian with 2 power-law tails
-	  Extract_Var(ws[i], Param_ws, name_list.alphaL[0], name_list.alphaL[i+1]);
-	  Extract_Var(ws[i], Param_ws, name_list.alphaR[0], name_list.alphaR[i+1]);
-	  Extract_Var(ws[i], Param_ws, name_list.nL[0], name_list.nL[i+1]);
-	  Extract_Var(ws[i], Param_ws, name_list.nR[0], name_list.nR[i+1]);
-	  Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[i+1]);
-	  Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[i+1]);
-	  break;
-	default: //Any other thing. Output a disclaimer here
-	  cout << "Fit option not implemented. Doing nothing" << endl;
-	  break;
-	}
-    }      
-    //Initialize data stuff
+  //Initialize data stuff
   //Load TChain
   string cutsdata = GetCuts(cutfiledata);
   TChain* chain = GetChain(filedirdata);
+  //Apply cuts and save in a temporary root file
   TFile* tempfile = new TFile("Tuples/temp.root", "recreate");
   TTree* temptree = (TTree*)chain->CopyTree(cutsdata.c_str());
   tempfile->Write();
-  //Maybe the fit for the signal channel clearly differs from the PID missID ones
+
   RooWorkspace* Final_ws;
-  cout << endl << "Starting data fit for " << varnamedata << endl;
-  cout << "-----------------------------------" << endl << endl;
-  if(varnamedata=="B_M012_Subst0_K2p")
+  //This function is used to channel the 3 mass variable fits for NstG: ppiG, KpiG, pKG
+  if (varnamedata == "B_M012_Subst0_K2p")
     {
-      Final_ws = FitLb2NstG(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt, Nbkgs);
+      Final_ws = FitLb2NstG(varnamedata, temptree, opts);
     }
-  else if(varnamedata=="B_M012")
+  else if (varnamedata == "B_M012")
     {
-      Final_ws = FitLb2NstG_Kpi(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt, Nbkgs);
+      Final_ws = FitLb2NstG_Kpi(varnamedata, temptree, opts);
     }
-  else if(varnamedata=="B_M012_Subst01_Kpi2pK")
+  else if (varnamedata == "B_M012_Subst01_Kpi2pK")
     {
-      Final_ws = FitLb2NstG_pK(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt, Nbkgs);
+      Final_ws = FitLb2NstG_pK(varnamedata, temptree, opts);
     }
   else //Unknown mass variable to fit
     {
       cout << "Mass variable " + varnamedata + " not implemented" << endl;
       exit(1);
-    }
+    }  
   //Plot with linear scale
-  GoodPlot(Final_ws, varnamedata, false, "", "", opts);
+  GoodPlot(Final_ws, varnamedata, "", "", opts);
   //Get log options (is this safe?)
-  string logopts = opts+"_log";
-  if(opts==GetValueFor("Project_name", "Dictionaries/Project_variables.txt"))
+  string logopts = opts + "_log";
+  if (opts == GetValueFor("Project_name", "Dictionaries/Project_variables.txt"))
     {
       logopts = "NstG_ppiG_log";
     }
   //Plot with log scale
-  GoodPlot(Final_ws, varnamedata, false, "", "", logopts, "_log");
+  GoodPlot(Final_ws, varnamedata, "", "", logopts, "_log");
+
+  //Clean up
+  delete Final_ws;
+  tempfile->Close();
+  CloseChain(chain);
 }
 
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  bool use_weights = false;
-  bool plotMC = false;
-  switch(argc-1)
-    {
-    case 3:
-      if(*(new string(argv[1])) == "true" || *(new string(argv[1])) == "1"){use_weights = true;}
-      Fit_NstG(use_weights, *(new string(argv[2])), *(new string(argv[3])));
-      break;
-    case 4:
-      if(*(new string(argv[1])) == "true" || *(new string(argv[1])) == "1"){use_weights = true;}
-      Fit_NstG(use_weights, *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
-      break;
-    case 5:
-      if(*(new string(argv[1])) == "true" || *(new string(argv[1])) == "1"){use_weights = true;}
-      Fit_NstG(use_weights, *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
-      break;
-    case 6:
-      if(*(new string(argv[1])) == "true" || *(new string(argv[1])) == "1"){use_weights = true;}
-      if(*(new string(argv[6])) == "true" || *(new string(argv[6])) == "1"){plotMC = true;}
-      Fit_NstG(use_weights, *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), plotMC);
-      break;
-    default:
-      cout << "Wrong number of arguments (" << argc << ") for Fit_NstG" << endl;
-      return(1);
-      break;
-    }
+  switch (argc - 1)
+  {
+  case 2:
+    Fit_NstG(*(new string(argv[1])), *(new string(argv[2])));
+    break;
+  case 3:
+    Fit_NstG(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+    break;
+  case 4:
+    Fit_NstG(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for Fit_NstG" << endl;
+    return (1);
+    break;
+  }
   return 0;
 }
 #endif
