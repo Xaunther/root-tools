@@ -85,6 +85,33 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
 
 void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string cutfiledata, string opts, bool plotMC)
 {
+  //Initialize data stuff
+  //Load TChain
+  string cutsdata = GetCuts(cutfiledata);
+  TChain* chain = GetChain(filedirdata);
+  //Apply cuts and save in a temporary root file
+  TFile* tempfile = new TFile("Tuples/temp.root", "recreate");
+  TTree* temptree = (TTree*)chain->CopyTree(cutsdata.c_str());
+  tempfile->Write();
+
+  //This function is used to channel the 3 mass variable fits for NstG: ppiG, KpiG, pKG
+  if (varnamedata == "B_M012_Subst0_K2p")
+  {
+    Final_ws = FitLb2NstG(varnamedata, temptree, opts);
+  }
+  else if (varnamedata == "B_M012")
+  {
+    Final_ws = FitLb2NstG_Kpi(varnamedata, temptree, opts);
+  }
+  else if (varnamedata == "B_M012_Subst01_Kpi2pK")
+  {
+    Final_ws = FitLb2NstG_pK(varnamedata, temptree, opts);
+  }
+  else //Unknown mass variable to fit
+  {
+    cout << "Mass variable " + varnamedata + " not implemented" << endl;
+    exit(1);
+  }  
   if (opts == "")
   {
     opts = GetValueFor("Project_name", "Dictionaries/Project_variables.txt");
@@ -181,13 +208,6 @@ void Fit_NstG(bool use_weights, string varnamedata, string filedirdata, string c
     }
     fitcounter++;
   }
-  //Initialize data stuff
-  //Load TChain
-  string cutsdata = GetCuts(cutfiledata);
-  TChain* chain = GetChain(filedirdata);
-  TFile* tempfile = new TFile("Tuples/temp.root", "recreate");
-  TTree* temptree = (TTree*)chain->CopyTree(cutsdata.c_str());
-  tempfile->Write();
   //Maybe the fit for the signal channel clearly differs from the PID missID ones
   RooWorkspace* Final_ws;
   cout << endl << "Starting data fit for " << varnamedata << endl;
