@@ -13,7 +13,7 @@ void WriteFromDic(string dicfilename, string varname, string outfilename)
   //Write requested value in output file
   ofstream outf;
   outf.open(outfilename.c_str());
-  outf << GetValueFor(varname, dicfilename) << endl;
+  outf << GetValueFor(varname, dicfilename) << " +- " << GetErrorFor(varname, dicfilename) << endl;
   outf.close();
 }
 
