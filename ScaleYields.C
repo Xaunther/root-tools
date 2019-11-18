@@ -20,12 +20,10 @@ void ScaleYields(string yieldlist, string totyieldfile, string suffix, string se
   int nn;
   //Prepare array of yields
   double* yield = new double[N_files];
-  double* y_error = new double[N_files];
   for(int i=0;i<N_files;i++)
     {
-      //Read each file, get the number and the error. value +- error
+      //Read each file, get the number
       yield[i] = stod(ReadVariablesWord(nn, yieldfname[i], 1)[0]);
-      y_error[i] = stod(ReadVariablesWord(nn, yieldfname[i], 3)[0]);
       sum += yield[i];
     }
   //Read the new total sum
@@ -35,16 +33,14 @@ void ScaleYields(string yieldlist, string totyieldfile, string suffix, string se
   for (int i=0;i<N_files;i++)
     {
       yield[i] *= newsum/sum;
-      y_error[i] *= newsum/sum;
       outf.open((yieldfname[i]+suffix).c_str());
-      outf << yield[i] << " +- " << y_error[i] << endl;
+      outf << yield[i] << endl;
       outf.close();
     }
 
     //Delete heap
     delete[] yieldfname;
     delete[] yield;
-    delete[] y_error;
 }
 
 #if !defined(__CLING__)
