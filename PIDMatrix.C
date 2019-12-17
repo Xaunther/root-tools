@@ -111,23 +111,23 @@ void PIDMatrix_NstG_bad()
 	eff(0, 0) = stod(GetValueFor("Global", "output/CutEff_PID_NstG_2hG.txt"));
 	eff(0, 1) = stod(GetValueFor("Global", "output/CutEff_PID_KstG_2hG.txt"));
 	eff(0, 2) = stod(GetValueFor("Global", "output/CutEff_PID_L1820G_2hG.txt"));
-	eff(0, 3) = stod(GetValueFor("Global", "output/CutEff_PID_NstG_2hG.txt"));
-	eff(0, 4) = stod(GetValueFor("Global", "output/CutEff_PID_KstG_2hG.txt"));
-	eff(0, 5) = stod(GetValueFor("Global", "output/CutEff_PID_L1820G_2hG.txt"));
+	eff(0, 3) = 0.;
+	eff(0, 4) = 0.;
+	eff(0, 5) = 0.;
 	//pbarpi
 	eff(1, 0) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_NstG_2hG.txt"));
 	eff(1, 1) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_KstG_2hG.txt"));
 	eff(1, 2) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_L1820G_2hG.txt"));
-	eff(1, 3) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_NstG_2hG.txt"));
-	eff(1, 4) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_KstG_2hG.txt"));
-	eff(1, 5) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_L1820G_2hG.txt"));
+	eff(1, 3) = 0.;
+	eff(1, 4) = 0.;
+	eff(1, 5) = 0.;
 	//ppibar
 	eff(2, 0) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_NstG_2hG.txt"));
 	eff(2, 1) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_KstG_2hG.txt"));
 	eff(2, 2) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_L1820G_2hG.txt"));
-	eff(2, 3) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_NstG_2hG.txt"));
-	eff(2, 4) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_KstG_2hG.txt"));
-	eff(2, 5) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_L1820G_2hG.txt"));
+	eff(2, 3) = 0.;
+	eff(2, 4) = 0.;
+	eff(2, 5) = 0.;
 	//Time to build up the matrices
 	//M Matrix
 	TMatrixT<double> M(3, 3);
