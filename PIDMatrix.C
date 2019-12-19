@@ -18,13 +18,11 @@ using namespace std;
 //List of functions
 void PIDMatrix(string keyconfig);
 void PIDMatrix_NstG();
-void PIDMatrix_NstG_bad();
 //////////////////////////////////////////////////
 //General function
 void PIDMatrix(string keyconfig)
 {
 	if (keyconfig == "NstG") {PIDMatrix_NstG();}
-	else if (keyconfig == "NstG_bad") {PIDMatrix_NstG_bad();}
 	else {cout << "Could not match " << keyconfig << " to any keyconfig." << endl;}
 }
 //////////////////////////////////////////////////
@@ -35,79 +33,135 @@ void PIDMatrix_NstG()
 	int N = 0;
 	//Vector with total Yields. Cuts:(ppi, pbarpi, ppibar)
 	TVectorT<double> Y(3);
-	//Y(0) = stod(ReadVariablesWord(N, "output/TotalYield_Fit_B_M012_Subst0_K2p.txt", 1)[0]);
-	Y(0) = 200.;
+	Y(0) = stod(ReadVariablesWord(N, "output/TotalYield_Fit_B_M012_Subst0_K2p.txt", 1)[0]);
 	Y(1) = stod(ReadVariablesWord(N, "output/TotalYield_Fit_B_M012.txt", 1)[0]);
 	Y(2) = stod(ReadVariablesWord(N, "output/TotalYield_Fit_B_M012_Subst01_Kpi2pK.txt", 1)[0]);
 	//Our unknowns (contamination)
 	TVectorT<double> x(3);
 	//Now, we'll compose the PID matrix efficiency. Rows are for cuts, columns for channels (ppiG, KpiG, pKG, pipG, piKG, KpG)
 	//ppi
-	TMatrixT<double> pid_eff(3, 6);
+	TMatrixT<double> pid_eff(3, 14);
 	pid_eff(0, 0) = stod(GetValueFor("Global", "output/CutEff_PID_NstG_2hG.txt"));
 	pid_eff(0, 1) = stod(GetValueFor("Global", "output/CutEff_PID_KstG_2hG.txt"));
-	pid_eff(0, 2) = stod(GetValueFor("Global", "output/CutEff_PID_L1820G_2hG.txt"));
-	//pid_eff(0, 3) = stod(GetValueFor("Global", "output/CutEff_PID_NstG_Ref_2hG.txt"));
-	pid_eff(0, 3) = 0.;
-	pid_eff(0, 4) = stod(GetValueFor("Global", "output/CutEff_PID_KstG_Ref_2hG.txt"));
-	pid_eff(0, 5) = stod(GetValueFor("Global", "output/CutEff_PID_L1820G_Ref_2hG.txt"));
+	pid_eff(0, 2) = stod(GetValueFor("Global", "output/CutEff_PID_K2stG_2hG.txt"));
+	pid_eff(0, 3) = stod(GetValueFor("Global", "output/CutEff_PID_L1520G_2hG.txt"));
+	pid_eff(0, 4) = stod(GetValueFor("Global", "output/CutEff_PID_L1670G_2hG.txt"));
+	pid_eff(0, 5) = stod(GetValueFor("Global", "output/CutEff_PID_L1820G_2hG.txt"));
+	pid_eff(0, 6) = stod(GetValueFor("Global", "output/CutEff_PID_L1830G_2hG.txt"));
+	//pid_eff(0, 7) = stod(GetValueFor("Global", "output/CutEff_PID_NstG_Ref_2hG.txt"));
+	pid_eff(0, 7) = 0.;
+	pid_eff(0, 8) = stod(GetValueFor("Global", "output/CutEff_PID_KstG_Ref_2hG.txt"));
+	pid_eff(0, 9) = stod(GetValueFor("Global", "output/CutEff_PID_K2stG_Ref_2hG.txt"));
+	pid_eff(0, 10) = stod(GetValueFor("Global", "output/CutEff_PID_L1520G_Ref_2hG.txt"));
+	pid_eff(0, 11) = stod(GetValueFor("Global", "output/CutEff_PID_L1670G_Ref_2hG.txt"));
+	pid_eff(0, 12) = stod(GetValueFor("Global", "output/CutEff_PID_L1820G_Ref_2hG.txt"));
+	pid_eff(0, 13) = stod(GetValueFor("Global", "output/CutEff_PID_L1830G_Ref_2hG.txt"));
 	//pbarpi
 	pid_eff(1, 0) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_NstG_2hG.txt"));
 	pid_eff(1, 1) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_KstG_2hG.txt"));
-	pid_eff(1, 2) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_L1820G_2hG.txt"));
-	//pid_eff(1, 3) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_NstG_Ref_2hG.txt"));
-	pid_eff(1, 3) = 0.;
-	pid_eff(1, 4) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_KstG_Ref_2hG.txt"));
-	pid_eff(1, 5) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_L1820G_Ref_2hG.txt"));
+	pid_eff(1, 2) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_K2stG_2hG.txt"));
+	pid_eff(1, 3) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_L1520G_2hG.txt"));
+	pid_eff(1, 4) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_L1670G_2hG.txt"));
+	pid_eff(1, 5) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_L1820G_2hG.txt"));
+	pid_eff(1, 6) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_L1830G_2hG.txt"));
+	//pid_eff(1, 7) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_NstG_Ref_2hG.txt"));
+	pid_eff(1, 7) = 0.;
+	pid_eff(1, 8) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_KstG_Ref_2hG.txt"));
+	pid_eff(1, 9) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_K2stG_Ref_2hG.txt"));
+	pid_eff(1, 10) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_L1520G_Ref_2hG.txt"));
+	pid_eff(1, 11) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_L1670G_Ref_2hG.txt"));
+	pid_eff(1, 12) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_L1820G_Ref_2hG.txt"));
+	pid_eff(1, 13) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_L1830G_Ref_2hG.txt"));
 	//ppibar
 	pid_eff(2, 0) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_NstG_2hG.txt"));
 	pid_eff(2, 1) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_KstG_2hG.txt"));
-	pid_eff(2, 2) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_L1820G_2hG.txt"));
-	//pid_eff(2, 3) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_NstG_Ref_2hG.txt"));
-	pid_eff(2, 3) = 0.;
-	pid_eff(2, 4) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_KstG_Ref_2hG.txt"));
-	pid_eff(2, 5) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_L1820G_Ref_2hG.txt"));
+	pid_eff(2, 2) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_K2stG_2hG.txt"));
+	pid_eff(2, 3) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_L1520G_2hG.txt"));
+	pid_eff(2, 4) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_L1670G_2hG.txt"));
+	pid_eff(2, 5) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_L1820G_2hG.txt"));
+	pid_eff(2, 6) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_L1830G_2hG.txt"));
+	//pid_eff(2, 7) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_NstG_Ref_2hG.txt"));
+	pid_eff(2, 7) = 0.;
+	pid_eff(2, 8) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_KstG_Ref_2hG.txt"));
+	pid_eff(2, 9) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_K2stG_Ref_2hG.txt"));
+	pid_eff(2, 10) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_L1520G_Ref_2hG.txt"));
+	pid_eff(2, 11) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_L1670G_Ref_2hG.txt"));
+	pid_eff(2, 12) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_L1820G_Ref_2hG.txt"));
+	pid_eff(2, 13) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_L1830G_Ref_2hG.txt"));
 	//Now, we'll compose the non-PID matrix efficiency. Rows are for cuts, columns for channels (ppiG, KpiG, pKG, pipG, piKG, KpG)
 	//ppi
-	TMatrixT<double> nopid_eff(3, 6);
-	nopid_eff(0, 0) = stod(GetValueFor("Global", "output/CutEff_NstG_2hG.txt"));
-	nopid_eff(0, 1) = stod(GetValueFor("Global", "output/CutEff_KstG_2hG.txt"));
-	nopid_eff(0, 2) = stod(GetValueFor("Global", "output/CutEff_L1820G_2hG.txt"));
-	//nopid_eff(0, 3) = stod(GetValueFor("Global", "output/CutEff_NstG_Ref_2hG.txt"));
-	nopid_eff(0, 3) = 0.;
-	nopid_eff(0, 4) = stod(GetValueFor("Global", "output/CutEff_KstG_Ref_2hG.txt"));
-	nopid_eff(0, 5) = stod(GetValueFor("Global", "output/CutEff_L1820G_Ref_2hG.txt"));
-	//pbarpi
-	nopid_eff(1, 0) = stod(GetValueFor("Global", "output/CutEff_NstG_2hG.txt"));
-	nopid_eff(1, 1) = stod(GetValueFor("Global", "output/CutEff_KstG_2hG.txt"));
-	nopid_eff(1, 2) = stod(GetValueFor("Global", "output/CutEff_L1820G_2hG.txt"));
-	//nopid_eff(1, 3) = stod(GetValueFor("Global", "output/CutEff_NstG_Ref_2hG.txt"));
-	nopid_eff(1, 3) = 0.;
-	nopid_eff(1, 4) = stod(GetValueFor("Global", "output/CutEff_KstG_Ref_2hG.txt"));
-	nopid_eff(1, 5) = stod(GetValueFor("Global", "output/CutEff_L1820G_Ref_2hG.txt"));
-	//ppibar
-	nopid_eff(2, 0) = stod(GetValueFor("Global", "output/CutEff_NstG_2hG.txt"));
-	nopid_eff(2, 1) = stod(GetValueFor("Global", "output/CutEff_KstG_2hG.txt"));
-	nopid_eff(2, 2) = stod(GetValueFor("Global", "output/CutEff_L1820G_2hG.txt"));
-	//nopid_eff(2, 3) = stod(GetValueFor("Global", "output/CutEff_NstG_Ref_2hG.txt"));
-	nopid_eff(2, 3) = 0.;
-	nopid_eff(2, 4) = stod(GetValueFor("Global", "output/CutEff_KstG_Ref_2hG.txt"));
-	nopid_eff(2, 5) = stod(GetValueFor("Global", "output/CutEff_L1820G_Ref_2hG.txt"));
+	TVectorT<double> nopid_eff(14);
+	nopid_eff(0) = stod(GetValueFor("Global", "output/CutEff_NstG_2hG.txt"));
+	nopid_eff(1) = stod(GetValueFor("Global", "output/CutEff_KstG_2hG.txt"));
+	nopid_eff(2) = stod(GetValueFor("Global", "output/CutEff_K2stG_2hG.txt"));
+	nopid_eff(3) = stod(GetValueFor("Global", "output/CutEff_L1520G_2hG.txt"));
+	nopid_eff(4) = stod(GetValueFor("Global", "output/CutEff_L1670G_2hG.txt"));
+	nopid_eff(5) = stod(GetValueFor("Global", "output/CutEff_L1820G_2hG.txt"));
+	nopid_eff(6) = stod(GetValueFor("Global", "output/CutEff_L1830G_2hG.txt"));
+	//nopid_eff(7) = stod(GetValueFor("Global", "output/CutEff_NstG_Ref_2hG.txt"));
+	nopid_eff(7) = 0.;
+	nopid_eff(8) = stod(GetValueFor("Global", "output/CutEff_KstG_Ref_2hG.txt"));
+	nopid_eff(9) = stod(GetValueFor("Global", "output/CutEff_K2stG_Ref_2hG.txt"));
+	nopid_eff(10) = stod(GetValueFor("Global", "output/CutEff_L1520G_Ref_2hG.txt"));
+	nopid_eff(11) = stod(GetValueFor("Global", "output/CutEff_L1670G_Ref_2hG.txt"));
+	nopid_eff(12) = stod(GetValueFor("Global", "output/CutEff_L1820G_Ref_2hG.txt"));
+	nopid_eff(13) = stod(GetValueFor("Global", "output/CutEff_L1830G_Ref_2hG.txt"));
+
+	//Now since we have several channels for each components, we have to weight them
+	TVectorT<double> ch_weight(7);
+	//ppiG
+	ch_weight(0) = 1.;
+	//KpiG
+	ch_weight(1) = stod(ReadVariablesWord(N, "output/Yield_Exp_noPID_KstG.txt", 1)[0]);
+	ch_weight(2) = stod(ReadVariablesWord(N, "output/Yield_Exp_noPID_K2stG.txt", 1)[0]);
+	for (int i = 2; i >= 1; i--) {ch_weight(i) /= ch_weight(1);}
+	//pKG
+	ch_weight(3) = stod(ReadVariablesWord(N, "output/Yield_Exp_noPID_L1520G.txt", 1)[0]);
+	ch_weight(4) = stod(ReadVariablesWord(N, "output/Yield_Exp_noPID_L1670G.txt", 1)[0]);
+	ch_weight(5) = stod(ReadVariablesWord(N, "output/Yield_Exp_noPID_L1820G.txt", 1)[0]);
+	ch_weight(6) = stod(ReadVariablesWord(N, "output/Yield_Exp_noPID_L1830G.txt", 1)[0]);
+	for (int i = 6; i >= 3; i--) {ch_weight(i) /= ch_weight(3);}
 	//Time to build up the matrices
 	//M Matrix
+	TMatrixT<double> _M(3, 7);
 	TMatrixT<double> M(3, 3);
 	//F Matrix
-	TMatrixT<double> F(3, 3);
+	TMatrixT<double> F(3, 7);
 	//R Matrix
-	TMatrixT<double> R(3, 3);
+	TMatrixT<double> R(3, 7);
+	//Let's fill up first each channel as an independent source
 	for (int i = 0; i < F.GetNrows(); i++)
 	{
+		F(i, 0) = pid_eff(i, 0) / pid_eff(0, 0);
+		F(i, 1) = pid_eff(i, 1) / pid_eff(0, 1);
+		F(i, 2) = pid_eff(i, 2) / pid_eff(0, 1);
+		F(i, 3) = pid_eff(i, 3) / pid_eff(0, 3);
+		F(i, 4) = pid_eff(i, 4) / pid_eff(0, 3);
+		F(i, 5) = pid_eff(i, 5) / pid_eff(0, 3);
+		F(i, 6) = pid_eff(i, 6) / pid_eff(0, 3);
+		R(i, 0) = pid_eff(i, 0 + F.GetNcols()) * nopid_eff(0 + F.GetNcols()) / (pid_eff(0, 0) * nopid_eff(0));
+		R(i, 1) = pid_eff(i, 1 + F.GetNcols()) * nopid_eff(1 + F.GetNcols()) / (pid_eff(0, 1) * nopid_eff(1));
+		R(i, 2) = pid_eff(i, 2 + F.GetNcols()) * nopid_eff(2 + F.GetNcols()) / (pid_eff(0, 1) * nopid_eff(2));
+		R(i, 3) = pid_eff(i, 3 + F.GetNcols()) * nopid_eff(3 + F.GetNcols()) / (pid_eff(0, 3) * nopid_eff(3));
+		R(i, 4) = pid_eff(i, 4 + F.GetNcols()) * nopid_eff(4 + F.GetNcols()) / (pid_eff(0, 3) * nopid_eff(4));
+		R(i, 5) = pid_eff(i, 5 + F.GetNcols()) * nopid_eff(5 + F.GetNcols()) / (pid_eff(0, 3) * nopid_eff(5));
+		R(i, 6) = pid_eff(i, 6 + F.GetNcols()) * nopid_eff(6 + F.GetNcols()) / (pid_eff(0, 3) * nopid_eff(6));
 		for (int j = 0; j < F.GetNcols(); j++)
 		{
-			F(i, j) = pid_eff(i, j) / pid_eff(0, j);
-			R(i, j) = pid_eff(i, j + 3) * nopid_eff(i, j + 3) / (pid_eff(0, j) * nopid_eff(0, j));
-			M(i, j) = F(i, j) + R(i, j);
+			_M(i, j) = F(i, j) + R(i, j);
 		}
+	}
+	//Time to merge the channels now
+	for (int i = 0; i < F.GetNrows(); i++)
+	{
+		//ppiG
+		M(i, 0) = _M(i, 0) * ch_weight(0);
+		//KpiG
+		M(i, 1) = 0.;
+		for (int j = 1; j <= 2; j++) {M(i, 1) += _M(i, j) * ch_weight(j);}
+		//pKG
+		M(i, 2) = 0.;
+		for (int j = 3; j <= 6; j++) {M(i, 2) += _M(i, j) * ch_weight(j);}
 	}
 	//Time to invert our matrix to solve the problem: Y = M·x --> x = M^-1·Y
 	TMatrixT<double> M_inv = M.Invert();
@@ -120,78 +174,24 @@ void PIDMatrix_NstG()
 			x(i) += M_inv(i, j) * Y(j);
 		}
 	}
+
+	TVectorT<double> x_final(14);
+	x_final(0) = x(0);
+	x_final(1) = ch_weight(1) * x(1) * (pid_eff(0, 1)) / (pid_eff(0, 1));
+	x_final(2) = ch_weight(2) * x(1) * (pid_eff(0, 2)) / (pid_eff(0, 1));
+	x_final(3) = ch_weight(3) * x(2) * (pid_eff(0, 3)) / (pid_eff(0, 3));
+	x_final(4) = ch_weight(4) * x(2) * (pid_eff(0, 4)) / (pid_eff(0, 3));
+	x_final(5) = ch_weight(5) * x(2) * (pid_eff(0, 5)) / (pid_eff(0, 3));
+	x_final(6) = ch_weight(6) * x(2) * (pid_eff(0, 6)) / (pid_eff(0, 3));
+	for (int i = 7; i < x_final.GetNrows(); i++)
+	{
+		x_final(i) = x_final(i - 7) * R(0, i - 7);
+	}
+
 	cout << "===== RESULT =====" << endl;
-	x.Print();
+	x_final.Print();
 	cout << "==================" << endl;
 }
-
-void PIDMatrix_NstG_bad()
-{
-	//Dummy integer to use
-	int N = 0;
-	//Vector with total Yields. Cuts:(ppi, pbarpi, ppibar)
-	TVectorT<double> Y(3);
-	//Y(0) = stod(ReadVariablesWord(N, "output/TotalYield_Fit_B_M012_Subst0_K2p.txt", 1)[0]);
-	Y(0) = 200.;
-	Y(1) = stod(ReadVariablesWord(N, "output/TotalYield_Fit_B_M012.txt", 1)[0]);
-	Y(2) = stod(ReadVariablesWord(N, "output/TotalYield_Fit_B_M012_Subst01_Kpi2pK.txt", 1)[0]);
-	//Our unknowns (contamination)
-	TVectorT<double> x(3);
-	//Now, we'll compose the matrix efficiency. Rows are for cuts, columns for channels (ppiG, KpiG, pKG, pipG, piKG, KpG)
-	//ppi
-	TMatrixT<double> eff(3, 6);
-	eff(0, 0) = stod(GetValueFor("Global", "output/CutEff_PID_NstG_2hG.txt"));
-	eff(0, 1) = stod(GetValueFor("Global", "output/CutEff_PID_KstG_2hG.txt"));
-	eff(0, 2) = stod(GetValueFor("Global", "output/CutEff_PID_L1820G_2hG.txt"));
-	eff(0, 3) = 0.;
-	eff(0, 4) = 0.;
-	eff(0, 5) = 0.;
-	//pbarpi
-	eff(1, 0) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_NstG_2hG.txt"));
-	eff(1, 1) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_KstG_2hG.txt"));
-	eff(1, 2) = stod(GetValueFor("Global", "output/CutEff_PIDInv1_L1820G_2hG.txt"));
-	eff(1, 3) = 0.;
-	eff(1, 4) = 0.;
-	eff(1, 5) = 0.;
-	//ppibar
-	eff(2, 0) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_NstG_2hG.txt"));
-	eff(2, 1) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_KstG_2hG.txt"));
-	eff(2, 2) = stod(GetValueFor("Global", "output/CutEff_PIDInv2_L1820G_2hG.txt"));
-	eff(2, 3) = 0.;
-	eff(2, 4) = 0.;
-	eff(2, 5) = 0.;
-	//Time to build up the matrices
-	//M Matrix
-	TMatrixT<double> M(3, 3);
-	//F Matrix
-	TMatrixT<double> F(3, 3);
-	//R Matrix
-	TMatrixT<double> R(3, 3);
-	for (int i = 0; i < F.GetNrows(); i++)
-	{
-		for (int j = 0; j < F.GetNcols(); j++)
-		{
-			F(i, j) = eff(i, j) / eff(0, j);
-			R(i, j) = eff(i, j + 3) / eff(0, j);
-			M(i, j) = F(i, j) + R(i, j);
-		}
-	}
-	//Time to invert our matrix to solve the problem: Y = M·x --> x = M^-1·Y
-	TMatrixT<double> M_inv = M.Invert();
-	//Result on x
-	for (int i = 0; i < M.GetNrows(); i++)
-	{
-		x(i) = 0;
-		for (int j = 0; j < M.GetNcols(); j++)
-		{
-			x(i) += M_inv(i, j) * Y(j);
-		}
-	}
-	cout << "===== RESULT =====" << endl;
-	x.Print();
-	cout << "==================" << endl;
-}
-
 
 
 #if !defined(__CLING__)
