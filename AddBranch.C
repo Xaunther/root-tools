@@ -33,7 +33,7 @@ void AddBranch(string branchname, string tupleinfile, string tupleoutfile, strin
       //Insert formula, if any
       branchvalue = formulavar->EvalInstance();
       tree->Fill();
-      if(i%(inchain->GetEntries()/10)==0)
+      if(i%(inchain->GetEntries()/10+1)==0)
 	{
 	  cout << "Processing event: " << i << " / " << inchain->GetEntries() << endl;
 	}
