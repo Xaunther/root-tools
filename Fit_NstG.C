@@ -34,21 +34,21 @@ void Fit_NstG(string varnamedata, string filedirdata, string cutfiledata, string
 
   RooWorkspace* Final_ws;
   //This function is used to channel the 3 mass variable fits for NstG: ppiG, KpiG, pKG
-  if (varnamedata == "B_M012_Subst0_K2p")
+  if (opts == "NstGamma")
     {
       Final_ws = FitLb2NstG(varnamedata, temptree, opts);
     }
-  else if (varnamedata == "B_M012")
+  else if (opts == "NstG_KpiG")
     {
       Final_ws = FitLb2NstG_Kpi(varnamedata, temptree, opts);
     }
-  else if (varnamedata == "B_M012_Subst01_Kpi2pK")
+  else if (opts == "NstG_pKG")
     {
       Final_ws = FitLb2NstG_pK(varnamedata, temptree, opts);
     }
   else //Unknown mass variable to fit
     {
-      cout << "Mass variable " + varnamedata + " not implemented" << endl;
+      cout << "Fit for " + opts + " not implemented" << endl;
       exit(1);
     }  
   //Plot with linear scale
