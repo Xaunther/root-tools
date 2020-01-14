@@ -1,7 +1,6 @@
 #include <string>
 void rootinit(std::string path)
 {
-  //Path to mother folder
   //First of all come the personal constants
   gROOT->ProcessLine((".L "+path+"Dictionaries/Constants.cxx+").c_str());
   gROOT->ProcessLine((".L "+path+"Dictionaries/Names.cxx+").c_str());
@@ -70,7 +69,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L "+path+"root/MassSub.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/OutputSearch.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/PhaseSpace.C+").c_str());
-  gROOT->ProcessLine((".L "+path+"root/PIDMatrix.C+").c_str());
+  //  gROOT->ProcessLine((".L "+path+"root/PIDMatrix.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/PIDPunzi.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/PIDTable.C+").c_str());
   gROOT->ProcessLine((".L "+path+"root/plot2D.C+").c_str());

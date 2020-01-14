@@ -7,6 +7,8 @@
 //where F_ij is eff for cut i in channel j divided by eff for signal cut in channel j
 //Where R_ij is eff for cut i in the reflection channel of j, divided by eff for signal cut in channel j
 //The efficiency is of all the selections involved since the divergence of the signal and its reflection counterpart (since the tuple was made)
+
+//This script is not compatible with ROOTCINT
 #include <iostream>
 #include <string>
 #include <fstream>

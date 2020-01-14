@@ -13,6 +13,8 @@ string(REGEX REPLACE "\n$" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 string(APPEND CMAKE_CXX_FLAGS " -Wall -Wextra -lTMVA -lRooFit -lRooFitCore -lRooStats")
 #Add Boost Library (Recommended local install folder. Version 1.72.0)
 string(APPEND CMAKE_CXX_FLAGS " -I /usr/local/boost_1_72_0")
+#Add Boost Library (Lxplus releases. Version 1.70.0)
+string(APPEND CMAKE_CXX_FLAGS " -I /cvmfs/lhcb.cern.ch/lib/lcg/releases/Boost/1.70.0-eebf1/x86_64-centos7-gcc8-opt/include")
 
 #Bring the headers, such as Student.h into the project
 include_directories(../Dictionaries ../Functions)
