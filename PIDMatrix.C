@@ -14,7 +14,10 @@
 #include "TVectorT.h"
 #include "../Functions/Filereading.h"
 #include "../Functions/Dictreading.h"
+#include "../Functions/BoostTools.h"
+#include <boost/math/tools/polynomial.hpp>
 using namespace std;
+
 
 //List of functions
 void PIDMatrix(string keyconfig, string outfile);
@@ -38,12 +41,20 @@ void PIDMatrix_NstG(string outfile)
 	//Dummy integer to use
 	int N = 0;
 	//Vector with total Yields. Cuts:(ppi, pbarpi, ppibar)
-	TVectorT<double> Y(3);
-	Y(0) = stod(ReadVariablesWord(N, "output/TotalYield_Fit_B_M012_Subst0_K2p.txt", 1)[0]);
-	Y(1) = stod(ReadVariablesWord(N, "output/TotalYield_Fit_B_M012.txt", 1)[0]);
-	Y(2) = stod(ReadVariablesWord(N, "output/TotalYield_Fit_B_M012_Subst01_Kpi2pK.txt", 1)[0]);
-	//Our unknowns (contamination)
-	TVectorT<double> x(3);
+	//Now we want to compute the contamination, but without knowing the total yield in the ppigamma channel
+	//This was done with mathematica, let's try this boost library...
+	std::vector<boost::math::tools::polynomial<double>> Y;
+	Y.push_back({100., 100.});//100(1+x) is the total ppiG yield
+	Y.push_back({stod(ReadVariablesWord(N, "output/TotalYield_Fit_B_M012.txt", 1)[0])});
+	Y.push_back({stod(ReadVariablesWord(N, "output/TotalYield_Fit_B_M012_Subst01_Kpi2pK.txt", 1)[0])});
+	//Also read errors
+	std::vector<double> Y_error;
+	Y_error.push_back(sqrt(2 * 100.)); //worst case scenario something like sqrt(200)
+	Y_error.push_back(stod(ReadVariablesWord(N, "output/TotalYield_Fit_B_M012.txt", 3)[0]));
+	Y_error.push_back(stod(ReadVariablesWord(N, "output/TotalYield_Fit_B_M012_Subst01_Kpi2pK.txt", 3)[0]));
+	//Our unknowns (contamination), with error
+	std::vector<boost::math::tools::polynomial<double>> x;
+	std::vector<double> x_error;
 	//Now, we'll compose the PID matrix efficiency. Rows are for cuts, columns for channels (ppiG, KpiG, pKG, pipG, piKG, KpG)
 	//ppi
 	TMatrixT<double> pid_eff(3, 14);
@@ -174,44 +185,66 @@ void PIDMatrix_NstG(string outfile)
 	//Result on x
 	for (int i = 0; i < M.GetNrows(); i++)
 	{
-		x(i) = 0;
+		x.push_back({0});
+		x_error.push_back(0.);
 		for (int j = 0; j < M.GetNcols(); j++)
 		{
-			x(i) += M_inv(i, j) * Y(j);
+			x[i] += M_inv(i, j) * Y[j];
+			x_error[i] += M_inv(i, j) * M_inv(i, j) * Y_error[j] * Y_error[j];
 		}
+		x_error[i] = sqrt(x_error[i]);
 	}
 
-	TVectorT<double> x_final_ppi(14);
+	std::vector<boost::math::tools::polynomial<double>> x_final_ppi;
+	std::vector<double> x_final_ppi_error;
 	//Contributions for ppi PID cuts
 	//Main
 	//ppiG
-	x_final_ppi(0) = ch_weight(0) * x(0) * F(0, 0);
+	x_final_ppi.push_back({ch_weight(0) * x[0] * F(0, 0)});
+	x_final_ppi_error.push_back(ch_weight(0) * x_error[0] * F(0, 0));
 	//KpiG
-	x_final_ppi(1) = ch_weight(1) * x(1) * F(0, 1);
-	x_final_ppi(2) = ch_weight(2) * x(1) * F(0, 2);
+	x_final_ppi.push_back({ch_weight(1) * x[1] * F(0, 1)});
+	x_final_ppi.push_back({ch_weight(2) * x[1] * F(0, 2)});
+	x_final_ppi_error.push_back(ch_weight(1) * x_error[1] * F(0, 1));
+	x_final_ppi_error.push_back(ch_weight(2) * x_error[1] * F(0, 2));
 	//pKG
-	x_final_ppi(3) = ch_weight(3) * x(2) * F(0, 3);
-	x_final_ppi(4) = ch_weight(4) * x(2) * F(0, 4);
-	x_final_ppi(5) = ch_weight(5) * x(2) * F(0, 5);
-	x_final_ppi(6) = ch_weight(6) * x(2) * F(0, 6);
+	x_final_ppi.push_back({ch_weight(3) * x[2] * F(0, 3)});
+	x_final_ppi.push_back({ch_weight(4) * x[2] * F(0, 4)});
+	x_final_ppi.push_back({ch_weight(5) * x[2] * F(0, 5)});
+	x_final_ppi.push_back({ch_weight(6) * x[2] * F(0, 6)});
+	x_final_ppi_error.push_back(ch_weight(3) * x_error[2] * F(0, 3));
+	x_final_ppi_error.push_back(ch_weight(4) * x_error[2] * F(0, 4));
+	x_final_ppi_error.push_back(ch_weight(5) * x_error[2] * F(0, 5));
+	x_final_ppi_error.push_back(ch_weight(6) * x_error[2] * F(0, 6));
 	//Reflections
 	//ppiG
-	x_final_ppi(7) = ch_weight(0) * x(0) * R(0, 0);
+	x_final_ppi.push_back({ch_weight(0) * x[0] * R(0, 0)});
+	x_final_ppi_error.push_back(ch_weight(0) * x_error[0] * R(0, 0));
 	//KpiG
-	x_final_ppi(8) = ch_weight(1) * x(1) * R(0, 1);
-	x_final_ppi(9) = ch_weight(2) * x(1) * R(0, 2);
+	x_final_ppi.push_back({ch_weight(1) * x[1] * R(0, 1)});
+	x_final_ppi.push_back({ch_weight(2) * x[1] * R(0, 2)});
+	x_final_ppi_error.push_back(ch_weight(1) * x_error[1] * R(0, 1));
+	x_final_ppi_error.push_back(ch_weight(2) * x_error[1] * R(0, 2));
 	//pKG
-	x_final_ppi(10) = ch_weight(3) * x(2) * R(0, 3);
-	x_final_ppi(11) = ch_weight(4) * x(2) * R(0, 4);
-	x_final_ppi(12) = ch_weight(5) * x(2) * R(0, 5);
-	x_final_ppi(13) = ch_weight(6) * x(2) * R(0, 6);
+	x_final_ppi.push_back({ch_weight(3) * x[2] * R(0, 3)});
+	x_final_ppi.push_back({ch_weight(4) * x[2] * R(0, 4)});
+	x_final_ppi.push_back({ch_weight(5) * x[2] * R(0, 5)});
+	x_final_ppi.push_back({ch_weight(6) * x[2] * R(0, 6)});
+	x_final_ppi_error.push_back(ch_weight(3) * x_error[2] * R(0, 3));
+	x_final_ppi_error.push_back(ch_weight(4) * x_error[2] * R(0, 4));
+	x_final_ppi_error.push_back(ch_weight(5) * x_error[2] * R(0, 5));
+	x_final_ppi_error.push_back(ch_weight(6) * x_error[2] * R(0, 6));
 
-	TVectorT<double> x_final_pbarpi(14);
-	TVectorT<double> x_final_ppibar(14);
-	for (int i = 0; i < x_final_pbarpi.GetNrows(); i++)
+	std::vector<boost::math::tools::polynomial<double>> x_final_pbarpi;
+	std::vector<double> x_final_pbarpi_error;
+	std::vector<boost::math::tools::polynomial<double>> x_final_ppibar;
+	std::vector<double> x_final_ppibar_error;
+	for (unsigned int i = 0; i < x_final_ppi.size(); i++)
 	{
-		x_final_pbarpi(i) = x_final_ppi(i) / pid_eff(0, i) * pid_eff(1, i);
-		x_final_ppibar(i) = x_final_ppi(i) / pid_eff(0, i) * pid_eff(2, i);
+		x_final_pbarpi.push_back({x_final_ppi[i] / pid_eff(0, i) * pid_eff(1, i)});
+		x_final_pbarpi_error.push_back({x_final_ppi_error[i] / pid_eff(0, i) * pid_eff(1, i)});
+		x_final_ppibar.push_back({x_final_ppi[i] / pid_eff(0, i) * pid_eff(2, i)});
+		x_final_ppibar_error.push_back({x_final_ppi_error[i] / pid_eff(0, i) * pid_eff(2, i)});
 	}
 
 	vector<string> namelist = PIDMatrix_namelist();
@@ -220,23 +253,23 @@ void PIDMatrix_NstG(string outfile)
 	fout << "===== RESULT =====" << endl;
 	fout << "ppi cuts" << endl;
 	fout << "--------" << endl;
-	for (int i = 0; i < x_final_ppi.GetNrows(); i++)
+	for (unsigned int i = 0; i < x_final_ppi.size(); i++)
 	{
-		fout << namelist[i] << "_ppi = " << x_final_ppi(i) << endl;
+		fout << namelist[i] << "_ppi = " << formula_format(x_final_ppi[i], "\u03B5") << " \u00B1 " << max(x_final_ppi_error[i], sqrt(x_final_ppi[i](0.))) << endl;
 	}
 	fout << endl;
 	fout << "pbarpi cuts" << endl;
 	fout << "-----------" << endl;
-	for (int i = 0; i < x_final_pbarpi.GetNrows(); i++)
+	for (unsigned int i = 0; i < x_final_pbarpi.size(); i++)
 	{
-		fout << namelist[i] << "_pbarpi = " << x_final_pbarpi(i) << endl;
+		fout << namelist[i] << "_pbarpi = " << formula_format(x_final_pbarpi[i], "\u03B5") << " \u00B1 " << max(x_final_pbarpi_error[i], sqrt(x_final_pbarpi[i](0.))) << endl;
 	}
 	fout << endl;
 	fout << "ppibarcuts" << endl;
 	fout << "----------" << endl;
-	for (int i = 0; i < x_final_ppibar.GetNrows(); i++)
+	for (unsigned int i = 0; i < x_final_ppibar.size(); i++)
 	{
-		fout << namelist[i] << "_ppibar = " << x_final_ppibar(i) << endl;
+		fout << namelist[i] << "_ppibar = " << formula_format(x_final_ppibar[i], "\u03B5") << " \u00B1 " << max(x_final_ppibar_error[i], sqrt(x_final_ppibar[i](0.))) << endl;
 	}
 	fout << endl;
 	fout << "M^-1 matrix" << endl;
@@ -250,6 +283,7 @@ void PIDMatrix_NstG(string outfile)
 		fout << endl;
 	}
 	fout << "==================" << endl;
+
 }
 
 //No Reflections

@@ -11,6 +11,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 execute_process(COMMAND root-config --cflags --libs OUTPUT_VARIABLE CMAKE_CXX_FLAGS)
 string(REGEX REPLACE "\n$" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 string(APPEND CMAKE_CXX_FLAGS " -Wall -Wextra -lTMVA -lRooFit -lRooFitCore -lRooStats")
+#Add Boost Library (Recommended local install folder. Version 1.72.0)
+string(APPEND CMAKE_CXX_FLAGS " -I /usr/local/boost_1_72_0")
 
 #Bring the headers, such as Student.h into the project
 include_directories(../Dictionaries ../Functions)
