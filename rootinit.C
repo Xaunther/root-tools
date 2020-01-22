@@ -62,7 +62,6 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L " + path + "root/Err_Frac.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/ExpYield.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/Fit_NstG.C+").c_str());
-  gROOT->ProcessLine((".L " + path + "root/Fit_NstG_Wrong.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/Fit_NstG_ppimumu.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/InvertCut.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/LatexTable.C+").c_str());

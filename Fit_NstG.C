@@ -35,30 +35,46 @@ void Fit_NstG(string varnamedata, string filedirdata, string cutfiledata, string
   RooWorkspace* Final_ws;
   //This function is used to channel the 3 mass variable fits for NstG: ppiG, KpiG, pKG
   if (opts == "NstGamma")
-    {
-      Final_ws = FitLb2NstG(varnamedata, temptree, opts);
-    }
+  {
+    Final_ws = FitLb2NstG(varnamedata, temptree, opts);
+  }
   else if (opts == "NstG_KpiG")
-    {
-      Final_ws = FitLb2NstG_Kpi(varnamedata, temptree, opts);
-    }
+  {
+    Final_ws = FitLb2NstG_Kpi(varnamedata, temptree, opts);
+  }
   else if (opts == "NstG_pKG")
-    {
-      Final_ws = FitLb2NstG_pK(varnamedata, temptree, opts);
-    }
+  {
+    Final_ws = FitLb2NstG_pK(varnamedata, temptree, opts);
+  }
+  else if (opts == "NstG_KpiG_Wrong")
+  {
+    Final_ws = FitLb2NstG_Kpi_Wrong(varnamedata, temptree, opts);
+  }
+  else if (opts == "NstG_pKG_Wrong")
+  {
+    Final_ws = FitLb2NstG_pK_Wrong(varnamedata, temptree, opts);
+  }
+  else if (opts == "NstGamma_minmu")
+  {
+    Final_ws = FitLb2NstG_minmu(varnamedata, temptree, opts);
+  }
+  else if (opts == "NstGamma_maxmu")
+  {
+    Final_ws = FitLb2NstG_maxmu(varnamedata, temptree, opts);
+  }
   else //Unknown mass variable to fit
-    {
-      cout << "Fit for " + opts + " not implemented" << endl;
-      exit(1);
-    }  
+  {
+    cout << "Fit for " + opts + " not implemented" << endl;
+    exit(1);
+  }
   //Plot with linear scale
   GoodPlot(Final_ws, varnamedata, "", "", opts);
   //Get log options (is this safe?)
   string logopts = opts + "_log";
   if (opts == GetValueFor("Project_name", "Dictionaries/Project_variables.txt"))
-    {
-      logopts = "NstG_ppiG_log";
-    }
+  {
+    logopts = "NstG_ppiG_log";
+  }
   //Plot with log scale
   GoodPlot(Final_ws, varnamedata, "", "", logopts, "_log");
 
