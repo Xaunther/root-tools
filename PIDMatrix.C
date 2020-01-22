@@ -274,6 +274,18 @@ void PIDMatrix_NstG(string outfile)
 		fout << namelist[i] << "_ppibar = " << formula_format(x_final_ppibar[i], "\u03B5") << " \u00B1 " << max(x_final_ppibar_error[i], sqrt(x_final_ppibar[i](0.))) << endl;
 	}
 	fout << endl;
+	M.Invert();
+	fout << "M matrix" << endl;
+	fout << "--------" << endl;
+	for (int i = 0; i < M.GetNrows(); i++)
+	{
+		for (int j = 0; j < M.GetNcols(); j++)
+		{
+			fout << M(i, j) << "  ";
+		}
+		fout << endl;
+	}
+	fout << endl;
 	fout << "M^-1 matrix" << endl;
 	fout << "-----------" << endl;
 	for (int i = 0; i < M_inv.GetNrows(); i++)
