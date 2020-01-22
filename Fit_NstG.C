@@ -56,11 +56,11 @@ void Fit_NstG(string varnamedata, string filedirdata, string cutfiledata, string
   }
   else if (opts == "NstGamma_minmu")
   {
-    Final_ws = FitLb2NstG_minmu(varnamedata, temptree, opts);
+    Final_ws = FitLb2NstG(varnamedata, temptree, opts);
   }
   else if (opts == "NstGamma_maxmu")
   {
-    Final_ws = FitLb2NstG_maxmu(varnamedata, temptree, opts);
+    Final_ws = FitLb2NstG(varnamedata, temptree, opts);
   }
   else //Unknown mass variable to fit
   {
