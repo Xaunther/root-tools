@@ -11,7 +11,7 @@
 #include "../Functions/ArrayTools.h"
 using namespace std;
 
-void EffStats(string dirfiles, string cutfile, string precutfile = "", string outfile = "EffStats_results.txt", string weight = "")
+void EffStats(string dirfiles, string cutfile, string precutfile = "", string outfile = "EffStats_results.txt", string weight = "", string separator = " ")
 {
 	//Start by reading the cuts and the precuts
 	string cuts = GetCuts(cutfile);
@@ -19,7 +19,7 @@ void EffStats(string dirfiles, string cutfile, string precutfile = "", string ou
 
 	//Now, get list of dirfiles in array
 	int N = 0;
-	string* dirfile = SplitString(N, dirfiles, " ");
+	string* dirfile = SplitString(N, dirfiles, separator);
 
 	//Now we can open the chains
 	TChain** chain = new TChain*[N];
@@ -74,6 +74,9 @@ int main(int argc, char** argv)
 		break;
 	case 5:
 		EffStats(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+		break;
+	case 6:
+	        EffStats(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
 		break;
 	default:
 		cout << "Wrong number of arguments (" << argc << ") for EffStats" << endl;
