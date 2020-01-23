@@ -5,13 +5,14 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <math.h>
 #include "../Functions/StringTools.h"
 #include "../Functions/Filereading.h"
 #include "../Functions/TreeTools.h"
 #include "../Functions/ArrayTools.h"
 using namespace std;
 
-void EffStats(string dirfiles, string cutfile, string precutfile = "", string outfile = "EffStats_results.txt", string weight = "", string separator = " ")
+void EffStats(string dirfiles, string cutfile, string precutfile = "", string treename = "", string outfile = "EffStats_results.txt", string weight = "")
 {
 	//Start by reading the cuts and the precuts
 	string cuts = GetCuts(cutfile);
@@ -19,13 +20,13 @@ void EffStats(string dirfiles, string cutfile, string precutfile = "", string ou
 
 	//Now, get list of dirfiles in array
 	int N = 0;
-	string* dirfile = SplitString(N, dirfiles, separator);
+	string* dirfile = SplitString(N, dirfiles, " ");
 
 	//Now we can open the chains
 	TChain** chain = new TChain*[N];
 	for (int i = 0; i < N; i++)
 	{
-		chain[i] = GetChain(dirfile[i]);
+	  chain[i] = GetChain(dirfile[i], treename);
 	}
 
 	//Finally, it is time to get the efficiency in each chain, and save it in an array
@@ -48,7 +49,7 @@ void EffStats(string dirfiles, string cutfile, string precutfile = "", string ou
 		outf << i << " | " << eff[i] << endl;
 	}
 	outf << "Mean = " << mean_eff << endl;
-	outf << "StdDev = " << stddev_eff << endl;
+	outf << "Error = " << stddev_eff/sqrt(N) << endl;
 
 	//Close files and clean memory
 	outf.close();
