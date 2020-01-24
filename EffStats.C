@@ -33,8 +33,9 @@ void EffStats(string dirfiles, string cutfile, string precutfile = "", string tr
 	string w2 = "";
 	if (weight != "") {w2 = weight + "*" + weight;}
 
-	//Let us save also the effective initial number of events, N0
+	//Let us save also the effective initial number of events, N0, and the error in each measurement
 	double* N0 = new double[N];
+	double* err = new double[N];
 
 	//Finally, it is time to get the efficiency in each chain, and save it in an array. Efficiency cannot go below zero, so we'll treat any negative efficiency as zero
 	double* eff = new double[N];
@@ -42,11 +43,13 @@ void EffStats(string dirfiles, string cutfile, string precutfile = "", string tr
 	{
 		N0[i] = GetMeanEntries(chain[i], precuts, weight);
 		eff[i] = max(GetMeanEntries(chain[i], cuts, weight) / N0[i], 0.);
+		err[i] = sqrt(eff[i] * (1 - eff[i]) / chain[i]->GetEntries()*GetMeanEntries(chain[i], precuts, w2)) / N0[i];
 	}
 	//Now we can make some statistics, mainly get the mean and standard deviation of the sample
 	double mean_eff = GetArrayMean(eff, N);
 	double stddev_eff = GetArrayStdDev(eff, N);
-
+	double stat_error = stddev_eff / sqrt(N);
+	double syst_err = sqrt(GetArraySumSq(err, N))/N;
 	//Save into requested file
 	ofstream outf;
 	outf.open(outfile.c_str());
@@ -54,10 +57,10 @@ void EffStats(string dirfiles, string cutfile, string precutfile = "", string tr
 	outf << "--------------------------" << endl;
 	for (int i = 0; i < N; i++)
 	{
-		outf << i << " | " << eff[i] << " \u00B1 " << sqrt(eff[i] * (1 - eff[i]) / chain[i]->GetEntries()*GetMeanEntries(chain[i], precuts, w2)) / N0[i] << endl;
+		outf << i << " | " << eff[i] << " \u00B1 " << err[i] << endl;
 	}
 	outf << "Mean = " << mean_eff << endl;
-	outf << "Error = " << stddev_eff / sqrt(N) << endl;
+	outf << "Error = " << sqrt(stat_error*stat_error+syst_err*syst_err) << endl;
 
 	//Close files and clean memory
 	outf.close();
