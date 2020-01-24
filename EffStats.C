@@ -29,11 +29,11 @@ void EffStats(string dirfiles, string cutfile, string precutfile = "", string tr
 	  chain[i] = GetChain(dirfile[i], treename);
 	}
 
-	//Finally, it is time to get the efficiency in each chain, and save it in an array
+	//Finally, it is time to get the efficiency in each chain, and save it in an array. Efficiency cannot go below zero, so we'll treat any negative efficiency as zero
 	double* eff = new double[N];
 	for (int i = 0; i < N; i++)
 	{
-		eff[i] = GetMeanEntries(chain[i], cuts, weight) / GetMeanEntries(chain[i], precuts, weight);
+	  eff[i] = max(GetMeanEntries(chain[i], cuts, weight) / GetMeanEntries(chain[i], precuts, weight),0.);
 	}
 	//Now we can make some statistics, mainly get the mean and standard deviation of the sample
 	double mean_eff = GetArrayMean(eff, N);
