@@ -171,7 +171,7 @@ int main(int argc, char** argv)
     Fit_NstG_ppimumu(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), plotMC);
     break;
   default:
-    cout << "Wrong number of arguments (" << argc << ") for Fit_NstG_ppimumu" << endl;
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
     return (1);
     break;
   }

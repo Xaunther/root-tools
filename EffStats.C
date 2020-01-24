@@ -43,14 +43,15 @@ void EffStats(string dirfiles, string cutfile, string precutfile = "", string tr
 	{
 		N0[i] = GetMeanEntries(chain[i], precuts, weight);
 		eff[i] = max(GetMeanEntries(chain[i], cuts, weight) / N0[i], 0.);
-		err[i] = sqrt(eff[i] * (1 - eff[i]) / chain[i]->GetEntries()*GetMeanEntries(chain[i], precuts, w2)) / N0[i];
+		err[i] = sqrt(eff[i] * (1 - eff[i]) / chain[i]->GetEntries() * GetMeanEntries(chain[i], precuts, w2)) / N0[i];
 	}
 	//Now we can make some statistics, mainly get the mean and standard deviation of the sample
 	double mean_eff = GetArrayMean(eff, N);
 	double stddev_eff = GetArrayStdDev(eff, N);
 	double stat_error = stddev_eff / sqrt(N);
-	double syst_err = sqrt(GetArraySumSq(err, N))/N;
-	//Save into requested file
+	double syst_err = sqrt(GetArraySumSq(err, N)) / N;
+
+	////////////////////////////Save into requested file//////////////////////////
 	ofstream outf;
 	outf.open(outfile.c_str());
 	outf << "Efficiency for each sample" << endl;
@@ -60,7 +61,7 @@ void EffStats(string dirfiles, string cutfile, string precutfile = "", string tr
 		outf << i << " | " << eff[i] << " \u00B1 " << err[i] << endl;
 	}
 	outf << "Mean = " << mean_eff << endl;
-	outf << "Error = " << sqrt(stat_error*stat_error+syst_err*syst_err) << endl;
+	outf << "Error = " << sqrt(stat_error * stat_error + syst_err * syst_err) << endl;
 
 	//Close files and clean memory
 	outf.close();
@@ -91,7 +92,7 @@ int main(int argc, char** argv)
 		EffStats(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
 		break;
 	default:
-		cout << "Wrong number of arguments (" << argc << ") for EffStats" << endl;
+		cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
 		return (1);
 		break;
 	}

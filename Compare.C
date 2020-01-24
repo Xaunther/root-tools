@@ -24,16 +24,16 @@ void Compare(string filename1, string filename2, string var1, string var2, strin
   string* _titles = SplitString(title_index, title, ";");
   string* titles = new string[3];
   int max_index = (title_index > 3) ? 3 : title_index;
-  for(int i=0;i<max_index;i++)
-    {
-      //Only the first three
-      
-      titles[i] = _titles[i];
-    }
+  for (int i = 0; i < max_index; i++)
+  {
+    //Only the first three
+
+    titles[i] = _titles[i];
+  }
 
   gStyle->SetOptStat(0);
-  chain1->Draw(var1.c_str(), ("("+cuts1+")*"+wvar1).c_str(), "HISTO NORM");
-  chain2->Draw(var2.c_str(), ("("+cuts2+")*"+wvar2).c_str(), "HISTO NORM SAME");
+  chain1->Draw(var1.c_str(), ("(" + cuts1 + ")*" + wvar1).c_str(), "HISTO NORM");
+  chain2->Draw(var2.c_str(), ("(" + cuts2 + ")*" + wvar2).c_str(), "HISTO NORM SAME");
 
   TH1* hist1 = chain1->GetHistogram();
   TH1* hist2 = chain2->GetHistogram();
@@ -51,43 +51,43 @@ void Compare(string filename1, string filename2, string var1, string var2, strin
   hist1->SetXTitle(titles[1].c_str());
   hist1->SetYTitle(titles[2].c_str());
 
-  c1->SaveAs(("plots/compare_"+var1+"_"+var2+".pdf").c_str());
+  c1->SaveAs(("plots/compare_" + var1 + "_" + var2 + ".pdf").c_str());
 
 }
 
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc-1)
-    {
-    case 6:
-      Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
-      break;
-    case 7:
-      Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
-	      *(new string(argv[7])));
-      break;
-    case 8:
-      Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
-	      *(new string(argv[7])), *(new string(argv[8])));
-      break;
-    case 9:
-      Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
-	      *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])));
-      break;
-    case 10:
-      Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
-	      *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])));
-      break;
-    case 11:
-      Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
-	      *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])));
-      break;
-    default:
-      cout << "Wrong number of arguments (" << argc << ") for Compare" << endl;
-      return(1);
-      break;
-    }
+  switch (argc - 1)
+  {
+  case 6:
+    Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
+    break;
+  case 7:
+    Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
+            *(new string(argv[7])));
+    break;
+  case 8:
+    Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
+            *(new string(argv[7])), *(new string(argv[8])));
+    break;
+  case 9:
+    Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
+            *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])));
+    break;
+  case 10:
+    Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
+            *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])));
+    break;
+  case 11:
+    Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
+            *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
   return 0;
 }
 #endif

@@ -12,7 +12,7 @@
 using namespace std;
 void AddBranch(string branchname, string tupleinfile, string tupleoutfile, string formula, string treename = "")
 {
-  double branchvalue; //Stick to a double output for now... 
+  double branchvalue; //Stick to a double output for now...
 
   //Data chain
   TChain* inchain = GetChain(tupleinfile, treename);
@@ -23,21 +23,21 @@ void AddBranch(string branchname, string tupleinfile, string tupleoutfile, strin
   //Add new branch
   TFile* file = new TFile(tupleoutfile.c_str(), "RECREATE");
   TTree* tree = inchain->CloneTree(0);
-  tree->Branch(branchname.c_str(), &branchvalue, (branchname+"/D").c_str());
+  tree->Branch(branchname.c_str(), &branchvalue, (branchname + "/D").c_str());
 
   //Loop over all events and get value
-  for(int i=0;i<inchain->GetEntries();i++)
+  for (int i = 0; i < inchain->GetEntries(); i++)
+  {
+    inchain->GetEntry(i);
+    tree->GetEntry(i);
+    //Insert formula, if any
+    branchvalue = formulavar->EvalInstance();
+    tree->Fill();
+    if (i % (inchain->GetEntries() / 10 + 1) == 0)
     {
-      inchain->GetEntry(i);
-      tree->GetEntry(i);
-      //Insert formula, if any
-      branchvalue = formulavar->EvalInstance();
-      tree->Fill();
-      if(i%(inchain->GetEntries()/10+1)==0)
-	{
-	  cout << "Processing event: " << i << " / " << inchain->GetEntries() << endl;
-	}
+      cout << "Processing event: " << i << " / " << inchain->GetEntries() << endl;
     }
+  }
   tree->Print();
   tree->Write();
 
@@ -48,19 +48,19 @@ void AddBranch(string branchname, string tupleinfile, string tupleoutfile, strin
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc-1)
-    {
-    case 4:
-      AddBranch(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
-      break;
-    case 5:
-      AddBranch(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
-      break;
-    default:
-      cout << "Wrong number of arguments (" << argc << ") for AddBranch" << endl;
-      return(1);
-      break;
-    }
+  switch (argc - 1)
+  {
+  case 4:
+    AddBranch(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+    break;
+  case 5:
+    AddBranch(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
   return 0;
 }
 #endif

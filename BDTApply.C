@@ -25,7 +25,7 @@ void BDTApply(string fileapplied, string outputfilename, bool excludeBDTvars = f
   int N_extraint = 0;
   int N_extrashort = 0;
   int N_extrabool = 0;
-  string filename2= "Variables/BDTExtravars.txt";
+  string filename2 = "Variables/BDTExtravars.txt";
   string filenameUInt = "Variables/BDTExtravarsUInt.txt";
   string filenameULong64 = "Variables/BDTExtravarsULong64.txt";
   string filenameInt = "Variables/BDTExtravarsInt.txt";
@@ -51,13 +51,13 @@ void BDTApply(string fileapplied, string outputfilename, bool excludeBDTvars = f
 
   Float_t* var = new Float_t[N_variables];
   //Variables used in training
-  for(int i=0;i<N_variables;i++)
-    {
-      reader->TMVA::Reader::AddVariable(variable_list[i].c_str(), &var[i]);
-    }
+  for (int i = 0; i < N_variables; i++)
+  {
+    reader->TMVA::Reader::AddVariable(variable_list[i].c_str(), &var[i]);
+  }
   //TMVA method
   //The Folder is the one used by default
-  reader->TMVA::Reader::BookMVA("BDT method", ("default/weights/"+BDTweights+"_BDT.weights.xml").c_str());
+  reader->TMVA::Reader::BookMVA("BDT method", ("default/weights/" + BDTweights + "_BDT.weights.xml").c_str());
 
   //Variables from data
   TTreeFormula** formulavars = new TTreeFormula*[N_variables];
@@ -67,82 +67,82 @@ void BDTApply(string fileapplied, string outputfilename, bool excludeBDTvars = f
   Int_t* userint = new Int_t[N_extraint];
   Short_t* usershort = new Short_t[N_extrashort];
   Bool_t* userbool = new Bool_t[N_extrabool];
-  for(int i=0;i<N_variables;i++)
+  for (int i = 0; i < N_variables; i++)
+  {
+    if (!excludeBDTvars)
     {
-      if(!excludeBDTvars)
-	{	  
-	  datatree->SetBranchAddress(variable_list[i].c_str(), &uservar[i]);
-	  tree->Branch(variable_list[i].c_str(), &uservar[i]);
-	}
-      else
-	{
-	  formulavars[i] = new TTreeFormula(variable_list[i].c_str(), variable_list[i].c_str(), datatree);
-	}
+      datatree->SetBranchAddress(variable_list[i].c_str(), &uservar[i]);
+      tree->Branch(variable_list[i].c_str(), &uservar[i]);
     }
-  for(int i=0;i<N_extravars;i++)
+    else
     {
-      datatree->SetBranchAddress(extravar_list[i].c_str(), &uservar[N_variables + i]);
-      tree->Branch(extravar_list[i].c_str(), &uservar[N_variables + i]);
+      formulavars[i] = new TTreeFormula(variable_list[i].c_str(), variable_list[i].c_str(), datatree);
     }
-  for(int i=0;i<N_extrauint;i++)
-    {
-      datatree->SetBranchAddress(extrauint_list[i].c_str(), &useruint[i]);
-      tree->Branch(extrauint_list[i].c_str(), &useruint[i]);
-    }
-  for(int i=0;i<N_extraulong64;i++)
-    {
-      datatree->SetBranchAddress(extraulong64_list[i].c_str(), &userulong64[i]);
-      tree->Branch(extraulong64_list[i].c_str(), &userulong64[i]);
-    }
-  for(int i=0;i<N_extraint;i++)
-    {
-      datatree->SetBranchAddress(extraint_list[i].c_str(), &userint[i]);
-      tree->Branch(extraint_list[i].c_str(), &userint[i]);
-    }
-  for(int i=0;i<N_extrashort;i++)
-    {
-      datatree->SetBranchAddress(extrashort_list[i].c_str(), &usershort[i]);
-      tree->Branch(extrashort_list[i].c_str(), &usershort[i]);
-    }
-  for(int i=0;i<N_extrabool;i++)
-    {
-      datatree->SetBranchAddress(extrabool_list[i].c_str(), &userbool[i]);
-      tree->Branch(extrabool_list[i].c_str(), &userbool[i]);
-    }
+  }
+  for (int i = 0; i < N_extravars; i++)
+  {
+    datatree->SetBranchAddress(extravar_list[i].c_str(), &uservar[N_variables + i]);
+    tree->Branch(extravar_list[i].c_str(), &uservar[N_variables + i]);
+  }
+  for (int i = 0; i < N_extrauint; i++)
+  {
+    datatree->SetBranchAddress(extrauint_list[i].c_str(), &useruint[i]);
+    tree->Branch(extrauint_list[i].c_str(), &useruint[i]);
+  }
+  for (int i = 0; i < N_extraulong64; i++)
+  {
+    datatree->SetBranchAddress(extraulong64_list[i].c_str(), &userulong64[i]);
+    tree->Branch(extraulong64_list[i].c_str(), &userulong64[i]);
+  }
+  for (int i = 0; i < N_extraint; i++)
+  {
+    datatree->SetBranchAddress(extraint_list[i].c_str(), &userint[i]);
+    tree->Branch(extraint_list[i].c_str(), &userint[i]);
+  }
+  for (int i = 0; i < N_extrashort; i++)
+  {
+    datatree->SetBranchAddress(extrashort_list[i].c_str(), &usershort[i]);
+    tree->Branch(extrashort_list[i].c_str(), &usershort[i]);
+  }
+  for (int i = 0; i < N_extrabool; i++)
+  {
+    datatree->SetBranchAddress(extrabool_list[i].c_str(), &userbool[i]);
+    tree->Branch(extrabool_list[i].c_str(), &userbool[i]);
+  }
 
   //Add branch to store BDT response
   double BDT_response;
   tree->Branch("BDT_response", &BDT_response);
 
   //Apply BDT
-  for(long k=0; k<datatree->GetEntries(); k++)
+  for (long k = 0; k < datatree->GetEntries(); k++)
+  {
+    //Some output to see it's still alive
+    if (k % 100000 == 0)
     {
-      //Some output to see it's still alive
-      if (k%100000 == 0)
-	{
-	  cout << "--- ... Processing event: " << k << endl;
-	}
-      datatree->GetEntry(k);
-
-      //Here we can perform operations if we made the log or smth
-      for (int j=0;j<N_variables;j++)
-	{
-	  if(!excludeBDTvars)
-	    {
-	      var[j] = uservar[j];
-	    }
-	  else
-	    {
-	      var[j] = formulavars[j]->EvalInstance();
-	    }
-	}
-
-      BDT_response = reader->TMVA::Reader::EvaluateMVA("BDT method");
-      cout << BDT_response << endl;
-      tree->Fill();
+      cout << "--- ... Processing event: " << k << endl;
     }
+    datatree->GetEntry(k);
+
+    //Here we can perform operations if we made the log or smth
+    for (int j = 0; j < N_variables; j++)
+    {
+      if (!excludeBDTvars)
+      {
+        var[j] = uservar[j];
+      }
+      else
+      {
+        var[j] = formulavars[j]->EvalInstance();
+      }
+    }
+
+    BDT_response = reader->TMVA::Reader::EvaluateMVA("BDT method");
+    cout << BDT_response << endl;
+    tree->Fill();
+  }
   tree->Write();
-  
+
   data->Close();
   target->Close();
 }
@@ -151,28 +151,28 @@ void BDTApply(string fileapplied, string outputfilename, bool excludeBDTvars = f
 int main(int argc, char** argv)
 {
   bool excludeBDTvars = false;
-  switch(argc-1)
-    {
-    case 2:
-      BDTApply(*(new string(argv[1])), *(new string(argv[2])));
-      break;
-    case 3:
-      if(*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1"){excludeBDTvars = true;}
-      BDTApply(*(new string(argv[1])), *(new string(argv[2])), excludeBDTvars);
-      break;
-    case 4:
-      if(*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1"){excludeBDTvars = true;}
-      BDTApply(*(new string(argv[1])), *(new string(argv[2])), excludeBDTvars, *(new string(argv[4])));
-      break;
-    case 5:
-      if(*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1"){excludeBDTvars = true;}
-      BDTApply(*(new string(argv[1])), *(new string(argv[2])), excludeBDTvars, *(new string(argv[4])), *(new string(argv[5])));
-      break;
-    default:
-      cout << "Wrong number of arguments (" << argc << ") for BDTApply" << endl;
-      return(1);
-      break;
-    }
+  switch (argc - 1)
+  {
+  case 2:
+    BDTApply(*(new string(argv[1])), *(new string(argv[2])));
+    break;
+  case 3:
+    if (*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1") {excludeBDTvars = true;}
+    BDTApply(*(new string(argv[1])), *(new string(argv[2])), excludeBDTvars);
+    break;
+  case 4:
+    if (*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1") {excludeBDTvars = true;}
+    BDTApply(*(new string(argv[1])), *(new string(argv[2])), excludeBDTvars, *(new string(argv[4])));
+    break;
+  case 5:
+    if (*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1") {excludeBDTvars = true;}
+    BDTApply(*(new string(argv[1])), *(new string(argv[2])), excludeBDTvars, *(new string(argv[4])), *(new string(argv[5])));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
   return 0;
 }
 #endif

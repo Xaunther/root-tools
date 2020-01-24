@@ -25,10 +25,10 @@ void AppendVars(string file1, string file2, string outfile, string cutfile1 = ""
   //Print Number of events in each ntuple
   cout << "Tuple 1: " << chain1->GetEntries() << " events" << endl;
   cout << "Tuple 2: " << chain2->GetEntries() << " events" << endl;
-  if(chain1->GetEntries()==0 || chain2->GetEntries()==0)
-    {
-      exit(0);
-    }
+  if (chain1->GetEntries() == 0 || chain2->GetEntries() == 0)
+  {
+    exit(0);
+  }
   //Get list of variables from file2
   //List size
   int size = (*chain2->GetListOfLeaves()).LastIndex();
@@ -37,65 +37,65 @@ void AppendVars(string file1, string file2, string outfile, string cutfile1 = ""
   int N_Float = 0;
   int N_Int = 0;
   //Get how many vars of each type
-  for(int i=0;i<size;i++)
+  for (int i = 0; i < size; i++)
+  {
+    string classname = (*chain2->GetListOfLeaves())[i]->ClassName();
+    if (classname == "TLeafF")
     {
-      string classname = (*chain2->GetListOfLeaves())[i]->ClassName();
-      if(classname=="TLeafF")
-	{
-	  N_Float++;
-	}
-      else if(classname=="TLeafD")
-	{
-	  N_Double++;
-	}
-      else if(classname=="TLeafI")
-	{
-	  N_Int++;
-	}
+      N_Float++;
     }
+    else if (classname == "TLeafD")
+    {
+      N_Double++;
+    }
+    else if (classname == "TLeafI")
+    {
+      N_Int++;
+    }
+  }
   //Define arrays
   double* var_Double = new double[N_Double];
   float* var_Float = new float[N_Float];
   int* var_Int = new int[N_Int];
   //Link to chain!
   TBranch** newbranch = new TBranch*[size];
-      //Counters for each type
-      int i_Double = 0;
-      int i_Float = 0;
-      int i_Int = 0;
-  for(int i=0;i<size;i++)
+  //Counters for each type
+  int i_Double = 0;
+  int i_Float = 0;
+  int i_Int = 0;
+  for (int i = 0; i < size; i++)
+  {
+    string classname = (*chain2->GetListOfLeaves())[i]->ClassName();
+    string varname = (*chain2->GetListOfLeaves())[i]->GetName();
+    if (classname == "TLeafF")
     {
-      string classname = (*chain2->GetListOfLeaves())[i]->ClassName();
-      string varname = (*chain2->GetListOfLeaves())[i]->GetName();
-      if(classname=="TLeafF")
-	{
-	  chain2->SetBranchAddress(varname.c_str(),&var_Float[i_Float]);
-	  newbranch[i] = tree->Branch(varname.c_str(), &var_Float[i_Float], (varname+"/F").c_str());
-	  i_Float++;
-	}
-      else if(classname=="TLeafD")
-	{
-	  chain2->SetBranchAddress(varname.c_str(),&var_Double[i_Double]);
-	  newbranch[i] = tree->Branch(varname.c_str(), &var_Double[i_Double], (varname+"/D").c_str());
-	  i_Double++;
-	}
-      else if(classname=="TLeafI")
-	{
-	  chain2->SetBranchAddress(varname.c_str(),&var_Int[i_Int]);
-	  newbranch[i] = tree->Branch(varname.c_str(), &var_Int[i_Int], (varname+"/I").c_str());
-	  i_Int++;
-	}
+      chain2->SetBranchAddress(varname.c_str(), &var_Float[i_Float]);
+      newbranch[i] = tree->Branch(varname.c_str(), &var_Float[i_Float], (varname + "/F").c_str());
+      i_Float++;
     }
+    else if (classname == "TLeafD")
+    {
+      chain2->SetBranchAddress(varname.c_str(), &var_Double[i_Double]);
+      newbranch[i] = tree->Branch(varname.c_str(), &var_Double[i_Double], (varname + "/D").c_str());
+      i_Double++;
+    }
+    else if (classname == "TLeafI")
+    {
+      chain2->SetBranchAddress(varname.c_str(), &var_Int[i_Int]);
+      newbranch[i] = tree->Branch(varname.c_str(), &var_Int[i_Int], (varname + "/I").c_str());
+      i_Int++;
+    }
+  }
   //Loop over chain2 and add to tree
-  for(int i=0;i<chain2->GetEntries();i++)
+  for (int i = 0; i < chain2->GetEntries(); i++)
+  {
+    chain2->GetEntry(i);
+    tree->GetEntry(i);
+    for (int j = 0; j < size; j++)
     {
-      chain2->GetEntry(i);
-      tree->GetEntry(i);
-      for(int j=0;j<size;j++)
-	{
-	  newbranch[j]->Fill();
-	}
+      newbranch[j]->Fill();
     }
+  }
   tree->Write();
   //tree->Print();
   file->Close();
@@ -104,25 +104,25 @@ void AppendVars(string file1, string file2, string outfile, string cutfile1 = ""
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc-1)
-    {
-    case 3:
-      AppendVars(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
-      break;
-    case 4:
-      AppendVars(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
-      break;
-    case 5:
-      AppendVars(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
-      break;
-    case 6:
-      AppendVars(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
-      break;
-    default:
-      cout << "Wrong number of arguments (" << argc << ") for AppendVars" << endl;
-      return(1);
-      break;
-    }
+  switch (argc - 1)
+  {
+  case 3:
+    AppendVars(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+    break;
+  case 4:
+    AppendVars(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+    break;
+  case 5:
+    AppendVars(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+    break;
+  case 6:
+    AppendVars(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
   return 0;
 }
 #endif

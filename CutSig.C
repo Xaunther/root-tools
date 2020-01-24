@@ -65,17 +65,17 @@ void CutSig(string sigfile, string bkglist, string datafile, string instrfile, s
   string* bkgfile = SplitString(Nbkg, bkglist, " ");
   string* bkgtree = SplitString(NN, bkgtreelist, " ");
   TChain** bkgchain = new TChain*[Nbkg];
-  for(int i=0;i<Nbkg;i++)
+  for (int i = 0; i < Nbkg; i++)
+  {
+    if (i < NN)
     {
-      if(i<NN)
-	{
-	  bkgchain[i] = GetChain(bkgfile[i], bkgtree[i]);
-	}
-      else
-	{
-	  bkgchain[i] = GetChain(bkgfile[i]);
-	}
+      bkgchain[i] = GetChain(bkgfile[i], bkgtree[i]);
     }
+    else
+    {
+      bkgchain[i] = GetChain(bkgfile[i]);
+    }
+  }
   //Will not use list of trees anymore
   delete[] bkgtree;
   /**********************************************************************/
@@ -84,32 +84,32 @@ void CutSig(string sigfile, string bkglist, string datafile, string instrfile, s
   /**********************************************************************/
   //Read precuts
   string precuts = GetCuts(precutsfile);
-  if(precuts == ""){precuts = "(1)";}
+  if (precuts == "") {precuts = "(1)";}
   /**********************************************************************/
   //Read initial bkg yields
   NN = 0;
   string* bkgyieldfile = SplitString(NN, bkgyieldlist, " ");
   //Raise error if different
-  if(NN!=Nbkg)
-    {
-      cout << "Error! Number of bkg files (" << Nbkg << ") and bkg yields (" << NN << ") must coincide! Stopping..." << endl;
-      exit(1);
-    }
+  if (NN != Nbkg)
+  {
+    cout << "Error! Number of bkg files (" << Nbkg << ") and bkg yields (" << NN << ") must coincide! Stopping..." << endl;
+    exit(1);
+  }
   /**********************************************************************/
   //Read list of bkg weights
   NN = 0;
   string* _bkgw = SplitString(NN, bkgwlist, " ");
-  string* bkgw = new string[Nbkg]; for(int i=0;i<NN;i++){bkgw[i]=_bkgw[i];}
+  string* bkgw = new string[Nbkg]; for (int i = 0; i < NN; i++) {bkgw[i] = _bkgw[i];}
   delete[] _bkgw;
   /**********************************************************************/
   //Now READ!
   double* bkgyield0 = new double[Nbkg];
-  for(int i=0;i<Nbkg;i++)
-    {
-      NN=0;
-      bkgyield0[i] = stod(ReadVariables(NN, bkgyieldfile[i])[0])/GetMeanEntries(bkgchain[i], precuts, bkgw[i]);
-    }
-  NN=0;
+  for (int i = 0; i < Nbkg; i++)
+  {
+    NN = 0;
+    bkgyield0[i] = stod(ReadVariables(NN, bkgyieldfile[i])[0]) / GetMeanEntries(bkgchain[i], precuts, bkgw[i]);
+  }
+  NN = 0;
   /**********************************************************************/
   //Read instructions file, has 4 columns
   int N = 0;
@@ -119,25 +119,25 @@ void CutSig(string sigfile, string bkglist, string datafile, string instrfile, s
   double* maxV = new double[N];
   int* steps = new int[N];
   int combs = 1;
-  for(int i=0;i<N;i++)
-    {
-      //Split in different arrays
-      int Ntemp = 0;
-      string* tempst = SplitString(Ntemp, cut[i], " ");
-      cut[i] = tempst[0];
-      minV[i] = stod(tempst[1]);
-      maxV[i] = stod(tempst[2]);
-      steps[i] = stoi(tempst[3]);
-      //Count combs so far
-      combs *= steps[i];
-    }
+  for (int i = 0; i < N; i++)
+  {
+    //Split in different arrays
+    int Ntemp = 0;
+    string* tempst = SplitString(Ntemp, cut[i], " ");
+    cut[i] = tempst[0];
+    minV[i] = stod(tempst[1]);
+    maxV[i] = stod(tempst[2]);
+    steps[i] = stoi(tempst[3]);
+    //Count combs so far
+    combs *= steps[i];
+  }
   /**********************************************************************/
   //Get Mass window (used for all but greatest effect is for data, or should be
   //First, options
-  if(opts=="")
-    {
-      opts = GetValueFor("Project_name", "Dictionaries/Project_variables.txt");
-    }
+  if (opts == "")
+  {
+    opts = GetValueFor("Project_name", "Dictionaries/Project_variables.txt");
+  }
   Constants const_list(opts);
   //Second, cuts
   stringstream ss;
@@ -154,47 +154,47 @@ void CutSig(string sigfile, string bkglist, string datafile, string instrfile, s
   dumpf.open(dumpname.c_str());
   dumpf << "precuts = " << precuts << endl;
   //Let'sa go
-  for(int i=0;i<combs;i++)
+  for (int i = 0; i < combs; i++)
+  {
+    dumpf << "(precuts)";
+    //Build this set of cuts
+    string thiscuts = precuts;
+    int remnant = i;
+    //Get this cut combination and go writing in the dumpfile
+    for (int j = 0; j < N; j++)
     {
-      dumpf << "(precuts)";
-      //Build this set of cuts
-      string thiscuts = precuts;
-      int remnant = i;
-      //Get this cut combination and go writing in the dumpfile
-      for(int j=0;j<N;j++)
-	{
-	  ss << thiscuts << " * (" << cut[j] << minV[j] + (maxV[j]-minV[j])/(steps[j]-1)*(remnant%steps[j]) << ")";
-	  dumpf << " * (" << cut[j] << minV[j] + (maxV[j]-minV[j])/(steps[j]-1)*(remnant%steps[j]) << ")";
-	  thiscuts = ss.str();
-	  ss.str("");
-	  remnant = remnant/steps[j];
-	}
-      /**********************************************************************/
-      //Compute efficiency
-      double eff = GetMeanEntries(sigchain, thiscuts, sigw);
-      //Initialize B
-      double B = 0;
-      for(int j=0;j<Nbkg;j++)
-	{
-	  if(bkgchain[j]->GetEntries()>0)
-	    {
-	      B += bkgyield0[j]*GetMeanEntries(bkgchain[j], thiscuts, bkgw[j]);
-	    }
-	}
-      //Compute B
-      double D = 0;
-      if(datachain->GetEntries()>0)
-	{
-	  D = datachain->GetEntries(thiscuts.c_str());
-	}
-      //Compute Punzi
-      double fom = eff / (sigma/2. + TMath::Power(B+D, spb_pow));
-      /**********************************************************************/
-      //Save fom in dumpfile
-      dumpf << " | " << fom << endl;
-      if(fom > bestfom){bestcomb = i; bestfom = fom;}
-      DrawProgress(double(i)/combs);
+      ss << thiscuts << " * (" << cut[j] << minV[j] + (maxV[j] - minV[j]) / (steps[j] - 1)*(remnant % steps[j]) << ")";
+      dumpf << " * (" << cut[j] << minV[j] + (maxV[j] - minV[j]) / (steps[j] - 1)*(remnant % steps[j]) << ")";
+      thiscuts = ss.str();
+      ss.str("");
+      remnant = remnant / steps[j];
     }
+    /**********************************************************************/
+    //Compute efficiency
+    double eff = GetMeanEntries(sigchain, thiscuts, sigw);
+    //Initialize B
+    double B = 0;
+    for (int j = 0; j < Nbkg; j++)
+    {
+      if (bkgchain[j]->GetEntries() > 0)
+      {
+        B += bkgyield0[j] * GetMeanEntries(bkgchain[j], thiscuts, bkgw[j]);
+      }
+    }
+    //Compute B
+    double D = 0;
+    if (datachain->GetEntries() > 0)
+    {
+      D = datachain->GetEntries(thiscuts.c_str());
+    }
+    //Compute Punzi
+    double fom = eff / (sigma / 2. + TMath::Power(B + D, spb_pow));
+    /**********************************************************************/
+    //Save fom in dumpfile
+    dumpf << " | " << fom << endl;
+    if (fom > bestfom) {bestcomb = i; bestfom = fom;}
+    DrawProgress(double(i) / combs);
+  }
   //Clean progress bar
   cout << endl;
   //Close dumpfile
@@ -203,11 +203,11 @@ void CutSig(string sigfile, string bkglist, string datafile, string instrfile, s
   //Get best cut and save it in the desired file
   ofstream cutf;
   cutf.open(cutname.c_str());
-  for(int j=0;j<N;j++)
-    {
-      cutf << cut[j] << minV[j] + (maxV[j]-minV[j])/(steps[j]-1)*(bestcomb%steps[j]) << endl;
-      bestcomb = bestcomb/steps[j];
-    }
+  for (int j = 0; j < N; j++)
+  {
+    cutf << cut[j] << minV[j] + (maxV[j] - minV[j]) / (steps[j] - 1)*(bestcomb % steps[j]) << endl;
+    bestcomb = bestcomb / steps[j];
+  }
   //Close cutfile
   cutf.close();
 }
@@ -215,59 +215,59 @@ void CutSig(string sigfile, string bkglist, string datafile, string instrfile, s
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc-1)
-    {
-    case 7:
-      CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])));
-      break;
-    case 8:
-      CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])),
-		*(new string(argv[8])));
-      break;
-    case 9:
-      CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])),
-		*(new string(argv[8])), *(new string(argv[9])));
-      break;
-    case 10:
-      CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])),
-		*(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])));
-      break;
-    case 11:
-      CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), 
-		*(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])));
-      break;
-    case 12:
-      CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), 
-		*(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])), *(new string(argv[12])));
-      break;
-    case 13:
-      CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), 
-		*(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])), *(new string(argv[12])), *(new string(argv[13])));
-      break;
-    case 14:
-      CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), 
-		*(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])), *(new string(argv[12])), *(new string(argv[13])), *(new string(argv[14])));
-      break;
-    case 15:
-      CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])),
-		*(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])), *(new string(argv[12])), *(new string(argv[13])), *(new string(argv[14])),
-		*(new string(argv[15])));
-      break;
-    case 16:
-      CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])),
-		*(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])), *(new string(argv[12])), *(new string(argv[13])), *(new string(argv[14])),
-		*(new string(argv[15])), stod(*(new string(argv[16]))));
-      break;
-    case 17:
-      CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])),
-		*(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])), *(new string(argv[12])), *(new string(argv[13])), *(new string(argv[14])),
-		*(new string(argv[15])), stod(*(new string(argv[16]))), stod(*(new string(argv[17]))));
-      break;
-    default:
-      cout << "Wrong number of arguments (" << argc << ") for CutSig" << endl;
-      return(1);
-      break;
-    }
+  switch (argc - 1)
+  {
+  case 7:
+    CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])));
+    break;
+  case 8:
+    CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])),
+           *(new string(argv[8])));
+    break;
+  case 9:
+    CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])),
+           *(new string(argv[8])), *(new string(argv[9])));
+    break;
+  case 10:
+    CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])),
+           *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])));
+    break;
+  case 11:
+    CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])),
+           *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])));
+    break;
+  case 12:
+    CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])),
+           *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])), *(new string(argv[12])));
+    break;
+  case 13:
+    CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])),
+           *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])), *(new string(argv[12])), *(new string(argv[13])));
+    break;
+  case 14:
+    CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])),
+           *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])), *(new string(argv[12])), *(new string(argv[13])), *(new string(argv[14])));
+    break;
+  case 15:
+    CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])),
+           *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])), *(new string(argv[12])), *(new string(argv[13])), *(new string(argv[14])),
+           *(new string(argv[15])));
+    break;
+  case 16:
+    CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])),
+           *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])), *(new string(argv[12])), *(new string(argv[13])), *(new string(argv[14])),
+           *(new string(argv[15])), stod(*(new string(argv[16]))));
+    break;
+  case 17:
+    CutSig(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])),
+           *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])), *(new string(argv[12])), *(new string(argv[13])), *(new string(argv[14])),
+           *(new string(argv[15])), stod(*(new string(argv[16]))), stod(*(new string(argv[17]))));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
   return 0;
 }
 #endif

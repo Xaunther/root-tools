@@ -16,16 +16,16 @@ void WriteFromWS(string wsfilename, string varname, string outfilename, string w
 void WriteFromWS(string wsfilename, string varname, string outfilename, string wsname, string opts)
 {
   //First, if workspace name was not provided load the dictionary
-  if(wsname == "")
+  if (wsname == "")
+  {
+    //If dictioanry opts was not specified, load default for the project
+    if (opts == "")
     {
-      //If dictioanry opts was not specified, load default for the project
-      if(opts=="")
-	{
-	  opts = GetValueFor("Project_name", "Dictionaries/Project_variables.txt");
-	}
-      Names name_list(opts);
-      wsname = name_list.workspace;
+      opts = GetValueFor("Project_name", "Dictionaries/Project_variables.txt");
     }
+    Names name_list(opts);
+    wsname = name_list.workspace;
+  }
   //Read file and its ws
   TFile* f_ws = new TFile(wsfilename.c_str());
   cout << " caca " << endl;
@@ -40,22 +40,22 @@ void WriteFromWS(string wsfilename, string varname, string outfilename, string w
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc-1)
-    {
-    case 3:
-      WriteFromWS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
-      break;
-    case 4:
-      WriteFromWS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
-      break;
-    case 5:
-      WriteFromWS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
-      break;
-    default:
-      cout << "Wrong number of arguments (" << argc << ") for WriteFromWS" << endl;
-      return(1);
-      break;
-    }
+  switch (argc - 1)
+  {
+  case 3:
+    WriteFromWS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+    break;
+  case 4:
+    WriteFromWS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+    break;
+  case 5:
+    WriteFromWS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
   return 0;
 }
 #endif

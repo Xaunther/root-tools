@@ -21,33 +21,33 @@ void AddPIDBranch(string tupleinfile, string tupleoutfile, string treename = "",
   TChain* inchain = GetChain(tupleinfile, treename);
   //For datafile
   TFile* file = new TFile(tupleoutfile.c_str(), "RECREATE");
-  if(inchain->GetEntries()==0)
-    {
-      exit(0);
-    }
+  if (inchain->GetEntries() == 0)
+  {
+    exit(0);
+  }
   TTree* tree = inchain->CloneTree();
   //Efficiencies of each particle and total
-  inchain->SetBranchAddress((p1+"_PIDCalibEff").c_str(),&eff1);
-  inchain->SetBranchAddress((p2+"_PIDCalibEff").c_str(),&eff2);
-  inchain->SetBranchAddress("Event_PIDCalibEff",&eff);
+  inchain->SetBranchAddress((p1 + "_PIDCalibEff").c_str(), &eff1);
+  inchain->SetBranchAddress((p2 + "_PIDCalibEff").c_str(), &eff2);
+  inchain->SetBranchAddress("Event_PIDCalibEff", &eff);
   //Create new branches
   TBranch* binv1 = tree->Branch("Event_PIDCalibEff_pbarpi", &inv1, "Event_PIDCalibEff_pbarpi/D");
   TBranch* binv2 = tree->Branch("Event_PIDCalibEff_ppibar", &inv2, "Event_PIDCalibEff_ppibar/D");
 
-  for(int i=0;i<inchain->GetEntries();i++)
+  for (int i = 0; i < inchain->GetEntries(); i++)
+  {
+    inchain->GetEntry(i);
+    tree->GetEntry(i);
+    //Insert formula, if any
+    inv1 = eff2 - eff;
+    inv2 = eff1 - eff;
+    binv1->Fill();
+    binv2->Fill();
+    if (i % (inchain->GetEntries() / 10 + 1) == 0)
     {
-      inchain->GetEntry(i);
-      tree->GetEntry(i);
-      //Insert formula, if any
-      inv1 = eff2-eff;
-      inv2 = eff1-eff;
-      binv1->Fill();
-      binv2->Fill();
-      if(i%(inchain->GetEntries()/10+1)==0)
-	{
-	  cout << "Processing event: " << i+1 << " / " << inchain->GetEntries() << endl;
-	}
+      cout << "Processing event: " << i + 1 << " / " << inchain->GetEntries() << endl;
     }
+  }
   tree->Write();
 
   file->Close();
@@ -57,25 +57,25 @@ void AddPIDBranch(string tupleinfile, string tupleoutfile, string treename = "",
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc-1)
-    {
-    case 2:
-      AddPIDBranch(*(new string(argv[1])), *(new string(argv[2])));
-      break;
-    case 3:
-      AddPIDBranch(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
-      break;
-    case 4:
-      AddPIDBranch(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
-      break;
-    case 5:
-      AddPIDBranch(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
-      break;
-    default:
-      cout << "Wrong number of arguments (" << argc << ") for AddPIDBranch" << endl;
-      return(1);
-      break;
-    }
+  switch (argc - 1)
+  {
+  case 2:
+    AddPIDBranch(*(new string(argv[1])), *(new string(argv[2])));
+    break;
+  case 3:
+    AddPIDBranch(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+    break;
+  case 4:
+    AddPIDBranch(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+    break;
+  case 5:
+    AddPIDBranch(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
   return 0;
 }
 #endif

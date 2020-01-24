@@ -18,10 +18,10 @@ void PhaseSpace(double mothermass, string daughtermasses, string pnames, string 
   int N_daughters = 0;
   string* d_mass_str = SplitString(N_daughters, daughtermasses, " ");
   Double_t* d_mass = new Double_t[N_daughters];
-  for(int i=0;i<N_daughters;i++)
-    {
-      d_mass[i] = stod(d_mass_str[i]);
-    }
+  for (int i = 0; i < N_daughters; i++)
+  {
+    d_mass[i] = stod(d_mass_str[i]);
+  }
   //Names of the daughters
   N_daughters = 0;
   string* pname = SplitString(N_daughters, pnames, " ");
@@ -45,58 +45,58 @@ void PhaseSpace(double mothermass, string daughtermasses, string pnames, string 
 
   //I need to book 3*N_daughters variables, 3-momentum of each. An extra one for the weight
   double** p = new double*[N_daughters];
-  for(int i=0;i<N_daughters;i++)
-    {
-      p[i] = new double[3];
-    }
+  for (int i = 0; i < N_daughters; i++)
+  {
+    p[i] = new double[3];
+  }
   //Initialize branches
-  TBranch** branch = new TBranch*[3*N_daughters];
-  for(int i=0;i<N_daughters;i++)
+  TBranch** branch = new TBranch*[3 * N_daughters];
+  for (int i = 0; i < N_daughters; i++)
+  {
+    for (int j = 0; j < 3; j++)
     {
-      for(int j=0;j<3;j++)
-	{
-	  branch[i*3+j] = tree->Branch((pname[i]+"_"+axname[j]).c_str(), &p[i][j], (pname[i]+"_"+axname[j]+"/D").c_str());
-	}
+      branch[i * 3 + j] = tree->Branch((pname[i] + "_" + axname[j]).c_str(), &p[i][j], (pname[i] + "_" + axname[j] + "/D").c_str());
     }
+  }
   double weight;
   tree->Branch("evt_weight", &weight, "evt_weight/D");
 
   //Set up mother momentum
   TChain* mother_P_chain;
   double* mother_P = new double[3];
-  if(mother_P_filename != "")
+  if (mother_P_filename != "")
+  {
+    mother_P_chain = GetChain(mother_P_filename);
+    mother_P_chain->SetBranchAddress((mother_P_prefix + "X").c_str(), &mother_P[0]);
+    mother_P_chain->SetBranchAddress((mother_P_prefix + "Y").c_str(), &mother_P[1]);
+    mother_P_chain->SetBranchAddress((mother_P_prefix + "Z").c_str(), &mother_P[2]);
+    //Can only generate either the minimum of the number requested and the events in the mother P distribution
+    if (mother_P_chain->GetEntries() < N_evts)
     {
-      mother_P_chain = GetChain(mother_P_filename);
-      mother_P_chain->SetBranchAddress((mother_P_prefix+"X").c_str(), &mother_P[0]);
-      mother_P_chain->SetBranchAddress((mother_P_prefix+"Y").c_str(), &mother_P[1]);
-      mother_P_chain->SetBranchAddress((mother_P_prefix+"Z").c_str(), &mother_P[2]);
-      //Can only generate either the minimum of the number requested and the events in the mother P distribution
-      if(mother_P_chain->GetEntries()<N_evts)
-	{
-	  N_evts = mother_P_chain->GetEntries();
-	}
+      N_evts = mother_P_chain->GetEntries();
     }
+  }
   else
+  {
+    //Remove warning...
+    mother_P_chain = new TChain();
+  }
+  //Generate events, izy. Save them in tree.
+  for (int n = 0; n < N_evts; n++)
+  {
+    //Re-roll momentum
+    if (mother_P_filename != "")
     {
-      //Remove warning...
-      mother_P_chain = new TChain();
+      mother_P_chain->GetEntry(n);
+      mother.SetXYZM(mother_P[0], mother_P[1], mother_P[2], mothermass);
     }
-  //Generate events, izy. Save them in tree. 
-  for (int n=0;n<N_evts;n++)
+    weight = event.Generate();
+    for (int i = 0; i < N_daughters; i++)
     {
-      //Re-roll momentum
-      if(mother_P_filename != "")
-	{
-	  mother_P_chain->GetEntry(n);
-	  mother.SetXYZM(mother_P[0], mother_P[1], mother_P[2], mothermass);
-	}
-      weight = event.Generate();
-      for(int i=0;i<N_daughters;i++)
-	{
-	  event.GetDecay(i)->Vect().GetXYZ(p[i]);
-	}
-      tree->Fill();
+      event.GetDecay(i)->Vect().GetXYZ(p[i]);
     }
+    tree->Fill();
+  }
   tree->Write();
   outfile->Close();
 }
@@ -104,25 +104,25 @@ void PhaseSpace(double mothermass, string daughtermasses, string pnames, string 
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc-1)
-    {
-    case 4:
-      PhaseSpace(stod(*(new string(argv[1]))), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
-      break;
-    case 5:
-      PhaseSpace(stod(*(new string(argv[1]))), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), stoi(*(new string(argv[5]))));
-      break;
-    case 6:
-      PhaseSpace(stod(*(new string(argv[1]))), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), stoi(*(new string(argv[5]))), *(new string(argv[6])));
-      break;
-    case 7:
-      PhaseSpace(stod(*(new string(argv[1]))), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), stoi(*(new string(argv[5]))), *(new string(argv[6])), *(new string(argv[7])));
-      break;
-    default:
-      cout << "Wrong number of arguments (" << argc << ") for PhaseSpace" << endl;
-      return(1);
-      break;
-    }
+  switch (argc - 1)
+  {
+  case 4:
+    PhaseSpace(stod(*(new string(argv[1]))), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+    break;
+  case 5:
+    PhaseSpace(stod(*(new string(argv[1]))), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), stoi(*(new string(argv[5]))));
+    break;
+  case 6:
+    PhaseSpace(stod(*(new string(argv[1]))), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), stoi(*(new string(argv[5]))), *(new string(argv[6])));
+    break;
+  case 7:
+    PhaseSpace(stod(*(new string(argv[1]))), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), stoi(*(new string(argv[5]))), *(new string(argv[6])), *(new string(argv[7])));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
   return 0;
 }
 #endif

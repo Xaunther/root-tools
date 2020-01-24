@@ -11,7 +11,7 @@
 #include "TMath.h"
 #include "../Functions/Filereading.h"
 using namespace std;
-void PlotCorrVar(string histopt = "", string drawopt = "", string varfile = "Variables/VariablesCorr.txt", string cutfile="Variables/Cuts.txt", string tupledir = "Directories/Cuttuples2.dir", string fileext = ".pdf")
+void PlotCorrVar(string histopt = "", string drawopt = "", string varfile = "Variables/VariablesCorr.txt", string cutfile = "Variables/Cuts.txt", string tupledir = "Directories/Cuttuples2.dir", string fileext = ".pdf")
 {
   int N_files = 0;
   int N_vars = 0;
@@ -23,55 +23,55 @@ void PlotCorrVar(string histopt = "", string drawopt = "", string varfile = "Var
   TChain* chain = new TChain("DecayTree");
 
   //Add to chain and get N of entries
-  for(int i=0;i<N_files;i++)
-    {
-      chain->Add(filenames[i].c_str());
-      cout << i+1 << " file(s) chained" << endl;
-    }
+  for (int i = 0; i < N_files; i++)
+  {
+    chain->Add(filenames[i].c_str());
+    cout << i + 1 << " file(s) chained" << endl;
+  }
   //Plot and save bro
   TCanvas* c1 = new TCanvas();
   cout << "Plotting..." << endl;
-  for(int i=0;i<N_vars;i++)
+  for (int i = 0; i < N_vars; i++)
+  {
+    for (int j = i + 1; j < N_vars; j++)
     {
-      for(int j=i+1;j<N_vars;j++)
-	{
-	  chain->Draw((variables[i]+":"+variables[j]+histopt).c_str(), cuts.c_str(), drawopt.c_str());
-	  c1->SaveAs(("plots/"+variables[i]+"_VS_"+variables[j]+fileext).c_str());
-	}
+      chain->Draw((variables[i] + ":" + variables[j] + histopt).c_str(), cuts.c_str(), drawopt.c_str());
+      c1->SaveAs(("plots/" + variables[i] + "_VS_" + variables[j] + fileext).c_str());
     }
+  }
 }
 
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc-1)
-    {
-    case 0:
-      PlotCorrVar();
-      break;
-    case 1:
-      PlotCorrVar(*(new string(argv[1])));
-      break;
-    case 2:
-      PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])));
-      break;
-    case 3:
-      PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
-      break;
-    case 4:
-      PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
-      break;
-    case 5:
-      PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
-      break;
-    case 6:
-      PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
-      break;
-    default:
-      cout << "Wrong number of arguments (" << argc << ") for PlotCorrVar" << endl;
-      return(1);
-      break;
-    }
+  switch (argc - 1)
+  {
+  case 0:
+    PlotCorrVar();
+    break;
+  case 1:
+    PlotCorrVar(*(new string(argv[1])));
+    break;
+  case 2:
+    PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])));
+    break;
+  case 3:
+    PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+    break;
+  case 4:
+    PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+    break;
+  case 5:
+    PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+    break;
+  case 6:
+    PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
   return 0;
 }
 #endif

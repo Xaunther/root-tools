@@ -24,23 +24,23 @@ void PlotTable(string tablesdir, string plot_opts = "APL", double x_factor = 1.,
   TGraph** g = new TGraph*[N_tables];
   double*** data = new double**[N_tables];
   int* N_points = new int[N_tables];
-  for(int i=0;i<N_tables;i++)
+  for (int i = 0; i < N_tables; i++)
+  {
+    N_points[i] = 0;
+    data[i] = GetData(table[i], N_points[i], 2);
+    double* x = new double[N_points[i]];
+    double* y = new double[N_points[i]];
+    for (int j = 0; j < N_points[i]; j++)
     {
-      N_points[i] = 0;
-      data[i] = GetData(table[i], N_points[i], 2);
-      double* x = new double[N_points[i]];
-      double* y = new double[N_points[i]];      
-      for(int j=0;j<N_points[i];j++)
-	{
-	  x[j] = data[i][j][0]*x_factor;
-	  y[j] = data[i][j][1]*y_factor;
-	}
-      g[i] = new TGraph(N_points[i], x, y);
-      g[i]->SetLineColor(bkg_colours[i]);
-      g[i]->SetLineWidth(3);
-      g[i]->SetTitle(table[i].c_str());
-      mg->Add(g[i], plot_opts.c_str());
+      x[j] = data[i][j][0] * x_factor;
+      y[j] = data[i][j][1] * y_factor;
     }
+    g[i] = new TGraph(N_points[i], x, y);
+    g[i]->SetLineColor(bkg_colours[i]);
+    g[i]->SetLineWidth(3);
+    g[i]->SetTitle(table[i].c_str());
+    mg->Add(g[i], plot_opts.c_str());
+  }
 
   //Canvas
   TCanvas* c1 = new TCanvas();
@@ -67,25 +67,25 @@ void PlotTable(string tablesdir, string plot_opts = "APL", double x_factor = 1.,
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc-1)
-    {
-    case 1:
-      PlotTable(*(new string(argv[1])));
-      break;
-    case 2:
-      PlotTable(*(new string(argv[1])), *(new string(argv[2])));
-      break;
-    case 3:
-      PlotTable(*(new string(argv[1])), *(new string(argv[2])), stod(*(new string(argv[3]))));
-      break;
-    case 4:
-      PlotTable(*(new string(argv[1])), *(new string(argv[2])), stod(*(new string(argv[3]))), stod(*(new string(argv[4]))));
-      break;
-    default:
-      cout << "Wrong number of arguments (" << argc << ") for PlotTable" << endl;
-      return(1);
-      break;
-    }
+  switch (argc - 1)
+  {
+  case 1:
+    PlotTable(*(new string(argv[1])));
+    break;
+  case 2:
+    PlotTable(*(new string(argv[1])), *(new string(argv[2])));
+    break;
+  case 3:
+    PlotTable(*(new string(argv[1])), *(new string(argv[2])), stod(*(new string(argv[3]))));
+    break;
+  case 4:
+    PlotTable(*(new string(argv[1])), *(new string(argv[2])), stod(*(new string(argv[3]))), stod(*(new string(argv[4]))));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
   return 0;
 }
 #endif

@@ -22,10 +22,10 @@ void RenameBranch(string outname, string tupledir = "Directories/Lb2016DataMagUp
   TChain* chain = new TChain(treename.c_str());
 
   //Add to chain and get N of entries
-  for(int i=0;i<N_files;i++)
-    {
-      chain->Add(filenames[i].c_str());
-    }
+  for (int i = 0; i < N_files; i++)
+  {
+    chain->Add(filenames[i].c_str());
+  }
 
   //Manually here, implement branch renaming
   chain->GetLeaf("B_M01_Subst1_pi2p~")->SetTitle("B_M01_Subst1_pi2p");
@@ -46,19 +46,19 @@ void RenameBranch(string outname, string tupledir = "Directories/Lb2016DataMagUp
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc-1)
-    {
-    case 1:
-      RenameBranch(*(new string(argv[1])));
-      break;
-    case 2:
-      RenameBranch(*(new string(argv[1])), *(new string(argv[2])));
-      break;
-    default:
-      cout << "Wrong number of arguments (" << argc << ") for RenameBranch" << endl;
-      return(1);
-      break;
-    }
+  switch (argc - 1)
+  {
+  case 1:
+    RenameBranch(*(new string(argv[1])));
+    break;
+  case 2:
+    RenameBranch(*(new string(argv[1])), *(new string(argv[2])));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
   return 0;
 }
 #endif

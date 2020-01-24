@@ -144,7 +144,7 @@ int main(int argc, char** argv)
     sWeight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), fitopt, *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])));
     break;
   default:
-    cout << "Wrong number of arguments (" << argc << ") for sWeight" << endl;
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
     return (1);
     break;
   }

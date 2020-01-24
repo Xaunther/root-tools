@@ -11,11 +11,11 @@ void ROC_Area(string filename, string histname = "default/Method_BDT/BDT/MVA_BDT
   TFile* file = new TFile(filename.c_str());
   TH1D* hist = (TH1D*)file->Get(histname.c_str());
   double area = 0;
-  for(int i=1;i<=hist->GetEntries();i++)
-    {
-      area += hist->GetBinWidth(i)*hist->GetAt(i);
-    }
-  
+  for (int i = 1; i <= hist->GetEntries(); i++)
+  {
+    area += hist->GetBinWidth(i) * hist->GetAt(i);
+  }
+
   cout << endl << "Area of the curve: " << area << endl << endl;
   file->Close();
 }
@@ -23,19 +23,19 @@ void ROC_Area(string filename, string histname = "default/Method_BDT/BDT/MVA_BDT
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc-1)
-    {
-    case 1:
-      ROC_Area(*(new string(argv[1])));
-      break;
-    case 2:
-      ROC_Area(*(new string(argv[1])), *(new string(argv[2])));
-      break;
-    default:
-      cout << "Wrong number of arguments (" << argc << ") for ROC_Area" << endl;
-      return(1);
-      break;
-    }
+  switch (argc - 1)
+  {
+  case 1:
+    ROC_Area(*(new string(argv[1])));
+    break;
+  case 2:
+    ROC_Area(*(new string(argv[1])), *(new string(argv[2])));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
   return 0;
 }
 #endif

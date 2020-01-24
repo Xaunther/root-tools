@@ -99,7 +99,7 @@ int main(int argc, char** argv)
     Fit_NstG(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
     break;
   default:
-    cout << "Wrong number of arguments (" << argc << ") for Fit_NstG" << endl;
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
     return (1);
     break;
   }

@@ -46,16 +46,16 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
   TChain* chain = new TChain(treename.c_str());
 
   //Add to chain and get N of entries
-  for(int i=0;i<N_files;i++)
-    {
-      chain->Add(filenames[i].c_str());
-    }
+  for (int i = 0; i < N_files; i++)
+  {
+    chain->Add(filenames[i].c_str());
+  }
 
   //Cut chain into new TChain in a temp root file
   TFile* cutfile = new TFile("Tuples/tmp.root", "recreate");
   TTree* cuttree = (TTree*)chain->CopyTree(cuts.c_str());
   cutfile->Write();
-  
+
   //Part where the output is stored into outfile
   ofstream fout;
   int N_TIS, N_TOS, N_TISTOS, N_TISorTOS;
@@ -65,10 +65,10 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
   //L0
   fout << "         L0 lines used         " << endl;
   fout << "-------------------------------" << endl;
-  for(int i=0;i<N_L0;i++)
-    {
-      fout << L0_list[i] << endl;
-    }
+  for (int i = 0; i < N_L0; i++)
+  {
+    fout << L0_list[i] << endl;
+  }
   fout << endl;
   //Compute Numbers
   N_TIS = cuttree->GetEntries(L0_TIS.c_str());
@@ -76,39 +76,39 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
   N_TISorTOS = cuttree->GetEntries(L0_TISorTOS.c_str());
   N_TOS = cuttree->GetEntries(L0_TOS.c_str());
 
-  fout << "Trigger eff: " << double(N_TISTOS)/N_TIS << endl;
+  fout << "Trigger eff: " << double(N_TISTOS) / N_TIS << endl;
   fout << endl;
   //Hlt1
   fout << "        Hlt1 lines used        " << endl;
   fout << "-------------------------------" << endl;
-  for(int i=0;i<N_Hlt1;i++)
-    {
-      fout << Hlt1_list[i] << endl;
-    }
+  for (int i = 0; i < N_Hlt1; i++)
+  {
+    fout << Hlt1_list[i] << endl;
+  }
   fout << endl;
   //Compute numbers
-  N_TIS = cuttree->GetEntries(("("+L0_TIS+") && ("+Hlt1_TIS+")").c_str());
-  N_TISTOS = cuttree->GetEntries(("("+L0_TISTOS+") && ("+Hlt1_TISTOS+")").c_str());
-  N_TISorTOS = cuttree->GetEntries(("("+L0_TISorTOS+") && ("+Hlt1_TISorTOS+")").c_str());
-  N_TOS = cuttree->GetEntries(("("+L0_TOS+") && ("+Hlt1_TOS+")").c_str());
+  N_TIS = cuttree->GetEntries(("(" + L0_TIS + ") && (" + Hlt1_TIS + ")").c_str());
+  N_TISTOS = cuttree->GetEntries(("(" + L0_TISTOS + ") && (" + Hlt1_TISTOS + ")").c_str());
+  N_TISorTOS = cuttree->GetEntries(("(" + L0_TISorTOS + ") && (" + Hlt1_TISorTOS + ")").c_str());
+  N_TOS = cuttree->GetEntries(("(" + L0_TOS + ") && (" + Hlt1_TOS + ")").c_str());
 
-  fout << "Trigger eff: " << double(N_TISTOS)/N_TIS << endl;
+  fout << "Trigger eff: " << double(N_TISTOS) / N_TIS << endl;
   fout << endl;
   //Hlt2
   fout << "        Hlt2 lines used        " << endl;
   fout << "-------------------------------" << endl;
-  for(int i=0;i<N_Hlt2;i++)
-    {
-      fout << Hlt2_list[i] << endl;
-    }
+  for (int i = 0; i < N_Hlt2; i++)
+  {
+    fout << Hlt2_list[i] << endl;
+  }
   fout << endl;
   //Compute numbers
-  N_TIS = cuttree->GetEntries(("("+L0_TIS+") && ("+Hlt1_TIS+") && ("+Hlt2_TIS+")").c_str());
-  N_TISTOS = cuttree->GetEntries(("("+L0_TISTOS+") && ("+Hlt1_TISTOS+") && ("+Hlt2_TISTOS+")").c_str());
-  N_TISorTOS = cuttree->GetEntries(("("+L0_TISorTOS+") && ("+Hlt1_TISorTOS+") && ("+Hlt2_TISorTOS+")").c_str());
-  N_TOS = cuttree->GetEntries(("("+L0_TOS+") && ("+Hlt1_TOS+") && ("+Hlt2_TOS+")").c_str());
+  N_TIS = cuttree->GetEntries(("(" + L0_TIS + ") && (" + Hlt1_TIS + ") && (" + Hlt2_TIS + ")").c_str());
+  N_TISTOS = cuttree->GetEntries(("(" + L0_TISTOS + ") && (" + Hlt1_TISTOS + ") && (" + Hlt2_TISTOS + ")").c_str());
+  N_TISorTOS = cuttree->GetEntries(("(" + L0_TISorTOS + ") && (" + Hlt1_TISorTOS + ") && (" + Hlt2_TISorTOS + ")").c_str());
+  N_TOS = cuttree->GetEntries(("(" + L0_TOS + ") && (" + Hlt1_TOS + ") && (" + Hlt2_TOS + ")").c_str());
 
-  fout << "Trigger eff: " << double(N_TISTOS)/N_TIS << endl;
+  fout << "Trigger eff: " << double(N_TISTOS) / N_TIS << endl;
   fout << endl;
   cout << "N_TIS: "      << N_TIS      << endl;
   cout << "N_TISTOS: "   << N_TISTOS   << endl;
@@ -116,35 +116,35 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
   cout << "N_TOS: "      << N_TOS      << endl;
 
   fout.close();
-  
+
   cutfile->Close();
 }
 
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc-1)
-    {
-    case 2:
-      TISTOS(*(new string(argv[1])), *(new string(argv[2])));
-      break;
-    case 3:
-      TISTOS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
-      break;
-    case 4:
-      TISTOS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
-      break;
-    case 5:
-      TISTOS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
-      break;
-    case 6:
-      TISTOS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
-      break;
-    default:
-      cout << "Wrong number of arguments (" << argc << ") for TISTOS" << endl;
-      return(1);
-      break;
-    }
+  switch (argc - 1)
+  {
+  case 2:
+    TISTOS(*(new string(argv[1])), *(new string(argv[2])));
+    break;
+  case 3:
+    TISTOS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+    break;
+  case 4:
+    TISTOS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+    break;
+  case 5:
+    TISTOS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+    break;
+  case 6:
+    TISTOS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
   return 0;
 }
 #endif

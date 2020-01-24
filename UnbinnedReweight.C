@@ -41,7 +41,7 @@ void UnbinnedReweight(string sample, string model, string varname_sample, string
   //Get entries in each sample
   int entries_sample = tree_sample->GetEntries();
   int entries_model = tree_model->GetEntries();
-  
+
   //Array with the entries, it will be ordered. It is a table with necessary stuff
   double** var_sample = new double*[entries_sample];
   double** var_model = new double*[entries_model];
@@ -49,58 +49,58 @@ void UnbinnedReweight(string sample, string model, string varname_sample, string
   double basura;
   double basura2 = 1.;
   tree_sample->SetBranchAddress((varname_sample).c_str(), &basura);
-  for(int i=0;i<entries_sample;i++)
-    {
-      var_sample[i] = new double[3];
-      tree_sample->GetEntry(i);
-      var_sample[i][0] = basura;
-      var_sample[i][1] = i;
-      var_sample[i][2] = 0.;
-    }
+  for (int i = 0; i < entries_sample; i++)
+  {
+    var_sample[i] = new double[3];
+    tree_sample->GetEntry(i);
+    var_sample[i][0] = basura;
+    var_sample[i][1] = i;
+    var_sample[i][2] = 0.;
+  }
   tree_model->SetBranchAddress((varname_model).c_str(), &basura);
-  if(wVar!="")
-    {
-      tree_model->SetBranchAddress((wVar).c_str(), &basura2);
-    }
-  for(int i=0;i<entries_model;i++)
-    {
-      var_model[i] = new double[2];
-      tree_model->GetEntry(i);
-      var_model[i][0] = basura;
-      var_model[i][1] = basura2;
-    }
+  if (wVar != "")
+  {
+    tree_model->SetBranchAddress((wVar).c_str(), &basura2);
+  }
+  for (int i = 0; i < entries_model; i++)
+  {
+    var_model[i] = new double[2];
+    tree_model->GetEntry(i);
+    var_model[i][0] = basura;
+    var_model[i][1] = basura2;
+  }
   //Order the sample. From lower to higher
   var_sample = Ordenar(entries_sample, 2, 0, var_sample);
   var_model = Ordenar(entries_model, 2, 0, var_model);
   //Loop over the modelling sample
-  int j=0;
-  for(int i=0;i<entries_model;i++)
+  int j = 0;
+  for (int i = 0; i < entries_model; i++)
+  {
+    int N_i = 0;
+    //For each one of them, find when to stop in sample
+    for (; var_model[i][0] > var_sample[j][0]; j++) {N_i++;}
+    for (int k = j - N_i; k < j; k++)
     {
-      int N_i = 0;
-      //For each one of them, find when to stop in sample
-      for(j=j;var_model[i][0]>var_sample[j][0];j++){N_i++;}
-      for(int k=j-N_i;k<j;k++)
-	{
-	  var_sample[k][2] = var_model[i][1]/double(N_i); //Weights overwrite original mass array
-	}
+      var_sample[k][2] = var_model[i][1] / double(N_i); //Weights overwrite original mass array
     }
+  }
 
   //Order back to original
   var_sample = Ordenar(entries_sample, 3, 1, var_sample);
   //Apply the weights and save in a new tree
   TFile* outfile = new TFile(outfilename.c_str(), "RECREATE");
   TTree* outtree = (TTree*)chain_sample->CopyTree(cuts_sample.c_str());
-  TBranch* wBranch = outtree->Branch(("weight"+suffix).c_str(), &basura, ("weight"+suffix+"/D").c_str());
-  for(int i=0;i<entries_sample;i++)
+  TBranch* wBranch = outtree->Branch(("weight" + suffix).c_str(), &basura, ("weight" + suffix + "/D").c_str());
+  for (int i = 0; i < entries_sample; i++)
+  {
+    if (i % (entries_sample / 10) == 0)
     {
-      if(i%(entries_sample/10)==0)
-	{
-	  cout << "Processing event: " << i << " / " << entries_sample << endl;
-	}
-      outtree->GetEntry(i);
-      basura = var_sample[i][2];
-      wBranch->Fill();
+      cout << "Processing event: " << i << " / " << entries_sample << endl;
     }
+    outtree->GetEntry(i);
+    basura = var_sample[i][2];
+    wBranch->Fill();
+  }
   outtree->Write();
   outfile->Close();
 }
@@ -108,32 +108,32 @@ void UnbinnedReweight(string sample, string model, string varname_sample, string
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc-1)
-    {
-    case 5:
-      UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
-      break;
-    case 6:
-      UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])),
-		       *(new string(argv[6])));
-      break;
-    case 7:
-      UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])),
-		       *(new string(argv[6])), *(new string(argv[7])));
-      break;
-    case 8:
-      UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])),
-		       *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])));
-      break;
-    case 9:
-      UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])),
-		       *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])));
-      break;
-    default:
-      cout << "Wrong number of arguments (" << argc << ") for UnbinnedReweight" << endl;
-      return(1);
-      break;
-    }
+  switch (argc - 1)
+  {
+  case 5:
+    UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+    break;
+  case 6:
+    UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])),
+                     *(new string(argv[6])));
+    break;
+  case 7:
+    UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])),
+                     *(new string(argv[6])), *(new string(argv[7])));
+    break;
+  case 8:
+    UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])),
+                     *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])));
+    break;
+  case 9:
+    UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])),
+                     *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for UnbinnedReweight" << endl;
+    return (1);
+    break;
+  }
   return 0;
 }
 #endif
