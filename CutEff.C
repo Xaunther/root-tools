@@ -34,6 +34,9 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
   double* N_final = new double[N_cuts+1];
   double N0;
 
+  //We'll need the square of the weight
+  string w2 = "";
+  if(weight != ""){w2 = weight+"*"+weight;}
   //Open chain here
   TChain* chain = GetChain(dirfile);
   //Simply compute #of evts before and after
@@ -63,7 +66,7 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
       fout << cuts[i] << setw(maxL+5-int(cuts[i].size())) << "  |  " << N_final[i]/N0 << endl;
     }
   fout << "Global" << setw(maxL+5-6) << "  |  " << N_final[N_cuts]/N0 << endl;
-  fout << "Error" << setw(maxL+5-5) << "  |  " << TMath::Sqrt(N_final[N_cuts]/N0*(1-N_final[N_cuts]/N0)/(N0*chain->GetEntries())) << endl;
+  fout << "Error" << setw(maxL+5-5) << "  |  " << TMath::Sqrt(N_final[N_cuts]/N0*(1-N_final[N_cuts]/N0)/chain->GetEntries()*GetMeanEntries(chain, allprecuts, w2))/N0 << endl;
   fout.close();
 
 }
