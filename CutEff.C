@@ -2,6 +2,7 @@
 //The output is given by outfile. Event weights can be included using weight
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <string>
 #include "TChain.h"
