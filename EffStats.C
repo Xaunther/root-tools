@@ -17,6 +17,9 @@ void EffStats(string dirfiles, string cutfile, string precutfile = "", string tr
 	//Start by reading the cuts and the precuts
 	string cuts = GetCuts(cutfile);
 	string precuts = GetCuts(precutfile);
+	cuts = "(" + cuts + ") * " + precuts;
+	cout << cuts << endl;
+	cout << precuts << endl;
 
 	//Now, get list of dirfiles in array
 	int N = 0;
