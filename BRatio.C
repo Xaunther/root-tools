@@ -36,9 +36,19 @@ void BRatio_NstG(string outfile)
 	//Yield of each channel
 	TUncertainty N_ppiG(stod(GetValueFor("n_{S}", "output/B_M012_Subst0_K2p_RooYields.txt")),
 	                    stod(GetErrorFor("n_{S}", "output/B_M012_Subst0_K2p_RooYields.txt")));
-	TUncertainty N_pKG(stod(GetValueFor("n_{pK#gamma}", "output/B_M012_Subst01_Kpi2pK_RooYields.txt")),
-	                   stod(GetErrorFor("n_{pK#gamma}", "output/B_M012_Subst01_Kpi2pK_RooYields.txt")));
-
+	TUncertainty N_pKG = 0;
+	eff1 = TUncertainty(stod(GetColFor("L1520G_ppibar", "output/Yield_Contamination.txt", 4)),
+	                    stod(GetColFor("L1520G_ppibar", "output/Yield_Contamination.txt", 6)));
+	N_pKG = N_pKG + eff1;
+	eff1 = TUncertainty(stod(GetColFor("L1670G_ppibar", "output/Yield_Contamination.txt", 4)),
+	                    stod(GetColFor("L1670G_ppibar", "output/Yield_Contamination.txt", 6)));
+	N_pKG = N_pKG + eff1;
+	eff1 = TUncertainty(stod(GetColFor("L1820G_ppibar", "output/Yield_Contamination.txt", 4)),
+	                    stod(GetColFor("L1820G_ppibar", "output/Yield_Contamination.txt", 6)));
+	N_pKG = N_pKG + eff1;
+	eff1 = TUncertainty(stod(GetColFor("L1830G_ppibar", "output/Yield_Contamination.txt", 4)),
+	                    stod(GetColFor("L1830G_ppibar", "output/Yield_Contamination.txt", 6)));
+	N_pKG = N_pKG + eff1;
 	//Efficiency of signal. Composed by generator, stripping....
 	TUncertainty eff_ppiG;
 	//Generator
