@@ -347,8 +347,9 @@ void BRatio_NstG(string outfile)
 	TUncertainty B_Ratio = 0;
 	for (unsigned int i = 0; i < BF_pKG.size(); i++)
 	{
-		B_Ratio = B_Ratio + (N_ppiG / (N_pKG * eff_ppiG) * BF_pKG[i] * eff_pKG[i]);
+		B_Ratio = B_Ratio + (BF_pKG[i] * eff_pKG[i]);
 	}
+	B_Ratio = B_Ratio * N_ppiG / N_pKG / eff_ppiG;
 	B_Ratio.SaveResult(outfile);
 }
 
