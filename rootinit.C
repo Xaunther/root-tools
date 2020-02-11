@@ -51,7 +51,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L " + path + "root/BDTTrain.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/BDTTrain2.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/BDT_BvsS.C+").c_str());
-  gROOT->ProcessLine((".L " + path + "root/BRatio.C+").c_str());
+  gROOT->ProcessLine((".L " + path + "root/BRatio_NstG.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/CheckMultiplicity.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/CompareVar.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/Compute_Value.C+").c_str());
