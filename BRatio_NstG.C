@@ -8,20 +8,6 @@
 #include "../Functions/Dictreading.h"
 using namespace std;
 
-
-//List of functions
-void BRatio(string keyconfig, string outfile);
-void BRatio_NstG(string outfile);
-
-//////////////////////////////////////////////////
-//General function
-void BRatio(string keyconfig, string outfile)
-{
-	if (keyconfig == "NstG") {BRatio_NstG(outfile);}
-	else {cout << "Could not match " << keyconfig << " to any keyconfig." << endl;}
-}
-//////////////////////////////////////////////////
-
 //Compute BRatio for NstG analysis. The formula is as follows
 //BR = N_S/N_B * (sum BF(B)eff_B)/eff_S
 /*The list of uncertainties is:
@@ -369,8 +355,8 @@ int main(int argc, char** argv)
 {
 	switch (argc - 1)
 	{
-	case 2:
-		BRatio(*(new string(argv[1])), *(new string(argv[2])));
+	case 1:
+		BRatio_NstG(*(new string(argv[2])));
 		break;
 	default:
 		cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
