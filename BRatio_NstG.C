@@ -63,16 +63,12 @@ void BRatio_NstG(string outfile)
 	eff_Gen.push_back((eff1 + eff2) / 2.);
 
 	//Full event cut
-	eff1 = TUncertainty(stod(GetValueFor("NstG_2012_Down_eff", "Systematics/Generation/FullEventCut_Eff.txt")), {
+	eff1 = TUncertainty(stod(GetValueFor("Global", "output/CutEff_Gauss_NstG_2hG.txt")), {
 		0,
-		stod(GetValueFor("NstG_2012_Down_err", "Systematics/Generation/FullEventCut_Eff.txt"))
-	});
-	eff2 = TUncertainty(stod(GetValueFor("NstG_2012_Up_eff", "Systematics/Generation/FullEventCut_Eff.txt")), {
-		0,
-		stod(GetValueFor("NstG_2012_Up_err", "Systematics/Generation/FullEventCut_Eff.txt"))
+		stod(GetValueFor("Error", "output/CutEff_Gauss_NstG_2hG.txt"))
 	});
 
-	eff_Full.push_back((eff1 + eff2) / 2.);
+	eff_Full.push_back(eff1);
 
 	//Stripping
 	eff1 = TUncertainty(stod(GetValueFor("NstG_2012_Down_eff", "Systematics/DST/Global_Eff.txt")), {
