@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <cmath>
 #include "../Functions/TUncertainty.h"
 #include "../Functions/Dictreading.h"
 using namespace std;
