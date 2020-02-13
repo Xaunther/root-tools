@@ -12,8 +12,9 @@ using namespace std;
 //BR = N_S/N_B * (sum BF(B)eff_B)/eff_S
 /*The list of uncertainties is:
 	1: Statistical
-	2: Systematic
-	3: Theorical
+	2: Systematic (sample size)
+	3: Theorical (L* BF)
+	4: Systematic (alternative reweight)
 */
 void BRatio_NstG(string outfile)
 {
@@ -62,13 +63,16 @@ void BRatio_NstG(string outfile)
 
 	eff_Gen.push_back((eff1 + eff2) / 2.);
 
-	//Full event cut
+	//Full event cut. Pick difference from alternative reweighting
 	eff1 = TUncertainty(stod(GetValueFor("Global", "output/CutEff_Gauss_NstG_2hG.txt")), {
 		0,
 		stod(GetValueFor("Error", "output/CutEff_Gauss_NstG_2hG.txt"))
 	});
+	eff2 = TUncertainty(0, {0, 0, 0,
+	                        abs(stod(GetValueFor("Global", "Systematics/Reweight/CutEff_Gauss_NstG_2hG_alt.txt")) - eff1.GetValue())
+	                       });
 
-	eff_Full.push_back(eff1);
+	eff_Full.push_back(eff1 + eff2);
 
 	//Stripping
 	eff1 = TUncertainty(stod(GetValueFor("NstG_2012_Down_eff", "Systematics/DST/Global_Eff.txt")), {
@@ -90,26 +94,37 @@ void BRatio_NstG(string outfile)
 
 	eff_MCM.push_back(eff1);
 
-	//Offline selection
+	//Offline selection. Pick difference from alternative reweighting
 	eff1 = TUncertainty(stod(GetValueFor("Global", "output/PreCutEff_NstG_2hG.txt")), {
 		0,
 		stod(GetValueFor("Error", "output/PreCutEff_NstG_2hG.txt"))
 	});
-	eff2 = TUncertainty(stod(GetValueFor("Global", "output/CutEff_NstG_2hG.txt")), {
+	eff2 = TUncertainty(0, {0, 0, 0,
+	                        abs(stod(GetValueFor("Global", "Systematics/Reweight/PreCutEff_NstG_2hG_alt.txt")) - eff1.GetValue())
+	                       });
+
+	eff_Pre.push_back(eff1 + eff2);
+
+	eff1 = TUncertainty(stod(GetValueFor("Global", "output/CutEff_NstG_2hG.txt")), {
 		0,
 		stod(GetValueFor("Error", "output/CutEff_NstG_2hG.txt"))
 	});
+	eff2 = TUncertainty(0, {0, 0, 0,
+	                        abs(stod(GetValueFor("Global", "Systematics/Reweight/CutEff_NstG_2hG_alt.txt")) - eff1.GetValue())
+	                       });
 
-	eff_Pre.push_back(eff1);
-	eff_sel.push_back(eff2);
+	eff_sel.push_back(eff1 + eff2);
 
 	//PID
 	eff1 = TUncertainty(stod(GetValueFor("Mean", "Systematics/PID/NstG_PIDEff.txt")), {
 		0,
 		stod(GetValueFor("Error", "Systematics/PID/NstG_PIDEff.txt"))
 	});
+	eff2 = TUncertainty(0, {0, 0, 0,
+	                        abs(stod(GetValueFor("Mean", "Systematics/Reweight/NstG_alt_PIDEff.txt")) - eff1.GetValue())
+	                       });
 
-	eff_PID.push_back(eff1);
+	eff_PID.push_back(eff1 + eff2);
 
 	/**********************************************************/
 	//Now we must retrieve the efficiency for each Lambda channel (4)
