@@ -16,6 +16,7 @@ using namespace std;
 	2: Systematic (sample size)
 	3: Theorical (L* BF)
 	4: Systematic (alternative reweight)
+	5: Systematic (mean shift)
 */
 void BRatio_NstG(string outfile)
 {
@@ -37,8 +38,11 @@ void BRatio_NstG(string outfile)
 	std::vector<TUncertainty> eff_pKG;
 
 	//Yield of each channel
-	TUncertainty N_ppiG(stod(GetValueFor("n_{S}", "output/B_M012_Subst0_K2p_RooYields.txt")),
-	                    stod(GetErrorFor("n_{S}", "output/B_M012_Subst0_K2p_RooYields.txt")));
+	TUncertainty N_ppiG(stod(GetValueFor("n_{S}", "output/B_M012_Subst0_K2p_RooYields.txt")), {
+		stod(GetErrorFor("n_{S}", "output/B_M012_Subst0_K2p_RooYields.txt")),
+		0, 0, 0,
+		stod(GetValueFor("Uncertainty", "Systematics/Fit/rel_uncertainty.txt"))*stod(GetValueFor("n_{S}", "output/B_M012_Subst0_K2p_RooYields.txt"))
+	});
 	TUncertainty N_pKG = 0;
 	eff1 = TUncertainty(stod(GetColFor("L1520G_ppibar", "output/Yield_Contamination.txt", 4)),
 	                    stod(GetColFor("L1520G_ppibar", "output/Yield_Contamination.txt", 6)));
