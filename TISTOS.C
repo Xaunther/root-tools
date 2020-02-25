@@ -54,6 +54,7 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
     fout << L0_list[i] << endl;
   }
   fout << endl;
+  cout << "Going for L0 TISTOS" << endl;
   //Compute Numbers
   eff_TIS = GetMean(chain, L0_TIS, cuts);
   eff_TISTOS = GetMean(chain, L0_TISTOS, cuts);
@@ -72,6 +73,7 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
     fout << Hlt1_list[i] << endl;
   }
   fout << endl;
+  cout << "Going for Hlt1 TISTOS" << endl;
   //Compute numbers
   eff_TIS = GetMean(chain, Hlt1_TIS, cuts);
   eff_TISTOS = GetMean(chain, Hlt1_TISTOS, cuts);
@@ -90,6 +92,7 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
     fout << Hlt2_list[i] << endl;
   }
   fout << endl;
+  cout << "Going for Hlt2 TISTOS" << endl;
   //Compute numbers
   eff_TIS = GetMean(chain, Hlt2_TIS, cuts);
   eff_TISTOS = GetMean(chain, Hlt2_TISTOS, cuts);
