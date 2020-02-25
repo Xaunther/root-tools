@@ -70,6 +70,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L " + path + "root/LatexTable.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/MakeVarList.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/MassSub.C+").c_str());
+  ROOT->ProcessLine((".L " + path + "root/Merge_Trigger.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/OutputSearch.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/PhaseSpace.C+").c_str());
   //  gROOT->ProcessLine((".L "+path+"root/PIDMatrix.C+").c_str());
