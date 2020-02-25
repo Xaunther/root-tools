@@ -16,6 +16,7 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
 {
   //Obtain cuts (in case some cuts must be applied before TISTOSing)
   string cuts = GetCuts(cutsfilename);
+  if(cuts==""){cuts="1";}
 
   //Get chain
   TChain* chain = GetChain(dirfile);
