@@ -16,7 +16,7 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
 {
   //Obtain cuts (in case some cuts must be applied before TISTOSing)
   string cuts = GetCuts(cutsfilename);
-  if(cuts==""){cuts="1";}
+  if (cuts == "") {cuts = "1";}
 
   //Get chain
   TChain* chain = GetChain(dirfile);
@@ -53,6 +53,7 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
   {
     fout << L0_list[i] << endl;
   }
+  fout << MakeTOS(L0_list, N_L0);
   fout << endl;
   cout << "Going for L0 TISTOS" << endl;
   //Compute Numbers
@@ -72,6 +73,7 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
   {
     fout << Hlt1_list[i] << endl;
   }
+  fout << MakeTOS(Hlt1_list, N_Hlt1);
   fout << endl;
   cout << "Going for Hlt1 TISTOS" << endl;
   //Compute numbers
@@ -91,6 +93,7 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
   {
     fout << Hlt2_list[i] << endl;
   }
+  fout << MakeTOS(Hlt2_list, N_Hlt2);
   fout << endl;
   cout << "Going for Hlt2 TISTOS" << endl;
   //Compute numbers
