@@ -5,11 +5,13 @@
 #include <string>
 #include <sstream>
 #include "TChain.h"
+#include <stdio.h>
 #include "../Functions/TISTOS.h"
 #include "../Functions/Dictreading.h"
 #include "../Functions/Filereading.h"
 #include "../Functions/TreeTools.h"
 #include "../Functions/ArrayTools.h"
+#include "../Functions/TUncertainty.h"
 using namespace std;
 
 void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_results.txt", string L0_lines = "Variables/L0_TISTOS.txt", string Hlt1_lines = "Variables/Hlt1_TISTOS.txt", string Hlt2_lines = "Variables/Hlt2_TISTOS.txt")
@@ -42,7 +44,8 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
   //We compute L0 efficiency
   //Then, Hlt1 efficiency, having passed L0
   ofstream fout;
-  double eff_TIS, eff_TISTOS;
+  TUncertainty eff_TIS, eff_TISTOS;
+  double N0;
 
   fout.open(outfile.c_str());
   fout << "TISTOS method applied on tuples defined at " << dirfile << ":" << endl << endl;
@@ -57,10 +60,14 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
   fout << endl;
   cout << "Going for L0 TISTOS" << endl;
   //Compute Numbers
+  N0 = chain->GetEntries(cuts.c_str());
   eff_TIS = GetMean(chain, L0_TIS, cuts);
+  eff_TIS = TUncertainty(eff_TIS.GetValue(), sqrt(eff_TIS.GetValue() * (1 - eff_TIS.GetValue()) / N0));
   eff_TISTOS = GetMean(chain, L0_TISTOS, cuts);
+  eff_TISTOS = TUncertainty(eff_TISTOS.GetValue(), sqrt(eff_TISTOS.GetValue() * (1 - eff_TISTOS.GetValue()) / N0));
 
-  fout << "L0_Trigger_eff = " << eff_TISTOS / eff_TIS << endl;
+  fout << "L0_Trigger_eff = ";
+  (eff_TISTOS / eff_TIS).Print(fout, "rel");
   fout << endl;
 
 
@@ -76,11 +83,15 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
   fout << MakeTOS(Hlt1_list, N_Hlt1);
   fout << endl;
   cout << "Going for Hlt1 TISTOS" << endl;
-  //Compute numbers
+   //Compute Numbers
+  N0 = chain->GetEntries(cuts.c_str());
   eff_TIS = GetMean(chain, Hlt1_TIS, cuts);
+  eff_TIS = TUncertainty(eff_TIS.GetValue(), sqrt(eff_TIS.GetValue() * (1 - eff_TIS.GetValue()) / N0));
   eff_TISTOS = GetMean(chain, Hlt1_TISTOS, cuts);
+  eff_TISTOS = TUncertainty(eff_TISTOS.GetValue(), sqrt(eff_TISTOS.GetValue() * (1 - eff_TISTOS.GetValue()) / N0));
 
-  fout << "Hlt1_Trigger_eff = " << eff_TISTOS / eff_TIS << endl;
+  fout << "Hlt1_Trigger_eff = ";
+  (eff_TISTOS / eff_TIS).Print(fout, "rel");
   fout << endl;
 
 
@@ -96,11 +107,16 @@ void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_result
   fout << MakeTOS(Hlt2_list, N_Hlt2);
   fout << endl;
   cout << "Going for Hlt2 TISTOS" << endl;
-  //Compute numbers
+  //Compute Numbers
+  N0 = chain->GetEntries(cuts.c_str());
   eff_TIS = GetMean(chain, Hlt2_TIS, cuts);
+  eff_TIS = TUncertainty(eff_TIS.GetValue(), sqrt(eff_TIS.GetValue() * (1 - eff_TIS.GetValue()) / N0));
   eff_TISTOS = GetMean(chain, Hlt2_TISTOS, cuts);
+  eff_TISTOS = TUncertainty(eff_TISTOS.GetValue(), sqrt(eff_TISTOS.GetValue() * (1 - eff_TISTOS.GetValue()) / N0));
 
-  fout << "Hlt2_Trigger_eff = " << eff_TISTOS / eff_TIS << endl;
+  fout << "Hlt2_Trigger_eff = ";
+  (eff_TISTOS / eff_TIS).Print(fout, "rel");
+  fout << endl;
 
 
   fout.close();
