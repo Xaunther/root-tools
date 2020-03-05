@@ -7,6 +7,8 @@
 //Additionally, a file containing the bins might be specified.
 // If not, the minimum and maximum values will be used as extremes and the Number of Bins from the Dictionaries will be used, equally distributed.
 
+//This script is currently not included in the compilation, or loaded with rootinit
+
 #include <string>
 #include <iostream>
 #include "../Functions/TreeTools.h"
