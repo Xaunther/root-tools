@@ -58,7 +58,7 @@ void Fit_NstG_pKmumu(string varnamedata, string filedirdata, string cutfiledata,
     stringstream ss;
     ss << i;
     file[i] = TFile::Open(("Tuples/temp_pKmumu" + ss.str() + ".root").c_str());
-    tree[i] = (TTree*)file[i]->Get("DecayTree");
+    tree[i] = (TTree*)file[i]->Get("h1");
     cout << endl << "Starting MC fit number " << i << endl;
     cout << "------------------------" << endl << endl;
     ws[i] = fitf[fitopt[i]](variablename[i], tree[i], w_var, 0, 0, opts_MC[i]);
