@@ -45,7 +45,7 @@ void Fit_NstG_pKmumu(string varnamedata, string filedirdata, string cutfiledata,
   string opts_MC[Nbkgs_pKmumu];
   string variablename[Nbkgs_pKmumu];
   //Initialize options
-  fitopt[0] = DoubleCB;
+  fitopt[0] = DoubleGaussExp;
   opts_MC[0] = "NstG_pKmumu";
   variablename[0] = varnamedata;
   //Root stuff
@@ -66,58 +66,6 @@ void Fit_NstG_pKmumu(string varnamedata, string filedirdata, string cutfiledata,
     //Plot MC if requested
     if (plotMC) {GoodPlot(ws[i], variablename[i], "", "", opts_MC[i], "_MC" + ss.str());}
     ss.str("");
-    //Now we retrieve the values of the parameters and save them in our new workspace
-    //Depending on what pdf we chose... (so far only 1 Argus is defined, should define array of constants/names if more are needed)
-    switch (fitopt[i])
-    {
-    case ArgusGauss: //ArgusGauss fit
-      Extract_Var(ws[i], Param_ws, name_list.m0_Argus, name_list.m0_Argus);
-      Extract_Var(ws[i], Param_ws, name_list.c_Argus, name_list.c_Argus);
-      Extract_Var(ws[i], Param_ws, name_list.p_Argus, name_list.p_Argus);
-      Extract_Var(ws[i], Param_ws, name_list.width_Argus, name_list.width_Argus);
-      break;
-    case Exp: //Exponential fit
-      Extract_Var(ws[i], Param_ws, name_list.exp_par[0], name_list.exp_par[i + 1]);
-      break;
-    case Line: //Straight line fit
-      Extract_Var(ws[i], Param_ws, name_list.slope, name_list.slope);
-      break;
-    case GaussExp: //Gaussian with one exponential tail
-      Extract_Var(ws[i], Param_ws, name_list.alpha, name_list.alphaL[i + 1]);
-      Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[i + 1]);
-      Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[i + 1]);
-      break;
-    case CB: //Gaussian with power-law tail
-      Extract_Var(ws[i], Param_ws, name_list.alpha, name_list.alphaL[i + 1]);
-      Extract_Var(ws[i], Param_ws, name_list.n, name_list.nL[i + 1]);
-      Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[i + 1]);
-      Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[i + 1]);
-      break;
-    case CBExp: //Gaussian with power-law, exponential tails
-      Extract_Var(ws[i], Param_ws, name_list.alphaL[0], name_list.alphaL[i + 1]);
-      Extract_Var(ws[i], Param_ws, name_list.alphaR[0], name_list.alphaR[i + 1]);
-      Extract_Var(ws[i], Param_ws, name_list.n, name_list.nL[i + 1]);
-      Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[i + 1]);
-      Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[i + 1]);
-      break;
-    case DoubleGaussExp: //Gaussian with 2 exponential tails
-      Extract_Var(ws[i], Param_ws, name_list.alphaL[0], name_list.alphaL[i + 1]);
-      Extract_Var(ws[i], Param_ws, name_list.alphaR[0], name_list.alphaR[i + 1]);
-      Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[i + 1]);
-      Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[i + 1]);
-      break;
-    case DoubleCB: //Gaussian with 2 power-law tails
-      Extract_Var(ws[i], Param_ws, name_list.alphaL[0], name_list.alphaL[i + 1]);
-      Extract_Var(ws[i], Param_ws, name_list.alphaR[0], name_list.alphaR[i + 1]);
-      Extract_Var(ws[i], Param_ws, name_list.nL[0], name_list.nL[i + 1]);
-      Extract_Var(ws[i], Param_ws, name_list.nR[0], name_list.nR[i + 1]);
-      Extract_Var(ws[i], Param_ws, name_list.mean[0], name_list.mean[i + 1]);
-      Extract_Var(ws[i], Param_ws, name_list.width[0], name_list.width[i + 1]);
-      break;
-    default: //Any other thing. Output a disclaimer here
-      cout << "Fit option not implemented. Doing nothing" << endl;
-      break;
-    }
     file[i]->Close();
   }
   //Initialize data stuff
@@ -131,7 +79,7 @@ void Fit_NstG_pKmumu(string varnamedata, string filedirdata, string cutfiledata,
   RooWorkspace* Final_ws;
   cout << endl << "Starting data fit for " << varnamedata << endl;
   cout << "-----------------------------------" << endl << endl;
-  Final_ws = FitLb2pKJPsi(varnamedata, temptree, Param_ws, "", 0, 0, opts, fitopt, Nbkgs_pKmumu);
+  Final_ws = FitLb2pKJPsi(varnamedata, temptree, "", 0, 0, opts);
   //Plot with linear scale
   GoodPlot(Final_ws, varnamedata, "", "", opts);
   //Get log options (is this safe?)
