@@ -11,8 +11,10 @@
 #include "../Functions/Dictreading.h"
 #include "../Functions/Filereading.h"
 #include "../Functions/Constantize.h"
+#include "../Functions/TreeTools.h"
 #include "RooWorkspace.h"
 #include "RooDataSet.h"
+#include "RooAddPdf.h"
 #include "../Dictionaries/Constants.h"
 #include "../Dictionaries/Names.h"
 using namespace std;
@@ -36,20 +38,12 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
   EColor bkg_colours[] = {kRed, kGreen, kYellow, kMagenta, kOrange, kViolet};
 
   //Read the data
-  int N_files = 0;
-  string* filenames = ReadVariables(N_files, tupledir);
   string cuts = GetCuts(cutfile);
   //Load TChain
-  string treename = GetTreeName(tupledir);
-  TChain* chain = new TChain(treename.c_str());
+  TChain* chain = GetChain(tupledir);
   TTree* temptree = new TTree();
   TFile* tempfile = new TFile();
-  //Add to chain and get N of entries
-  for (int i = 0; i < N_files; i++)
-  {
-    chain->Add(filenames[i].c_str());
-    cout << i + 1 << " file(s) chained" << endl;
-  }
+
   //Cut chain into new TChain in a temp root file
   tempfile = new TFile("Tuples/temp.root", "recreate");
   temptree = (TTree*)chain->CopyTree(cuts.c_str());
@@ -57,10 +51,8 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
 
   //Fit to the desired thingy
   ws = fitf[fitopt](wVarname, temptree, w_var, new string[1] {pVarname}, 1, opts);
-
   //Number of backgrounds
-  int N_comps = int(ws->var(name_list.N_comps.c_str())->getValV());
-
+  int N_comps = ((RooAddPdf*)ws->pdf(name_list.pdfmodel.c_str()))->pdfList().getSize();
   //Can only do sPlot if we have a fit with 2 components, at least
   if (N_comps <= 1)
   {
@@ -69,7 +61,6 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
 
   //Constantize all except yields
   Constantize(ws);
-
   //Retrieve wVar
   RooRealVar* wVar = ws->var(wVarname.c_str());
   //Retrieve signal and bkg yields
@@ -78,7 +69,6 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
   {
     fcomp[i] = ws->var(name_list.fcomp[i].c_str());
   }
-
   //RooMsgService::instance().setSilentMode(true);
 
   // Now we use the SPlot class to add SWeights to our data set
@@ -98,7 +88,6 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
   {
     Yield_list.add(*fcomp[i]);
   }
-
   RooStats::SPlot sData = RooStats::SPlot("sData", "An SPlot", *data, ws->pdf(name_list.pdfmodel.c_str()), Yield_list);
 
   /************************************************************************************************************************************************/

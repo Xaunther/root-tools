@@ -14,6 +14,7 @@
 #include "../Functions/TreeTools.h"
 #include "RooWorkspace.h"
 #include "RooDataSet.h"
+#include "RooAddPdf.h"
 #include "../Dictionaries/Constants.h"
 #include "../Dictionaries/Names.h"
 using namespace std;
@@ -47,7 +48,7 @@ void sWeight(string varname, string tupledir, string outfilename, FitOption fito
   ws = fitf[fitopt](varname, temptree, w_var, 0, 0, opts);
 
   //Number of backgrounds
-  int N_comps = int(ws->var(name_list.N_comps.c_str())->getValV());
+  int N_comps = ((RooAddPdf*)ws->pdf(name_list.pdfmodel.c_str()))->pdfList().getSize();
 
   //Can only do sPlot if we have a fit with 2 components, at least
   if (N_comps <= 1)
