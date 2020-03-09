@@ -126,20 +126,22 @@ void MassSub_NstG(string dirfile, string outfile)
     //Loop over all mass combinations to obtain the corresponding energy
     for (int i = 0; i < 3; i++)
     {
-      p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
       for (int j = 0; j < 3; j++)
       {
         //B_M01 calculations
+        p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
         p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][j]);
         _m = (p[0] + p[1]).M();
         newbranch01[i][j]->Fill();
         if (j < 2)
         {
           //B_M02 calculations
+          p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
           p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][j]);
           _m = (p[0] + p[2]).M();
           newbranch02[i][j]->Fill();
           //B_M12 calculations
+          p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][i]);
           p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][j]);
           _m = (p[1] + p[2]).M();
           newbranch12[i][j]->Fill();
@@ -213,14 +215,23 @@ void MassSub_ppimumu(string dirfile, string outfile)
   TTree* tree = inchain->CloneTree();
   TBranch**** newbranch012 = new TBranch***[3];
   TBranch*** newbranch01 = new TBranch**[3];
+  TBranch*** newbranch02 = new TBranch**[3];
+  TBranch*** newbranch12 = new TBranch**[3];
   for (int i = 0; i < 3; i++)
   {
     newbranch012[i] = new TBranch**[3];
     newbranch01[i] = new TBranch*[3];
+    newbranch02[i] = new TBranch*[3];
+    newbranch12[i] = new TBranch*[3];
     for (int j = 0; j < 3; j++)
     {
       newbranch012[i][j] = new TBranch*[1];
       newbranch01[i][j] = tree->Branch(("B_M01" + mass_names[i][j][0][0]).c_str(), &_m, ("B_M01" + mass_names[i][j][0][0] + "/D").c_str());
+      if (j < 1)
+      {
+        newbranch02[i][j] = tree->Branch(("B_M02" + mass_names[i][0][j][j]).c_str(), &_m, ("B_M02" + mass_names[i][0][j][j] + "/D").c_str());
+        newbranch12[i][j] = tree->Branch(("B_M12" + mass_names[0][i][j][j]).c_str(), &_m, ("B_M12" + mass_names[0][i][j][j] + "/D").c_str());
+      }
       for (int k = 0; k < 1; k++)
       {
         newbranch012[i][j][k] = tree->Branch(("B_M012" + mass_names[i][j][k][0]).c_str(), &_m, ("B_M012" + mass_names[i][j][k][0] + "/D").c_str());
@@ -236,13 +247,28 @@ void MassSub_ppimumu(string dirfile, string outfile)
     //Loop over all mass combinations to obtain the corresponding energy
     for (int i = 0; i < 3; i++)
     {
-      p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
       for (int j = 0; j < 3; j++)
       {
-        p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][j]);
         //B_M01 calculations
+        p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
+        p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][j]);
         _m = (p[0] + p[1]).M();
         newbranch01[i][j]->Fill();
+        if (j < 1)
+        {
+          //B_M02 calculations
+          p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
+          p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][j]);
+          p[3].SetXYZM(_p[3][0], _p[3][1], _p[3][2], m[3][j]);
+          _m = (p[0] + p[2] + p[3]).M();
+          newbranch01[i][j]->Fill();
+          //B_M12 calculations
+          p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][i]);
+          p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][j]);
+          p[3].SetXYZM(_p[3][0], _p[3][1], _p[3][2], m[3][j]);
+          _m = (p[1] + p[1] + p[2]).M();
+          newbranch01[i][j]->Fill();
+        }
         for (int k = 0; k < 1; k++)
         {
           p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][k]);
@@ -314,14 +340,23 @@ void MassSub_pKmumu(string dirfile, string outfile)
   TTree* tree = inchain->CloneTree();
   TBranch**** newbranch012 = new TBranch***[3];
   TBranch*** newbranch01 = new TBranch**[3];
+  TBranch*** newbranch02 = new TBranch**[3];
+  TBranch*** newbranch12 = new TBranch**[3];
   for (int i = 0; i < 3; i++)
   {
     newbranch012[i] = new TBranch**[3];
     newbranch01[i] = new TBranch*[3];
+    newbranch02[i] = new TBranch*[3];
+    newbranch12[i] = new TBranch*[3];
     for (int j = 0; j < 3; j++)
     {
       newbranch012[i][j] = new TBranch*[1];
       newbranch01[i][j] = tree->Branch(("B_M01" + mass_names[i][j][0][0]).c_str(), &_m, ("B_M01" + mass_names[i][j][0][0] + "/D").c_str());
+      if (j < 1)
+      {
+        newbranch02[i][j] = tree->Branch(("B_M02" + mass_names[i][0][j][j]).c_str(), &_m, ("B_M02" + mass_names[i][0][j][j] + "/D").c_str());
+        newbranch12[i][j] = tree->Branch(("B_M12" + mass_names[0][i][j][j]).c_str(), &_m, ("B_M12" + mass_names[0][i][j][j] + "/D").c_str());
+      }
       for (int k = 0; k < 1; k++)
       {
         newbranch012[i][j][k] = tree->Branch(("B_M012" + mass_names[i][j][k][0]).c_str(), &_m, ("B_M012" + mass_names[i][j][k][0] + "/D").c_str());
@@ -337,13 +372,28 @@ void MassSub_pKmumu(string dirfile, string outfile)
     //Loop over all mass combinations to obtain the corresponding energy
     for (int i = 0; i < 3; i++)
     {
-      p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
       for (int j = 0; j < 3; j++)
       {
-        p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][j]);
         //B_M01 calculations
+        p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
+        p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][j]);
         _m = (p[0] + p[1]).M();
         newbranch01[i][j]->Fill();
+        if (j < 1)
+        {
+          //B_M02 calculations
+          p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
+          p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][j]);
+          p[3].SetXYZM(_p[3][0], _p[3][1], _p[3][2], m[3][j]);
+          _m = (p[0] + p[2] + p[3]).M();
+          newbranch01[i][j]->Fill();
+          //B_M12 calculations
+          p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][i]);
+          p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][j]);
+          p[3].SetXYZM(_p[3][0], _p[3][1], _p[3][2], m[3][j]);
+          _m = (p[1] + p[1] + p[2]).M();
+          newbranch01[i][j]->Fill();
+        }
         for (int k = 0; k < 1; k++)
         {
           p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][k]);
