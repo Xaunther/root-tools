@@ -261,13 +261,13 @@ void MassSub_ppimumu(string dirfile, string outfile)
           p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][j]);
           p[3].SetXYZM(_p[3][0], _p[3][1], _p[3][2], m[3][j]);
           _m = (p[0] + p[2] + p[3]).M();
-          newbranch01[i][j]->Fill();
+          newbranch02[i][j]->Fill();
           //B_M12 calculations
           p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][i]);
           p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][j]);
           p[3].SetXYZM(_p[3][0], _p[3][1], _p[3][2], m[3][j]);
-          _m = (p[1] + p[1] + p[2]).M();
-          newbranch01[i][j]->Fill();
+          _m = (p[1] + p[2] + p[3]).M();
+          newbranch12[i][j]->Fill();
         }
         for (int k = 0; k < 1; k++)
         {
@@ -386,13 +386,13 @@ void MassSub_pKmumu(string dirfile, string outfile)
           p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][j]);
           p[3].SetXYZM(_p[3][0], _p[3][1], _p[3][2], m[3][j]);
           _m = (p[0] + p[2] + p[3]).M();
-          newbranch01[i][j]->Fill();
+          newbranch02[i][j]->Fill();
           //B_M12 calculations
           p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][i]);
           p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][j]);
           p[3].SetXYZM(_p[3][0], _p[3][1], _p[3][2], m[3][j]);
-          _m = (p[1] + p[1] + p[2]).M();
-          newbranch01[i][j]->Fill();
+          _m = (p[1] + p[2] + p[3]).M();
+          newbranch12[i][j]->Fill();
         }
         for (int k = 0; k < 1; k++)
         {
