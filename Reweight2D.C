@@ -25,6 +25,9 @@ void Reweight2D(string var1, string var2, string reffile, string applyfile, stri
   //Time to get those histograms filled boi!
   TH2F* refhist = GetHistogram2D(refchain, var1 + ":" + var2, NBins1 - 1, binning1, NBins2 - 1, binning2, "refhist", refw);
   TH2F* applyhist = GetHistogram2D(applychain, var1 + ":" + var2, NBins1 - 1, binning1, NBins2 - 1, binning2, "applyhist", applyw);
+  TH2F* divhist = new TH2F(*applyhist);
+  divhist->SetNameTitle("divhist", "divhist");
+  divhist->Divide(refhist, applyhist, applyhist->GetSumOfWeights(), refhist->GetSumOfWeights());
 
   //Now we retreive the weights. In each bin, the weight is Nref[i]/Napp[i]
   //We do that for each entry in the ntuple, and see where it fall
@@ -50,7 +53,7 @@ void Reweight2D(string var1, string var2, string reffile, string applyfile, stri
     value2 = formulavar2->EvalInstance();
     bin1 = refhist->GetXaxis()->FindBin(value1);
     bin2 = refhist->GetXaxis()->FindBin(value2);
-    wvalue = refhist->GetBinContent(bin1, bin2) / applyhist->GetBinContent(bin1, bin2);
+    wvalue = divhist->GetBinContent(bin1, bin2);
     tree->Fill();
     if (i % (applychain->GetEntries() / 10 + 1) == 0)
     {
