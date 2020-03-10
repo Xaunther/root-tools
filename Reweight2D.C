@@ -10,7 +10,8 @@
 #include "../Functions/Filereading.h"
 using namespace std;
 
-void Reweight2D(string var1, string var2, string reffile, string applyfile, string outfile, string binfile1, string binfile2, string refw = "", string applyw = "", string wname = "weight")
+void Reweight2D(string var1, string var2, string reffile, string applyfile, string outfile,
+                string binfile1, string binfile2, string refw = "", string applyw = "", string wname = "weight")
 {
   //File open!
   TChain* refchain = GetChain(reffile);
