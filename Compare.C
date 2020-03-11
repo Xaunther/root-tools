@@ -10,7 +10,7 @@
 #include "../Functions/StringTools.h"
 
 using namespace std;
-void Compare(string filename1, string filename2, string var1, string var2, string cutfile1, string cutfile2, string treename1 = "", string treename2 = "", string wvar1 = "1", string wvar2 = "1", string title = "")
+void Compare(string filename1, string filename2, string var1, string var2, string cutfile1, string cutfile2, string treename1 = "", string treename2 = "", string wvar1 = "1", string wvar2 = "1", string title = "", string outputname = "")
 {
   //Open files and tuples
   TChain* chain1 = GetChain(filename1, treename1);
@@ -51,7 +51,14 @@ void Compare(string filename1, string filename2, string var1, string var2, strin
   hist1->SetXTitle(titles[1].c_str());
   hist1->SetYTitle(titles[2].c_str());
 
-  c1->SaveAs(("plots/compare_" + var1 + "_" + var2 + ".pdf").c_str());
+  if (outputname == "")
+  {
+    c1->SaveAs(("plots/compare_" + var1 + "_" + var2 + ".pdf").c_str());
+  }
+  else
+  {
+    c1->SaveAs(outputname.c_str());
+  }
 
 }
 
@@ -82,6 +89,10 @@ int main(int argc, char** argv)
   case 11:
     Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
             *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])));
+    break;
+  case 12:
+    Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
+            *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])), *(new string(argv[12])));
     break;
   default:
     cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
