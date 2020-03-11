@@ -55,8 +55,8 @@ void Reweight2D(string var1, string var2, string reffile, string applyfile, stri
     //Insert formula, if any
     value1 = formulavar1->EvalInstance();
     value2 = formulavar2->EvalInstance();
-    bin1 = refhist->GetYaxis()->FindBin(value1);
-    bin2 = refhist->GetXaxis()->FindBin(value2);
+    bin1 = refhist->GetXaxis()->FindBin(value1);
+    bin2 = refhist->GetYaxis()->FindBin(value2);
     wvalue = refhist->GetBinContent(bin1, bin2);
     tree->Fill();
     if (i % (applychain->GetEntries() / 10 + 1) == 0)
