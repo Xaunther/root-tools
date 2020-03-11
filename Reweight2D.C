@@ -23,11 +23,15 @@ void Reweight2D(string var1, string var2, string reffile, string applyfile, stri
   double* binning2 = ReadNumbers(NBins2, binfile2);
 
   //Time to get those histograms filled boi!
-  TH2F* refhist = GetHistogram2D(refchain, var1 + ":" + var2, NBins1 - 1, binning1, NBins2 - 1, binning2, "refhist", refw);
-  TH2F* applyhist = GetHistogram2D(applychain, var1 + ":" + var2, NBins1 - 1, binning1, NBins2 - 1, binning2, "applyhist", applyw);
-  TH2F* divhist = new TH2F(*applyhist);
-  divhist->SetNameTitle("divhist", "divhist");
-  divhist->Divide(refhist, applyhist, applyhist->GetSumOfWeights(), refhist->GetSumOfWeights());
+  //Yes, var2 goes first, this is how it works in ROOT
+  //Don't ask
+  TH2F* refhist = GetHistogram2D(refchain, var2 + ":" + var1, NBins1 - 1, binning1, NBins2 - 1, binning2, "refhist", refw);
+  cout << refhist->GetSumOfWeights() << endl;
+  refhist->Scale(refhist->GetSumOfWeights());
+  TH2F* applyhist = GetHistogram2D(applychain, var2 + ":" + var1, NBins1 - 1, binning1, NBins2 - 1, binning2, "applyhist", applyw);
+  cout << applyhist->GetSumOfWeights() << endl;
+  applyhist->Scale(refhist->GetSumOfWeights());
+  refhist->Divide(applyhist);
 
   //Now we retreive the weights. In each bin, the weight is Nref[i]/Napp[i]
   //We do that for each entry in the ntuple, and see where it fall
@@ -51,9 +55,9 @@ void Reweight2D(string var1, string var2, string reffile, string applyfile, stri
     //Insert formula, if any
     value1 = formulavar1->EvalInstance();
     value2 = formulavar2->EvalInstance();
-    bin1 = refhist->GetXaxis()->FindBin(value1);
+    bin1 = refhist->GetYaxis()->FindBin(value1);
     bin2 = refhist->GetXaxis()->FindBin(value2);
-    wvalue = divhist->GetBinContent(bin1, bin2);
+    wvalue = refhist->GetBinContent(bin1, bin2);
     tree->Fill();
     if (i % (applychain->GetEntries() / 10 + 1) == 0)
     {
