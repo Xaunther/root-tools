@@ -20,11 +20,11 @@ void UnbinnedReweight(string vars, string reffile, string applyfile, string outf
   TChain* applychain = GetChain(applyfile);
 
   //Get those names!
-  int Nvars = 0;
-  string* varlist = SplitString(Nvars, vars, ", ");
+  int N_vars = 0;
+  string* varlist = SplitString(N_vars, vars, ", ");
   //Assign names
   string refvar = varlist[0];
-  string applyvar = (Nvars == 1) ? refvar : varlist[1];
+  string applyvar = (N_vars == 1) ? refvar : varlist[1];
 
   //Now we retreive the weights. In each bin, the weight is Nref[i]/Napp[i]
   //We do that for each entry in the ntuple, and see where it falls
