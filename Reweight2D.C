@@ -37,10 +37,11 @@ void Reweight2D(string vars1, string vars2, string reffile, string applyfile, st
   //Yes, var2 goes first, this is how it works in ROOT
   //Don't ask
   TH2F* refhist = GetHistogram2D(refchain, refvar2 + ":" + refvar1, NBins1 - 1, binning1, NBins2 - 1, binning2, "refhist", refw);
-  refhist->Scale(1/refhist->GetSumOfWeights());
+  refhist->Scale(1 / refhist->GetSumOfWeights());
   TH2F* applyhist = GetHistogram2D(applychain, applyvar2 + ":" + applyvar1, NBins1 - 1, binning1, NBins2 - 1, binning2, "applyhist", applyw);
-  applyhist->Scale(1/applyhist->GetSumOfWeights());
+  applyhist->Scale(1 / applyhist->GetSumOfWeights());
   refhist->Divide(applyhist);
+  refhist->Sumw2();
 
   //Now we retreive the weights. In each bin, the weight is Nref[i]/Napp[i]
   //We do that for each entry in the ntuple, and see where it fall
@@ -50,10 +51,11 @@ void Reweight2D(string vars1, string vars2, string reffile, string applyfile, st
   TTreeFormula* formulavar2 = new TTreeFormula(applyvar2.c_str(), applyvar2.c_str(), applychain);
 
   //Add new branch
-  double wvalue, value1, value2;
+  double wvalue, werror, value1, value2;
   TFile* file = new TFile(outfile.c_str(), "RECREATE");
   TTree* tree = applychain->CloneTree(0);
   tree->Branch(wname.c_str(), &wvalue, (wname + "/D").c_str());
+  tree->Branch((wname + "err").c_str(), &werror, (wname + "err/D").c_str());
 
   //Loop over all events and get value
   for (int i = 0; i < applychain->GetEntries(); i++)
@@ -67,6 +69,7 @@ void Reweight2D(string vars1, string vars2, string reffile, string applyfile, st
     bin1 = refhist->GetXaxis()->FindBin(value1);
     bin2 = refhist->GetYaxis()->FindBin(value2);
     wvalue = refhist->GetBinContent(bin1, bin2);
+    werror = refhist->GetBinError(bin1, bin2);
     tree->Fill();
     if (i % (applychain->GetEntries() / 10 + 1) == 0)
     {
