@@ -37,11 +37,9 @@ void Reweight2D(string vars1, string vars2, string reffile, string applyfile, st
   //Yes, var2 goes first, this is how it works in ROOT
   //Don't ask
   TH2F* refhist = GetHistogram2D(refchain, refvar2 + ":" + refvar1, NBins1 - 1, binning1, NBins2 - 1, binning2, "refhist", refw);
-  cout << refhist->GetSumOfWeights() << endl;
-  refhist->Scale(refhist->GetSumOfWeights());
+  refhist->Scale(1/refhist->GetSumOfWeights());
   TH2F* applyhist = GetHistogram2D(applychain, applyvar2 + ":" + applyvar1, NBins1 - 1, binning1, NBins2 - 1, binning2, "applyhist", applyw);
-  cout << applyhist->GetSumOfWeights() << endl;
-  applyhist->Scale(refhist->GetSumOfWeights());
+  applyhist->Scale(1/applyhist->GetSumOfWeights());
   refhist->Divide(applyhist);
 
   //Now we retreive the weights. In each bin, the weight is Nref[i]/Napp[i]
@@ -76,7 +74,6 @@ void Reweight2D(string vars1, string vars2, string reffile, string applyfile, st
     }
   }
   tree->Write();
-
   //File close!
   file->Close();
   CloseChain(refchain);

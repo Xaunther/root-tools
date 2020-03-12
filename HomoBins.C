@@ -53,7 +53,7 @@ void HomoBins(string var, int Nbins, string filedir, string cutfile, string outf
 	fout.open(outfile.c_str());
 	int index = 0;
 	double sum = 0;
-	for (int i = 0; i < entries; i++)
+	for (int i = 0; index < Nbins; i++)
 	{
 		if (sum >= wentries / double(Nbins)*index)
 		{
@@ -62,6 +62,7 @@ void HomoBins(string var, int Nbins, string filedir, string cutfile, string outf
 		}
 		sum += var_array[i][1];
 	}
+	fout << var_array[entries-1][0] << endl;
 	fout.close();
 
 }
