@@ -1,108 +1,110 @@
 //Function to perform unbinned reweighting of a sample, to match the distribution of a second sample
 //What it does is to assign weights to each event of the first sample
-#include <iostream>
 #include <string>
-#include "TTree.h"
-#include "TBranch.h"
-#include "TChain.h"
+#include <iostream>
+#include "TH2F.h"
+#include "TTreeFormula.h"
 #include "TFile.h"
-#include "TCanvas.h"
-#include "../Functions/Filereading.h"
+#include "TTree.h"
 #include "../Functions/TreeTools.h"
+#include "../Functions/Filereading.h"
+#include "../Functions/StringTools.h"
 #include "../Functions/Ordenar.h"
 using namespace std;
 
-//Sample: Sample to reweight
-//Model: Sample with the distribution we want
-//varname_sample: Variable we want to reweight in the sample
-//varname_model: Variable we want to look at in the model sample (names might differ)
-//cutfile_sample: Cuts needed for sample
-//cutfile_model: Cuts needed for model
-//wVar: If the variable in the model sample has some weight, say it!
-//suffix: the weights will be saved with name weight[_suffix]
-void UnbinnedReweight(string sample, string model, string varname_sample, string varname_model, string outfilename, string cutfile_sample = "", string cutfile_model = "", string wVar = "", string suffix = "")
+//Script to do unbinned reweight. It follows the same scheme as Reweight2D but for 1D, and no bins!(well, actually each entry is a bin)
+void UnbinnedReweight(string vars, string reffile, string applyfile, string outfile, string refw = "", string applyw = "", string wname = "weight")
 {
-  //Retrieve the two samples
-  TChain* chain_sample = GetChain(sample);
-  TChain* chain_model = GetChain(model);
-  //Get Cuts
-  string cuts_sample = GetCuts(cutfile_sample);
-  string cuts_model = GetCuts(cutfile_model);
+  //File open!
+  TChain* refchain = GetChain(reffile);
+  TChain* applychain = GetChain(applyfile);
 
-  //Cut sample tree
-  TFile* file_sample = new TFile("Tuples/temp_sample.root", "recreate");
-  TTree* tree_sample = (TTree*)chain_sample->CopyTree(cuts_sample.c_str());
-  file_sample->Write();
-  //Cut model tree
-  TFile* file_model = new TFile("Tuples/temp_model.root", "recreate");
-  TTree* tree_model = (TTree*)chain_model->CopyTree(cuts_model.c_str());
-  file_model->Write();
+  //Get those names!
+  int Nvars = 0;
+  string* varlist = SplitString(Nvars, vars, ", ");
+  //Assign names
+  string refvar = varlist[0];
+  string applyvar = (Nvars == 1) ? refvar : varlist[1];
 
-  //Get entries in each sample
-  int entries_sample = tree_sample->GetEntries();
-  int entries_model = tree_model->GetEntries();
+  //Now we retreive the weights. In each bin, the weight is Nref[i]/Napp[i]
+  //We do that for each entry in the ntuple, and see where it falls
+  //The variable might be a formula, so....
+  //Define formulas
+  TTreeFormula* applyformula = new TTreeFormula(applyvar.c_str(), applyvar.c_str(), applychain);
+  TTreeFormula* applywformula = new TTreeFormula(applyw.c_str(), applyw.c_str(), applychain);
+  TTreeFormula* refformula = new TTreeFormula(refvar.c_str(), refvar.c_str(), refchain);
+  TTreeFormula* refwformula = new TTreeFormula(refw.c_str(), refw.c_str(), refchain);
 
-  //Array with the entries, it will be ordered. It is a table with necessary stuff
-  double** var_sample = new double*[entries_sample];
-  double** var_model = new double*[entries_model];
-  //Loop over each tree and save important data in array of doubles
-  double basura;
-  double basura2 = 1.;
-  tree_sample->SetBranchAddress((varname_sample).c_str(), &basura);
-  for (int i = 0; i < entries_sample; i++)
+  //So first we fo through the reference sample to get the (un)binning. Must order the entries
+  int applyentries = applychain->GetEntries();
+  int refentries = refchain->GetEntries();
+
+  //Arrays with the entries, it will be ordered. It is a table with necessary stuff
+  double** refarray = new double*[refentries];
+  double** applyarray = new double*[applyentries];
+  for (int i = 0; i < refentries; i++)
   {
-    var_sample[i] = new double[3];
-    tree_sample->GetEntry(i);
-    var_sample[i][0] = basura;
-    var_sample[i][1] = i;
-    var_sample[i][2] = 0.;
+    refarray[i] = new double[2];
+    refchain->GetEntry(i);
+    refarray[i][0] = refformula->EvalInstance();
+    refarray[i][1] = refwformula->EvalInstance();
   }
-  tree_model->SetBranchAddress((varname_model).c_str(), &basura);
-  if (wVar != "")
+  for (int i = 0; i < applyentries; i++)
   {
-    tree_model->SetBranchAddress((wVar).c_str(), &basura2);
+    applyarray[i] = new double[3];
+    applychain->GetEntry(i);
+    applyarray[i][0] = applyformula->EvalInstance();
+    applyarray[i][1] = applywformula->EvalInstance();
+    applyarray[i][2] = i;
   }
-  for (int i = 0; i < entries_model; i++)
-  {
-    var_model[i] = new double[2];
-    tree_model->GetEntry(i);
-    var_model[i][0] = basura;
-    var_model[i][1] = basura2;
-  }
-  //Order the sample. From lower to higher
-  var_sample = Ordenar(entries_sample, 2, 0, var_sample);
-  var_model = Ordenar(entries_model, 2, 0, var_model);
-  //Loop over the modelling sample
+  refarray = Ordenar(refentries, 2, 0, refarray);
+  applyarray = Ordenar(applyentries, 3, 0, applyarray);
+  ////////////////////////////////////////
+  //Loop over the reference sample to get the weight for each event in the sample we want to apply them
   int j = 0;
-  for (int i = 0; i < entries_model; i++)
+  for (int i = 0; i < refentries; i++)
   {
     int N_i = 0;
+    double sum = 0;
     //For each one of them, find when to stop in sample
-    for (; var_model[i][0] > var_sample[j][0]; j++) {N_i++;}
+    for (; refarray[i][0] > applyarray[j][0]; j++) {N_i++; sum += applyarray[j][1];}
     for (int k = j - N_i; k < j; k++)
     {
-      var_sample[k][2] = var_model[i][1] / double(N_i); //Weights overwrite original mass array
+      if (sum == 0)
+      {
+        applyarray[k][2] = 0;
+      }
+      else
+      {
+        applyarray[k][2] = refarray[i][1] / double(sum); //Weights overwrite original mass array
+      }
     }
   }
+//Order back to original
+  applyarray = Ordenar(applyentries, 3, 2, applyarray);
 
-  //Order back to original
-  var_sample = Ordenar(entries_sample, 3, 1, var_sample);
-  //Apply the weights and save in a new tree
-  TFile* outfile = new TFile(outfilename.c_str(), "RECREATE");
-  TTree* outtree = (TTree*)chain_sample->CopyTree(cuts_sample.c_str());
-  TBranch* wBranch = outtree->Branch(("weight" + suffix).c_str(), &basura, ("weight" + suffix + "/D").c_str());
-  for (int i = 0; i < entries_sample; i++)
+  //Add new branch
+  double wvalue;
+  TFile* file = new TFile(outfile.c_str(), "RECREATE");
+  TTree* tree = applychain->CloneTree(0);
+  tree->Branch(wname.c_str(), &wvalue, (wname + "/D").c_str());
+
+  //Loop over all events and save
+  for (int i = 0; i < applyentries; i++)
   {
-    if (i % (entries_sample / 10) == 0)
+    tree->GetEntry(i);
+    wvalue = applyarray[i][2];
+    tree->Fill();
+    if (i % (applychain->GetEntries() / 10 + 1) == 0)
     {
-      cout << "Processing event: " << i << " / " << entries_sample << endl;
+      cout << "Processing event: " << i << " / " << applychain->GetEntries() << endl;
     }
-    outtree->GetEntry(i);
-    basura = var_sample[i][2];
-    wBranch->Fill();
   }
-  outtree->Write();
-  outfile->Close();
+  tree->Write();
+  //File close!
+  file->Close();
+  CloseChain(refchain);
+  CloseChain(applychain);
 }
 
 #if !defined(__CLING__)
@@ -110,6 +112,9 @@ int main(int argc, char** argv)
 {
   switch (argc - 1)
   {
+  case 4:
+    UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+    break;
   case 5:
     UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
     break;
@@ -120,14 +125,6 @@ int main(int argc, char** argv)
   case 7:
     UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])),
                      *(new string(argv[6])), *(new string(argv[7])));
-    break;
-  case 8:
-    UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])),
-                     *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])));
-    break;
-  case 9:
-    UnbinnedReweight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])),
-                     *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])));
     break;
   default:
     cout << "Wrong number of arguments (" << argc << ") for UnbinnedReweight" << endl;
