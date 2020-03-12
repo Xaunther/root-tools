@@ -41,7 +41,6 @@ void Reweight2D(string vars1, string vars2, string reffile, string applyfile, st
   TH2F* applyhist = GetHistogram2D(applychain, applyvar2 + ":" + applyvar1, NBins1 - 1, binning1, NBins2 - 1, binning2, "applyhist", applyw);
   applyhist->Scale(1 / applyhist->GetSumOfWeights());
   refhist->Divide(applyhist);
-  refhist->Sumw2();
 
   //Now we retreive the weights. In each bin, the weight is Nref[i]/Napp[i]
   //We do that for each entry in the ntuple, and see where it fall
