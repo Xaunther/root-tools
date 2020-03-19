@@ -5,13 +5,14 @@
 #include "TH1.h"
 #include "TMath.h"
 #include "../Functions/Ordenar.h"
+#include "../Functions/StringTools.h"
 using namespace std;
 
 void Vodka(string filename1, string filename2, string treename1, string treename2, string varname, bool binned = false)
 {
   //Open files and tuples
-  TFile* file1 = TFile::Open(filename1.c_str());
-  TFile* file2 = TFile::Open(filename2.c_str());
+  TFile* file1 = TFile::Open(Gridify(filename1).c_str());
+  TFile* file2 = TFile::Open(Gridify(filename2).c_str());
   TTree* testtree = (TTree*)file1->Get(treename1.c_str());
   TTree* traintree = (TTree*)file2->Get(treename2.c_str());
 

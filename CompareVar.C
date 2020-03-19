@@ -10,29 +10,15 @@
 #include "TChain.h"
 #include "../Functions/Fits.h"
 #include "../Functions/Filereading.h"
+#include "../Functions/TreeTools.h"
 #include "../Functions/Dictreading.h"
 #include "../Functions/StringTools.h"
 using namespace std;
 
 void CompareVar(string variablename, string filedir1, string opts)
 {
-  int N_files[] = {0};
   int N_used;
   string* filedir = SplitString(N_used, filedir1);
-  string** filenames = new string*[N_used];
-  //Load TChain
-  for (int i = 0; i < N_used; i++)
-  {
-    if (filedir[i] != "")
-    {
-      filenames[i] = ReadVariables(N_files[i], filedir[i]);
-    }
-    else
-    {
-      break;
-    }
-
-  }
   //Define for exact number now
   string* treenames = new string[N_used];
   TChain** chains = new TChain*[N_used];
@@ -40,12 +26,8 @@ void CompareVar(string variablename, string filedir1, string opts)
 
   for (int i = 0; i < N_used; i++)
   {
+    chains[i] = GetChain(filedir[i]);
     treenames[i] = GetTreeName(filedir[0]);
-    for (int j = 0; j < N_files[i]; j++)
-    {
-      chains[i]->Add(filenames[i][j].c_str());
-      cout << j + 1 << " file(s) chained" << endl;
-    }
     trees[i] = (TTree*)chains[i]->CopyTree("");
   }
 

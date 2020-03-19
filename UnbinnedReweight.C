@@ -85,7 +85,7 @@ void UnbinnedReweight(string vars, string reffile, string applyfile, string outf
 
   //Add new branch
   double wvalue;
-  TFile* file = new TFile(outfile.c_str(), "RECREATE");
+  TFile* file = new TFile(Gridify(outfile).c_str(), "RECREATE");
   TTree* tree = applychain->CloneTree(0);
   tree->Branch(wname.c_str(), &wvalue, (wname + "/D").c_str());
 

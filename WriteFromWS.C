@@ -9,6 +9,7 @@
 #include "TFile.h"
 #include "../Functions/Dictreading.h"
 #include "../Functions/TreeTools.h"
+#include "../Functions/StringTools.h"
 #include "../Dictionaries/Names.h"
 using namespace std;
 
@@ -27,7 +28,7 @@ void WriteFromWS(string wsfilename, string varname, string outfilename, string w
     wsname = name_list.workspace;
   }
   //Read file and its ws
-  TFile* f_ws = new TFile(wsfilename.c_str());
+  TFile* f_ws = new TFile(Gridify(wsfilename).c_str());
   cout << " caca " << endl;
   RooWorkspace* ws = (RooWorkspace*)f_ws->Get(wsname.c_str());
   //Write requested value in output file

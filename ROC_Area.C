@@ -4,11 +4,12 @@
 #include <string>
 #include "TH1D.h"
 #include "TFile.h"
+#include "../Functions/StringTools.h"
 using namespace std;
 
 void ROC_Area(string filename, string histname = "default/Method_BDT/BDT/MVA_BDT_trainingRejBvsS")
 {
-  TFile* file = new TFile(filename.c_str());
+  TFile* file = new TFile(Gridify(filename).c_str());
   TH1D* hist = (TH1D*)file->Get(histname.c_str());
   double area = 0;
   for (int i = 1; i <= hist->GetEntries(); i++)

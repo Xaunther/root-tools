@@ -7,11 +7,12 @@
 #include <string>
 #include "../Dictionaries/Constants.h"
 #include "../Functions/Dictreading.h"
+#include "../Functions/StringTools.h"
 using namespace std;
 
 void BDT_BvsS(string filename, double yfactor = 1, double xfactor = 1, double oldrate = 0, double oldeff = 0, string output = "plots/BDT_BvsS.pdf")
 {
-  TFile* file = TFile::Open(filename.c_str());
+  TFile* file = TFile::Open(Gridify(filename).c_str());
   TH1D* histo = (TH1D*)file->Get("default/Method_BDT/BDT/MVA_BDT_effBvsS");
 
   Constants const_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));

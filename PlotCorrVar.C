@@ -10,24 +10,16 @@
 #include <sstream>
 #include "TMath.h"
 #include "../Functions/Filereading.h"
+#include "../Functions/TreeTools.h"
 using namespace std;
 void PlotCorrVar(string histopt = "", string drawopt = "", string varfile = "Variables/VariablesCorr.txt", string cutfile = "Variables/Cuts.txt", string tupledir = "Directories/Cuttuples2.dir", string fileext = ".pdf")
 {
-  int N_files = 0;
   int N_vars = 0;
-  string* filenames = ReadVariables(N_files, tupledir);
   string* variables = ReadVariables(N_vars, varfile);
 
   string cuts = GetCuts(cutfile);
   //Data chain
-  TChain* chain = new TChain("DecayTree");
-
-  //Add to chain and get N of entries
-  for (int i = 0; i < N_files; i++)
-  {
-    chain->Add(filenames[i].c_str());
-    cout << i + 1 << " file(s) chained" << endl;
-  }
+  TChain* chain = GetChain(tupledir);
   //Plot and save bro
   TCanvas* c1 = new TCanvas();
   cout << "Plotting..." << endl;
@@ -46,28 +38,28 @@ int main(int argc, char** argv)
 {
   switch (argc - 1)
   {
-  case 0:
+    case 0:
     PlotCorrVar();
     break;
-  case 1:
+    case 1:
     PlotCorrVar(*(new string(argv[1])));
     break;
-  case 2:
+    case 2:
     PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])));
     break;
-  case 3:
+    case 3:
     PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
     break;
-  case 4:
+    case 4:
     PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
     break;
-  case 5:
+    case 5:
     PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
     break;
-  case 6:
+    case 6:
     PlotCorrVar(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
     break;
-  default:
+    default:
     cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
     return (1);
     break;

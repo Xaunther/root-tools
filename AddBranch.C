@@ -9,6 +9,7 @@
 #include "TTreeFormula.h"
 #include "TBranch.h"
 #include "../Functions/TreeTools.h"
+#include "../Functions/StringTools.h"
 using namespace std;
 void AddBranch(string branchname, string tupleinfile, string tupleoutfile, string formula, string treename = "")
 {
@@ -21,7 +22,7 @@ void AddBranch(string branchname, string tupleinfile, string tupleoutfile, strin
   TTreeFormula* formulavar = new TTreeFormula(formula.c_str(), formula.c_str(), inchain);
 
   //Add new branch
-  TFile* file = new TFile(tupleoutfile.c_str(), "RECREATE");
+  TFile* file = new TFile(Gridify(tupleoutfile).c_str(), "RECREATE");
   TTree* tree = inchain->CloneTree(0);
   tree->Branch(branchname.c_str(), &branchvalue, (branchname + "/D").c_str());
 

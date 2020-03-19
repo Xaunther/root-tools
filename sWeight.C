@@ -12,6 +12,7 @@
 #include "../Functions/Filereading.h"
 #include "../Functions/Constantize.h"
 #include "../Functions/TreeTools.h"
+#include "../Functions/StringTools.h"
 #include "RooWorkspace.h"
 #include "RooDataSet.h"
 #include "RooAddPdf.h"
@@ -105,7 +106,7 @@ void sWeight(string varname, string tupledir, string outfilename, FitOption fito
   //Time to save the sWeights
   temptree->SetBranchStatus("*", 1);
   double branchvalue;
-  TFile* outfile = new TFile(outfilename.c_str(), "RECREATE");
+  TFile* outfile = new TFile(Gridify(outfilename).c_str(), "RECREATE");
   TTree* outtree = temptree->CloneTree();
   TBranch* newbranch = outtree->Branch(("sWeight" + sw_suffix).c_str(), &branchvalue, ("sWeight" + sw_suffix + "/D").c_str());
   for (int i = 0; i < outtree->GetEntries(); i++)

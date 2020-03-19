@@ -12,6 +12,7 @@
 #include <string>
 #include "TMath.h"
 #include "../Functions/TreeTools.h"
+#include "../Functions/StringTools.h"
 using namespace std;
 
 #define Kmass 493.677
@@ -90,7 +91,7 @@ void MassSub_NstG(string dirfile, string outfile)
   }
 
   //Add new branches for each substitution
-  TFile* file = new TFile(outfile.c_str(), "RECREATE");
+  TFile* file = new TFile(Gridify(outfile).c_str(), "RECREATE");
   TTree* tree = inchain->CloneTree();
   TBranch**** newbranch012 = new TBranch***[3];
   TBranch*** newbranch01 = new TBranch**[3];
@@ -211,7 +212,7 @@ void MassSub_ppimumu(string dirfile, string outfile)
   }
 
   //Add new branches for each substitution
-  TFile* file = new TFile(outfile.c_str(), "RECREATE");
+  TFile* file = new TFile(Gridify(outfile).c_str(), "RECREATE");
   TTree* tree = inchain->CloneTree();
   TBranch**** newbranch012 = new TBranch***[3];
   TBranch*** newbranch01 = new TBranch**[3];
@@ -336,7 +337,7 @@ void MassSub_pKmumu(string dirfile, string outfile)
   }
 
   //Add new branches for each substitution
-  TFile* file = new TFile(outfile.c_str(), "RECREATE");
+  TFile* file = new TFile(Gridify(outfile).c_str(), "RECREATE");
   TTree* tree = inchain->CloneTree();
   TBranch**** newbranch012 = new TBranch***[3];
   TBranch*** newbranch01 = new TBranch**[3];
@@ -461,7 +462,7 @@ void MassSub_NstG_Gauss(string dirfile, string outfile)
   }
 
   //Add new branches for each substitution
-  TFile* file = new TFile(outfile.c_str(), "RECREATE");
+  TFile* file = new TFile(Gridify(outfile).c_str(), "RECREATE");
   TTree* tree = inchain->CloneTree();
   TBranch**** newbranch012 = new TBranch***[3];
   TBranch*** newbranch01 = new TBranch**[3];
@@ -562,7 +563,7 @@ void MassSub_KstG_Gauss(string dirfile, string outfile)
   }
 
   //Add new branches for each substitution
-  TFile* file = new TFile(outfile.c_str(), "RECREATE");
+  TFile* file = new TFile(Gridify(outfile).c_str(), "RECREATE");
   TTree* tree = inchain->CloneTree();
   TBranch**** newbranch012 = new TBranch***[3];
   TBranch*** newbranch01 = new TBranch**[3];

@@ -51,7 +51,7 @@ void Reweight2D(string vars1, string vars2, string reffile, string applyfile, st
 
   //Add new branch
   double wvalue, werror, value1, value2;
-  TFile* file = new TFile(outfile.c_str(), "RECREATE");
+  TFile* file = new TFile(Gridify(outfile).c_str(), "RECREATE");
   TTree* tree = applychain->CloneTree(0);
   tree->Branch(wname.c_str(), &wvalue, (wname + "/D").c_str());
   tree->Branch((wname + "err").c_str(), &werror, (wname + "err/D").c_str());

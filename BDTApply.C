@@ -12,6 +12,7 @@
 #include "TMVA/Reader.h"
 #include <sstream>
 #include "../Functions/Filereading.h"
+#include "../Functions/StringTools.h"
 using namespace std;
 
 //BDTApply is the original function, which requires input  on which variables need to be saved. These must be listed in different files which are described below, classified by variable type. It also provides a way to use formulas for the BDT, setting excludeBDTvars = true
@@ -39,11 +40,11 @@ void BDTApply(string fileapplied, string outputfilename, bool excludeBDTvars = f
   string* extrashort_list = ReadVariables(N_extrashort, filenameShort);
   string* extrabool_list = ReadVariables(N_extrabool, filenameBool);
 
-  TFile* data = new TFile(fileapplied.c_str());
+  TFile* data = new TFile(Gridify(fileapplied).c_str());
   TTree* datatree = (TTree*)data->Get("DecayTree");
 
   //BDT Output
-  TFile* target = new TFile(outputfilename.c_str(), "RECREATE");
+  TFile* target = new TFile(Gridify(outputfilename).c_str(), "RECREATE");
   TTree* tree = new TTree("DecayTree", "treelibrated tree");
 
   TMVA::Tools::Instance();

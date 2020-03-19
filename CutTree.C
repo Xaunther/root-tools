@@ -11,6 +11,7 @@
 #include "../Functions/Dictreading.h"
 #include "../Functions/Filereading.h"
 #include "../Functions/TreeTools.h"
+#include "../Functions/StringTools.h"
 using namespace std;
 
 void CutTree(string outputfile, string cutsfilename = "", string tupledir = "", string variablefile = "", int fentries = 1, int initentries = 1)
@@ -24,7 +25,7 @@ void CutTree(string outputfile, string cutsfilename = "", string tupledir = "", 
 
   //Data chain
   TChain* chain = GetChain(tupledir);
-  TFile* cutfile = new TFile(outputfile.c_str(), "recreate");
+  TFile* cutfile = new TFile(Gridify(outputfile).c_str(), "recreate");
   if (chain->GetEntries() == 0)
   {
     exit(0);

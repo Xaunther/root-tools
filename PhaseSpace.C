@@ -40,7 +40,7 @@ void PhaseSpace(double mothermass, string daughtermasses, string pnames, string 
   event.SetDecay(mother, N_daughters, d_mass);
 
   //Set up the ntuple
-  TFile* outfile = new TFile(outfilename.c_str(), "RECREATE");
+  TFile* outfile = new TFile(Gridify(outfilename).c_str(), "RECREATE");
   TTree* tree = new TTree("DecayTree", "DecayTree");
 
   //I need to book 3*N_daughters variables, 3-momentum of each. An extra one for the weight

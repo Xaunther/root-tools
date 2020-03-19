@@ -7,6 +7,7 @@
 #include "TTree.h"
 #include "TFile.h"
 #include "../Functions/TreeTools.h"
+#include "../Functions/StringTools.h"
 using namespace std;
 
 void AddPIDBranch(string tupleinfile, string tupleoutfile, string treename = "", string p1 = "Kplus", string p2 = "piminus")
@@ -20,7 +21,7 @@ void AddPIDBranch(string tupleinfile, string tupleoutfile, string treename = "",
   //Data chain
   TChain* inchain = GetChain(tupleinfile, treename);
   //For datafile
-  TFile* file = new TFile(tupleoutfile.c_str(), "RECREATE");
+  TFile* file = new TFile(Gridify(tupleoutfile).c_str(), "RECREATE");
   if (inchain->GetEntries() == 0)
   {
     exit(0);

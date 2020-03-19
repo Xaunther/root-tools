@@ -5,11 +5,12 @@
 #include <sstream>
 #include "TTree.h"
 #include "TFile.h"
+#include "../Functions/StringTools.h"
 using namespace std;
 
 void Err_Frac(int steps = 100, string filename = "Tuples/BDT-results_OP.root", string treename = "TestTree")
 {
-  TFile* file = new TFile(filename.c_str());
+  TFile* file = new TFile(Gridify(filename).c_str());
   TTree* tree = (TTree*)file->Get(treename.c_str());
 
   int N_sig_init = tree->GetEntries("classID==0");
