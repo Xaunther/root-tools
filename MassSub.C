@@ -149,6 +149,8 @@ void MassSub_NstG(string dirfile, string outfile)
         }
         for (int k = 0; k < 2; k++)
         {
+          p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
+          p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][j]);
           p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][k]);
           //B_M012 calculations
           _m = (p[0] + p[1] + p[2]).M();
@@ -272,6 +274,8 @@ void MassSub_ppimumu(string dirfile, string outfile)
         }
         for (int k = 0; k < 1; k++)
         {
+          p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
+          p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][j]);
           p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][k]);
           p[3].SetXYZM(_p[3][0], _p[3][1], _p[3][2], m[3][k]);
           //B_M012 calculations
@@ -397,6 +401,8 @@ void MassSub_pKmumu(string dirfile, string outfile)
         }
         for (int k = 0; k < 1; k++)
         {
+          p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
+          p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][j]);
           p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][k]);
           p[3].SetXYZM(_p[3][0], _p[3][1], _p[3][2], m[3][k]);
           //B_M012 calculations
@@ -498,6 +504,8 @@ void MassSub_NstG_Gauss(string dirfile, string outfile)
         newbranch01[i][j]->Fill();
         for (int k = 0; k < 2; k++)
         {
+          p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
+          p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][j]);
           p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][k]);
           //B_M012 calculations
           _m = (p[0] + p[1] + p[2]).M();
@@ -599,6 +607,8 @@ void MassSub_KstG_Gauss(string dirfile, string outfile)
         newbranch01[i][j]->Fill();
         for (int k = 0; k < 2; k++)
         {
+          p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
+          p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][j]);
           p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][k]);
           //B_M012 calculations
           _m = (p[0] + p[1] + p[2]).M();
@@ -617,16 +627,16 @@ int main(int argc, char** argv)
 {
   switch (argc - 1)
   {
-  case 1:
+    case 1:
     MassSub(*(new string(argv[1])));
     break;
-  case 2:
+    case 2:
     MassSub(*(new string(argv[1])), *(new string(argv[2])));
     break;
-  case 3:
+    case 3:
     MassSub(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
     break;
-  default:
+    default:
     cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
     return (1);
     break;
