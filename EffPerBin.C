@@ -52,14 +52,15 @@ void EffPerBin(string dirfile, string cutfile, string varname, string binfile, s
   for(int i =0;i<NBins-1;i++)
   {
     bin[i] = (binning[i]+binning[i+1])/2.;
-    errbin[i] = binning[i+1] - binning[i];
+    errbin[i] = (binning[i+1] - binning[i])/2.;
   }
   //Construct it
   TGraphErrors* graph = new TGraphErrors(NBins-1, bin, bineff, errbin, errbineff);
+  graph->SetTitle((";"+varname+";Efficiency").c_str());
   //Define canvas, plot and save.
   TCanvas* c1 = new TCanvas();
   c1->cd();
-  graph->Draw();
+  graph->Draw("ap");
   c1->SaveAs(plotfile.c_str());
 
   //Close files and clean memory
