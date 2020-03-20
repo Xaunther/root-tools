@@ -63,7 +63,8 @@ void PIDTable(string filedir, string resultsfile = "PIDEff.txt", bool abspath = 
         //Read PID ntuple
         TChain* chain = GetChain(tuple_names[i], "CalibTool_PIDCalibTree", false);
         //Setup branches and sums
-        float w, eff;
+        double w;
+	float eff;
         wchain->SetBranchAddress(weight.c_str(), &w);
         chain ->SetBranchAddress(varname.c_str(), &eff);
         double sumf = 0.;
