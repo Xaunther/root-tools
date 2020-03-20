@@ -2,16 +2,16 @@
 //The output is given by outfile. Event weights can be included using weight
 
 #include <iostream>
-#include <iomanip>
 #include <fstream>
 #include <string>
-#include "TChain.h"
 #include <sstream>
+#include "TChain.h"
+#include "TMath.h"
+#include "TGraphErrors.h"
+#include "TCanvas.h"
 #include "../Functions/Filereading.h"
 #include "../Functions/Dictreading.h"
 #include "../Functions/TreeTools.h"
-#include "../Functions/ArrayTools.h"
-#include "../Functions/StringTools.h"
 using namespace std;
 
 void EffPerBin(string dirfile, string cutfile, string varname, string binfile, string outfile, string plotfile, string precutfile = "1", string weight = "1")
@@ -28,12 +28,14 @@ void EffPerBin(string dirfile, string cutfile, string varname, string binfile, s
   double* binning = ReadNumbers(NBins, binfile);
   //Construct the array for bin-efficiency
   double* bineff = new double[NBins-1];
+  double* errbineff = new double[NBins-1];
   //Declare array where we'll save the final number of events for each cut, as well as the initial number
   for(int i=0;i<NBins-1;i++)
   {
     stringstream bincut;
     bincut << " * (" << varname << " > " << binning[i] << ") * (" << varname << " < " << binning[i+1] << ")";
     bineff[i] = GetMeanEntries(chain, cuts+bincut.str(), weight)/GetMeanEntries(chain, precuts+bincut.str(), weight);
+    errbineff[i] = TMath::Sqrt(bineff[i]*(1-bineff[i])/chain->GetEntries()*GetMeanEntries(chain, precuts+bincut.str(), weight+ " * "+weight))/GetMeanEntries(chain, precuts+bincut.str(), weight);
   }
 
   //Save array of efficiencies in desired file
@@ -41,8 +43,24 @@ void EffPerBin(string dirfile, string cutfile, string varname, string binfile, s
   fout.open(outfile.c_str());
   for(int i=0;i<NBins-1;i++)
   {
-    cout << (binning[i]+binning[i+1])/2. << "  |  " << bineff[i] << endl;
+    fout << (binning[i]+binning[i+1])/2. << "  |  " << bineff[i] << " \u00B1 " <<  errbineff[i] << endl;
   }
+
+  //Time to create our graph. We have the Y axis but we need to build the X too
+  double* bin = new double[NBins-1];
+  double* errbin = new double[NBins-1];
+  for(int i =0;i<NBins-1;i++)
+  {
+    bin[i] = (binning[i]+binning[i+1])/2.;
+    errbin[i] = binning[i+1] - binning[i];
+  }
+  //Construct it
+  TGraphErrors* graph = new TGraphErrors(NBins-1, bin, bineff, errbin, errbineff);
+  //Define canvas, plot and save.
+  TCanvas* c1 = new TCanvas();
+  c1->cd();
+  graph->Draw();
+  c1->SaveAs(plotfile.c_str());
 
   //Close files and clean memory
   fout.close();
