@@ -9,6 +9,7 @@
 #include "TMath.h"
 #include "TGraphErrors.h"
 #include "TCanvas.h"
+#include "TLine.h"
 #include "../Functions/Filereading.h"
 #include "../Functions/Dictreading.h"
 #include "../Functions/TreeTools.h"
@@ -29,13 +30,20 @@ void EffPerBin(string dirfile, string cutfile, string varname, string binfile, s
   //Construct the array for bin-efficiency
   double* bineff = new double[NBins-1];
   double* errbineff = new double[NBins-1];
-  //Declare array where we'll save the final number of events for each cut, as well as the initial number
+  //Total efficiency and error
+  double eff, erreff;
+  //Get total efficiency and error, total and per bin
+  stringstream bincut;
+  bincut << " * (" << varname << " > " << binning[0] << ") * (" << varname << " < " << binning[NBins-1] << ")";
+  eff = GetMeanEntries(chain, cuts+bincut.str(), weight)/GetMeanEntries(chain, precuts+bincut.str(), weight);
+  erreff = TMath::Sqrt(eff*(1-eff)/chain->GetEntries()*GetMeanEntries(chain, precuts+bincut.str(), weight+ " * "+weight))/GetMeanEntries(chain, precuts+bincut.str(), weight);
+  bincut.str("");
   for(int i=0;i<NBins-1;i++)
   {
-    stringstream bincut;
     bincut << " * (" << varname << " > " << binning[i] << ") * (" << varname << " < " << binning[i+1] << ")";
     bineff[i] = GetMeanEntries(chain, cuts+bincut.str(), weight)/GetMeanEntries(chain, precuts+bincut.str(), weight);
     errbineff[i] = TMath::Sqrt(bineff[i]*(1-bineff[i])/chain->GetEntries()*GetMeanEntries(chain, precuts+bincut.str(), weight+ " * "+weight))/GetMeanEntries(chain, precuts+bincut.str(), weight);
+    bincut.str("");
   }
 
   //Save array of efficiencies in desired file
@@ -54,13 +62,21 @@ void EffPerBin(string dirfile, string cutfile, string varname, string binfile, s
     bin[i] = (binning[i]+binning[i+1])/2.;
     errbin[i] = (binning[i+1] - binning[i])/2.;
   }
-  //Construct it
+  //Construct graph
   TGraphErrors* graph = new TGraphErrors(NBins-1, bin, bineff, errbin, errbineff);
   graph->SetTitle((";"+varname+";Efficiency").c_str());
+  //Construct lines to show average
+  TLine* meanline = new TLine(binning[0], eff, binning[NBins-1], eff);
+  TLine* toperrorline = new TLine(binning[0], eff+erreff, binning[NBins-1], eff+erreff);
+  TLine* boterrorline = new TLine(binning[0], eff-erreff, binning[NBins-1], eff-erreff);
+
   //Define canvas, plot and save.
   TCanvas* c1 = new TCanvas();
   c1->cd();
   graph->Draw("ap");
+  meanline->Draw("same");
+  toperrorline->Draw("same");
+  boterrorline->Draw("same");
   c1->SaveAs(plotfile.c_str());
 
   //Close files and clean memory
