@@ -15,7 +15,7 @@
 #include "../Functions/TreeTools.h"
 using namespace std;
 
-void EffPerBin(string dirfile, string cutfile, string varname, string binfile, string outfile, string plotfile, string precutfile = "1", string weight = "1")
+void EffPerBin(string dirfile, string cutfile, string varname, string binfile, string outfile, string plotfile, string precutfile = "1", string weight = "1", string title = "")
 {
   //Get the cuts and the precuts
   string cuts = GetCuts(cutfile);
@@ -64,16 +64,22 @@ void EffPerBin(string dirfile, string cutfile, string varname, string binfile, s
   }
   //Construct graph
   TGraphErrors* graph = new TGraphErrors(NBins-1, bin, bineff, errbin, errbineff);
-  graph->SetTitle((";"+varname+";Efficiency").c_str());
-  //Construct lines to show average
-  TLine* meanline = new TLine(binning[0], eff, binning[NBins-1], eff);
-  TLine* toperrorline = new TLine(binning[0], eff+erreff, binning[NBins-1], eff+erreff);
-  TLine* boterrorline = new TLine(binning[0], eff-erreff, binning[NBins-1], eff-erreff);
+  if(title==""){title=";"+varname+";Efficiency";} //Set some default title
+  graph->SetTitle(title.c_str());
+  graph->SetMarkerStyle(kFullCircle);
 
   //Define canvas, plot and save.
   TCanvas* c1 = new TCanvas();
   c1->cd();
   graph->Draw("ap");
+  //Construct lines to show average
+  TLine* meanline = new TLine(graph->GetXaxis()->GetXmin(), eff, graph->GetXaxis()->GetXmax(), eff);
+  meanline->SetLineWidth(2);
+  TLine* toperrorline = new TLine(graph->GetXaxis()->GetXmin(), eff+erreff, graph->GetXaxis()->GetXmax(), eff+erreff);
+  TLine* boterrorline = new TLine(graph->GetXaxis()->GetXmin(), eff-erreff, graph->GetXaxis()->GetXmax(), eff-erreff);
+  toperrorline->SetLineColor(kRed);
+  boterrorline->SetLineColor(kRed);
+
   meanline->Draw("same");
   toperrorline->Draw("same");
   boterrorline->Draw("same");
@@ -98,6 +104,9 @@ int main(int argc, char** argv)
     break;
     case 8:
     EffPerBin(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])));
+    break;
+    case 9:
+    EffPerBin(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])));
     break;
     default:
     cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
