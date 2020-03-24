@@ -31,12 +31,13 @@ void EffPerBin(string dirfile, string cutfile, string varname, string binfile, s
   double* bineff = new double[NBins-1];
   double* errbineff = new double[NBins-1];
   //Total efficiency and error
-  double eff, erreff;
+  double eff;
+  //double erreff;
   //Get total efficiency and error, total and per bin
   stringstream bincut;
   bincut << " * (" << varname << " > " << binning[0] << ") * (" << varname << " < " << binning[NBins-1] << ")";
   eff = GetMeanEntries(chain, cuts+bincut.str(), weight)/GetMeanEntries(chain, precuts+bincut.str(), weight);
-  erreff = TMath::Sqrt(eff*(1-eff)/chain->GetEntries()*GetMeanEntries(chain, precuts+bincut.str(), weight+ " * "+weight))/GetMeanEntries(chain, precuts+bincut.str(), weight);
+  //erreff = TMath::Sqrt(eff*(1-eff)/chain->GetEntries()*GetMeanEntries(chain, precuts+bincut.str(), weight+ " * "+weight))/GetMeanEntries(chain, precuts+bincut.str(), weight);
   bincut.str("");
   for(int i=0;i<NBins-1;i++)
   {
@@ -75,15 +76,15 @@ void EffPerBin(string dirfile, string cutfile, string varname, string binfile, s
   graph->Draw("ap");
   //Construct lines to show average
   TLine* meanline = new TLine(graph->GetXaxis()->GetXmin(), eff, graph->GetXaxis()->GetXmax(), eff);
-  meanline->SetLineWidth(2);
-  TLine* toperrorline = new TLine(graph->GetXaxis()->GetXmin(), eff+erreff, graph->GetXaxis()->GetXmax(), eff+erreff);
-  TLine* boterrorline = new TLine(graph->GetXaxis()->GetXmin(), eff-erreff, graph->GetXaxis()->GetXmax(), eff-erreff);
-  toperrorline->SetLineColor(kRed); toperrorline->SetLineStyle(kDashed);
-  boterrorline->SetLineColor(kRed); boterrorline->SetLineStyle(kDashed);
+  meanline->SetLineWidth(1); meanline->SetLineColor(kRed); meanline->SetLineStyle(kDashed);
+  //TLine* toperrorline = new TLine(graph->GetXaxis()->GetXmin(), eff+erreff, graph->GetXaxis()->GetXmax(), eff+erreff);
+  //TLine* boterrorline = new TLine(graph->GetXaxis()->GetXmin(), eff-erreff, graph->GetXaxis()->GetXmax(), eff-erreff);
+  //toperrorline->SetLineColor(kRed); toperrorline->SetLineStyle(kDashed);
+  //boterrorline->SetLineColor(kRed); boterrorline->SetLineStyle(kDashed);
 
   meanline->Draw("same");
-  toperrorline->Draw("same");
-  boterrorline->Draw("same");
+  //toperrorline->Draw("same");
+  //boterrorline->Draw("same");
   c1->SaveAs(plotfile.c_str());
 
   //Close files and clean memory
