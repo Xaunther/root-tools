@@ -68,6 +68,7 @@ void EffPerBin(string dirfile, string cutfile, string varname, string binfile, s
   if(title==""){title=";"+varname+";Efficiency";} //Set some default title
   graph->SetTitle(title.c_str());
   graph->SetMarkerStyle(kFullCircle);
+  graph->SetMarkerSize(0.5);
   graph->SetMinimum(0.); graph->SetMaximum(1.);
 
   //Define canvas, plot and save.
