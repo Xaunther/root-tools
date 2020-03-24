@@ -67,6 +67,7 @@ void EffPerBin(string dirfile, string cutfile, string varname, string binfile, s
   if(title==""){title=";"+varname+";Efficiency";} //Set some default title
   graph->SetTitle(title.c_str());
   graph->SetMarkerStyle(kFullCircle);
+  graph->SetMinimum(0.); graph->SetMaximum(1.);
 
   //Define canvas, plot and save.
   TCanvas* c1 = new TCanvas();
@@ -77,8 +78,8 @@ void EffPerBin(string dirfile, string cutfile, string varname, string binfile, s
   meanline->SetLineWidth(2);
   TLine* toperrorline = new TLine(graph->GetXaxis()->GetXmin(), eff+erreff, graph->GetXaxis()->GetXmax(), eff+erreff);
   TLine* boterrorline = new TLine(graph->GetXaxis()->GetXmin(), eff-erreff, graph->GetXaxis()->GetXmax(), eff-erreff);
-  toperrorline->SetLineColor(kRed);
-  boterrorline->SetLineColor(kRed);
+  toperrorline->SetLineColor(kRed); toperrorline->SetLineStyle(kDashed);
+  boterrorline->SetLineColor(kRed); boterrorline->SetLineStyle(kDashed);
 
   meanline->Draw("same");
   toperrorline->Draw("same");
