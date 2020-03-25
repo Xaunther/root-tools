@@ -472,14 +472,23 @@ void MassSub_NstG_Gauss(string dirfile, string outfile)
   TTree* tree = inchain->CloneTree();
   TBranch**** newbranch012 = new TBranch***[3];
   TBranch*** newbranch01 = new TBranch**[3];
+  TBranch*** newbranch02 = new TBranch**[3];
+  TBranch*** newbranch12 = new TBranch**[3];
   for (int i = 0; i < 3; i++)
   {
     newbranch012[i] = new TBranch**[3];
     newbranch01[i] = new TBranch*[3];
+    newbranch02[i] = new TBranch*[2];
+    newbranch12[i] = new TBranch*[2];
     for (int j = 0; j < 3; j++)
     {
       newbranch012[i][j] = new TBranch*[3];
       newbranch01[i][j] = tree->Branch(("B_M01" + mass_names[i][j][0]).c_str(), &_m, ("B_M01" + mass_names[i][j][0] + "/D").c_str());
+      if (j < 2)
+      {
+        newbranch02[i][j] = tree->Branch(("B_M02" + mass_names[i][0][j]).c_str(), &_m, ("B_M02" + mass_names[i][0][j] + "/D").c_str());
+        newbranch12[i][j] = tree->Branch(("B_M12" + mass_names[0][i][j]).c_str(), &_m, ("B_M12" + mass_names[0][i][j] + "/D").c_str());
+      }
       for (int k = 0; k < 2; k++)
       {
         newbranch012[i][j][k] = tree->Branch(("B_M012" + mass_names[i][j][k]).c_str(), &_m, ("B_M012" + mass_names[i][j][k] + "/D").c_str());
@@ -487,7 +496,7 @@ void MassSub_NstG_Gauss(string dirfile, string outfile)
     }
   }
 
-  //So right now we have 18 branches for m012 and 9 branches for m01. Now we need to compute event per event...
+  //So right now we have 18 branches for m012, 9 branches for m01 and 6 for m12 and m02. Now we need to compute event per event...
   for (int ii = 0; ii < inchain->GetEntries(); ii++)
   {
     inchain->GetEntry(ii);
@@ -495,13 +504,26 @@ void MassSub_NstG_Gauss(string dirfile, string outfile)
     //Loop over all mass combinations to obtain the corresponding energy
     for (int i = 0; i < 3; i++)
     {
-      p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
       for (int j = 0; j < 3; j++)
       {
-        p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][j]);
         //B_M01 calculations
+        p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
+        p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][j]);
         _m = (p[0] + p[1]).M();
         newbranch01[i][j]->Fill();
+        if (j < 2)
+        {
+          //B_M02 calculations
+          p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
+          p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][j]);
+          _m = (p[0] + p[2]).M();
+          newbranch02[i][j]->Fill();
+          //B_M12 calculations
+          p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][i]);
+          p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][j]);
+          _m = (p[1] + p[2]).M();
+          newbranch12[i][j]->Fill();
+        }
         for (int k = 0; k < 2; k++)
         {
           p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
@@ -575,14 +597,23 @@ void MassSub_KstG_Gauss(string dirfile, string outfile)
   TTree* tree = inchain->CloneTree();
   TBranch**** newbranch012 = new TBranch***[3];
   TBranch*** newbranch01 = new TBranch**[3];
+  TBranch*** newbranch02 = new TBranch**[3];
+  TBranch*** newbranch12 = new TBranch**[3];
   for (int i = 0; i < 3; i++)
   {
     newbranch012[i] = new TBranch**[3];
     newbranch01[i] = new TBranch*[3];
+    newbranch02[i] = new TBranch*[2];
+    newbranch12[i] = new TBranch*[2];
     for (int j = 0; j < 3; j++)
     {
       newbranch012[i][j] = new TBranch*[3];
       newbranch01[i][j] = tree->Branch(("B_M01" + mass_names[i][j][0]).c_str(), &_m, ("B_M01" + mass_names[i][j][0] + "/D").c_str());
+      if (j < 2)
+      {
+        newbranch02[i][j] = tree->Branch(("B_M02" + mass_names[i][0][j]).c_str(), &_m, ("B_M02" + mass_names[i][0][j] + "/D").c_str());
+        newbranch12[i][j] = tree->Branch(("B_M12" + mass_names[0][i][j]).c_str(), &_m, ("B_M12" + mass_names[0][i][j] + "/D").c_str());
+      }
       for (int k = 0; k < 2; k++)
       {
         newbranch012[i][j][k] = tree->Branch(("B_M012" + mass_names[i][j][k]).c_str(), &_m, ("B_M012" + mass_names[i][j][k] + "/D").c_str());
@@ -590,7 +621,7 @@ void MassSub_KstG_Gauss(string dirfile, string outfile)
     }
   }
 
-  //So right now we have 18 branches for m012 and 9 branches for m01. Now we need to compute event per event...
+  //So right now we have 18 branches for m012, 9 branches for m01 and 6 for m12 and m02. Now we need to compute event per event...
   for (int ii = 0; ii < inchain->GetEntries(); ii++)
   {
     inchain->GetEntry(ii);
@@ -598,13 +629,26 @@ void MassSub_KstG_Gauss(string dirfile, string outfile)
     //Loop over all mass combinations to obtain the corresponding energy
     for (int i = 0; i < 3; i++)
     {
-      p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
       for (int j = 0; j < 3; j++)
       {
-        p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][j]);
         //B_M01 calculations
+        p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
+        p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][j]);
         _m = (p[0] + p[1]).M();
         newbranch01[i][j]->Fill();
+        if (j < 2)
+        {
+          //B_M02 calculations
+          p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
+          p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][j]);
+          _m = (p[0] + p[2]).M();
+          newbranch02[i][j]->Fill();
+          //B_M12 calculations
+          p[1].SetXYZM(_p[1][0], _p[1][1], _p[1][2], m[1][i]);
+          p[2].SetXYZM(_p[2][0], _p[2][1], _p[2][2], m[2][j]);
+          _m = (p[1] + p[2]).M();
+          newbranch12[i][j]->Fill();
+        }
         for (int k = 0; k < 2; k++)
         {
           p[0].SetXYZM(_p[0][0], _p[0][1], _p[0][2], m[0][i]);
