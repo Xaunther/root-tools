@@ -61,6 +61,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L " + path + "root/CutEff.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/CutSig.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/CutTree.C+").c_str());
+  gROOT->ProcessLine((".L " + path + "root/EffPerBin.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/EffStats.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/EntriesTable.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/Err_Frac.C+").c_str());
