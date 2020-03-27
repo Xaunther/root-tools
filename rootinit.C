@@ -1,4 +1,5 @@
 #include <string>
+#include "TROOT.h"
 void rootinit(std::string path)
 {
   //First of all come the personal constants
@@ -44,6 +45,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L " + path + "root/AddBranch.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/AddPIDBranch.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/AppendVars.C+").c_str());
+  gROOT->ProcessLine((".L " + path + "root/AssignRefWeight.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/BDTApply.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/BDTApply2.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/BDTCut.C+").c_str());
@@ -53,6 +55,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L " + path + "root/BDT_BvsS.C+").c_str());
   //gROOT->ProcessLine((".L " + path + "root/BinEfficiencyAfter.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/BRatio_NstG.C+").c_str());
+  gROOT->ProcessLine((".L " + path + "root/BRatio_NstG_split.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/CheckMultiplicity.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/CompareVar.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/Compute_Value.C+").c_str());
