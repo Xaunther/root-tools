@@ -111,7 +111,7 @@ void MassSub_NstG(string dirfile, string outfile)
       newbranch01[i][j] = tree->Branch(("B_M01" + mass_names[i][j][0]).c_str(), &_m, ("B_M01" + mass_names[i][j][0] + "/D").c_str());
       if (j < 2)
       {
-        newbranch02[i][j] = tree->Branch(("B_M02" + mass_names[i][0][j]).c_str(), &_m, ("B_M02" + mass_names[i][0][j] + "/D").c_str());
+        newbranch02[i][j] = tree->Branch(("B_M02" + mass_names[i][0][j]).c_str(), &_m, ("B_M02" + mass_names[i][1][j] + "/D").c_str());
         newbranch12[i][j] = tree->Branch(("B_M12" + mass_names[0][i][j]).c_str(), &_m, ("B_M12" + mass_names[0][i][j] + "/D").c_str());
       }
       for (int k = 0; k < 2; k++)
@@ -234,7 +234,7 @@ void MassSub_ppimumu(string dirfile, string outfile)
       newbranch01[i][j] = tree->Branch(("B_M01" + mass_names[i][j][0][0]).c_str(), &_m, ("B_M01" + mass_names[i][j][0][0] + "/D").c_str());
       if (j < 1)
       {
-        newbranch02[i][j] = tree->Branch(("B_M02" + mass_names[i][0][j][j]).c_str(), &_m, ("B_M02" + mass_names[i][0][j][j] + "/D").c_str());
+        newbranch02[i][j] = tree->Branch(("B_M02" + mass_names[i][0][j][j]).c_str(), &_m, ("B_M02" + mass_names[i][1][j][j] + "/D").c_str());
         newbranch12[i][j] = tree->Branch(("B_M12" + mass_names[0][i][j][j]).c_str(), &_m, ("B_M12" + mass_names[0][i][j][j] + "/D").c_str());
       }
       for (int k = 0; k < 1; k++)
@@ -361,7 +361,7 @@ void MassSub_pKmumu(string dirfile, string outfile)
       newbranch01[i][j] = tree->Branch(("B_M01" + mass_names[i][j][0][0]).c_str(), &_m, ("B_M01" + mass_names[i][j][0][0] + "/D").c_str());
       if (j < 1)
       {
-        newbranch02[i][j] = tree->Branch(("B_M02" + mass_names[i][0][j][j]).c_str(), &_m, ("B_M02" + mass_names[i][0][j][j] + "/D").c_str());
+        newbranch02[i][j] = tree->Branch(("B_M02" + mass_names[i][0][j][j]).c_str(), &_m, ("B_M02" + mass_names[i][1][j][j] + "/D").c_str());
         newbranch12[i][j] = tree->Branch(("B_M12" + mass_names[0][i][j][j]).c_str(), &_m, ("B_M12" + mass_names[0][i][j][j] + "/D").c_str());
       }
       for (int k = 0; k < 1; k++)
@@ -488,7 +488,7 @@ void MassSub_NstG_Gauss(string dirfile, string outfile)
       newbranch01[i][j] = tree->Branch(("B_M01" + mass_names[i][j][0]).c_str(), &_m, ("B_M01" + mass_names[i][j][0] + "/D").c_str());
       if (j < 2)
       {
-        newbranch02[i][j] = tree->Branch(("B_M02" + mass_names[i][0][j]).c_str(), &_m, ("B_M02" + mass_names[i][0][j] + "/D").c_str());
+        newbranch02[i][j] = tree->Branch(("B_M02" + mass_names[i][0][j]).c_str(), &_m, ("B_M02" + mass_names[i][1][j] + "/D").c_str());
         newbranch12[i][j] = tree->Branch(("B_M12" + mass_names[0][i][j]).c_str(), &_m, ("B_M12" + mass_names[0][i][j] + "/D").c_str());
       }
       for (int k = 0; k < 2; k++)
@@ -613,7 +613,7 @@ void MassSub_pKG_Gauss(string dirfile, string outfile)
       newbranch01[i][j] = tree->Branch(("B_M01" + mass_names[i][j][0]).c_str(), &_m, ("B_M01" + mass_names[i][j][0] + "/D").c_str());
       if (j < 2)
       {
-        newbranch02[i][j] = tree->Branch(("B_M02" + mass_names[i][0][j]).c_str(), &_m, ("B_M02" + mass_names[i][0][j] + "/D").c_str());
+        newbranch02[i][j] = tree->Branch(("B_M02" + mass_names[i][0][j]).c_str(), &_m, ("B_M02" + mass_names[i][1][j] + "/D").c_str());
         newbranch12[i][j] = tree->Branch(("B_M12" + mass_names[0][i][j]).c_str(), &_m, ("B_M12" + mass_names[0][i][j] + "/D").c_str());
       }
       for (int k = 0; k < 2; k++)
@@ -738,7 +738,7 @@ void MassSub_KstG_Gauss(string dirfile, string outfile)
       newbranch01[i][j] = tree->Branch(("B_M01" + mass_names[i][j][0]).c_str(), &_m, ("B_M01" + mass_names[i][j][0] + "/D").c_str());
       if (j < 2)
       {
-        newbranch02[i][j] = tree->Branch(("B_M02" + mass_names[i][0][j]).c_str(), &_m, ("B_M02" + mass_names[i][0][j] + "/D").c_str());
+        newbranch02[i][j] = tree->Branch(("B_M02" + mass_names[i][0][j]).c_str(), &_m, ("B_M02" + mass_names[i][1][j] + "/D").c_str());
         newbranch12[i][j] = tree->Branch(("B_M12" + mass_names[0][i][j]).c_str(), &_m, ("B_M12" + mass_names[0][i][j] + "/D").c_str());
       }
       for (int k = 0; k < 2; k++)
