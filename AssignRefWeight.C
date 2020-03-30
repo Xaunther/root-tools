@@ -31,7 +31,7 @@ void AssignRefWeight(string mainfile, string reffile, string outfilename, string
 	TTreeFormula* mainidvalue = new TTreeFormula(idvar.c_str(), idvar.c_str(), mainchain);
 	//Add new branch to reflection tree
 	long refwvalue;
-	outtree->Branch(idvar.c_str(), &refwvalue, (idvar + "/L").c_str());
+	outtree->Branch(wvar.c_str(), &refwvalue, (wvar + "/D").c_str());
 
 	//Time to loop over all entries in mainfile
 	for(long i = 0;i<mainchain->GetEntries();i++)
