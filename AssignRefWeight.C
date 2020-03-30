@@ -24,7 +24,7 @@ void AssignRefWeight(string mainfile, string reffile, string outfilename, string
 
  	//Define TTreeFormula for values of the weight and IDs
 	TTreeFormula* mainwvalue = new TTreeFormula(wvar.c_str(), wvar.c_str(), mainchain);
-	TTreeFormula* mainidvalue = new TTreeFormula(idvar.c_str(), idvar.c_str(), mainchain);
+ 	TTreeFormula* mainidvalue = new TTreeFormula(idvar.c_str(), idvar.c_str(), mainchain);
 
 	//Add new branch to reflection tree
 	double refwvalue;
@@ -47,7 +47,6 @@ void AssignRefWeight(string mainfile, string reffile, string outfilename, string
 		if (i % (mainchain->GetEntries() / 10 + 1) == 0)
 		{
 			cout << "Processing event: " << i << " / " << mainchain->GetEntries() << endl;
-			cout << refwvalue << endl;
 		}
 	}
 
