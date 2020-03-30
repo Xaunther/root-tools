@@ -22,15 +22,15 @@ void AssignRefWeight(string mainfile, string reffile, string outfilename, string
 	TChain* mainchain = GetChain(mainfile);
 	TChain* refchain = GetChain(reffile);
 
-	//Open output (for the reflection)
-	TFile* outfile = new TFile(Gridify(outfilename).c_str(), "RECREATE");
-	TTree* outtree = refchain->CloneTree(0);
-
  	//Define TTreeFormula for values of the weight and IDs
 	TTreeFormula* mainwvalue = new TTreeFormula(wvar.c_str(), wvar.c_str(), mainchain);
 	TTreeFormula* mainidvalue = new TTreeFormula(idvar.c_str(), idvar.c_str(), mainchain);
+
 	//Add new branch to reflection tree
-	long refwvalue;
+	double refwvalue;
+	//Open output (for the reflection)
+	TFile* outfile = new TFile(Gridify(outfilename).c_str(), "RECREATE");
+	TTree* outtree = refchain->CloneTree(0);
 	outtree->Branch(wvar.c_str(), &refwvalue, (wvar + "/D").c_str());
 
 	//Time to loop over all entries in mainfile
@@ -47,6 +47,7 @@ void AssignRefWeight(string mainfile, string reffile, string outfilename, string
 		if (i % (mainchain->GetEntries() / 10 + 1) == 0)
 		{
 			cout << "Processing event: " << i << " / " << mainchain->GetEntries() << endl;
+			cout << refwvalue << endl;
 		}
 	}
 
