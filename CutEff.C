@@ -43,30 +43,31 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
   //Simply compute #of evts before and after
   N0 = GetMeanEntries(chain, allprecuts, weight);
   for(int i=0;i<N_cuts;i++)
-    {
-      N_final[i] = GetMeanEntries(chain, allprecuts+" * "+cuts[i], weight);
-    }
+  {
+    N_final[i] = GetMeanEntries(chain, allprecuts+" * "+cuts[i], weight);
+  }
   N_final[N_cuts] =GetMeanEntries(chain, allprecuts+" * "+allcuts, weight);
 
   //////////////Now, produce a gorgeous output #4dalulz/////////////
   ofstream fout;
   fout.open(outfile.c_str());
-  fout << "Selection efficiencies applied on " << dirfile << ": " << endl << endl;
+  fout << "Selection efficiencies applied on " << dirfile << ": " << endl;
+  fout << "Event weight: " << weight << endl << endl;
   fout << "                     Preselection                     " << endl;
   fout << "------------------------------------------------------" << endl;
   for(int i=0;i<N_precuts;i++)
-    {
-      fout << precuts[i] << endl;
-    }
+  {
+    fout << precuts[i] << endl;
+  }
   fout << endl;
   fout << "          Efficiency for each cut, and global          " << endl;
   fout << "-------------------------------------------------------" << endl;
 
   int maxL = GetMaxLength(cuts, N_cuts);
   for(int i=0;i<N_cuts;i++)
-    {
-      fout << cuts[i] << setw(maxL+5-int(cuts[i].size())) << "  |  " << N_final[i]/N0 << endl;
-    }
+  {
+    fout << cuts[i] << setw(maxL+5-int(cuts[i].size())) << "  |  " << N_final[i]/N0 << endl;
+  }
   fout << "Global" << setw(maxL+5-6) << "  |  " << fixed << N_final[N_cuts]/N0 << endl;
   fout << "Error" << setw(maxL+5-5) << "  |  " << TMath::Sqrt(N_final[N_cuts]/N0*(1-N_final[N_cuts]/N0)/chain->GetEntries()*GetMeanEntries(chain, allprecuts, w2))/N0 << endl;
 
@@ -81,24 +82,24 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
 int main(int argc, char** argv)
 {
   switch(argc-1)
-    {
+  {
     case 2:
-      CutEff(*(new string(argv[1])), *(new string(argv[2])));
-      break;
+    CutEff(*(new string(argv[1])), *(new string(argv[2])));
+    break;
     case 3:
-      CutEff(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
-      break;
+    CutEff(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+    break;
     case 4:
-      CutEff(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
-      break;
+    CutEff(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+    break;
     case 5:
-      CutEff(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
-      break;
+    CutEff(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+    break;
     default:
-      cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
-      return(1);
-      break;
-    }
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return(1);
+    break;
+  }
   return 0;
 }
 #endif
