@@ -63,7 +63,7 @@ int main(int argc, char** argv)
 {
 	switch (argc - 1)
 	{
-		case 4:
+		case 5:
 		AssignRefWeight(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
 		break;
 		default:
