@@ -188,7 +188,15 @@ void CutSig(string sigfile, string bkglist, string datafile, string instrfile, s
       D = datachain->GetEntries(thiscuts.c_str());
     }
     //Compute Punzi
-    double fom = eff / (sigma / 2. + TMath::Power(B + D, spb_pow));
+    double fom;
+    if (sigma / 2. + TMath::Power(B + D, spb_pow) == 0)
+    {
+      fom = 0;
+    }
+    else
+    {
+      fom = eff / (sigma / 2. + TMath::Power(B + D, spb_pow));
+    }
     /**********************************************************************/
     //Save fom in dumpfile
     dumpf << " | " << fom << endl;
