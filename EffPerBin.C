@@ -49,11 +49,16 @@ void EffPerBin(string dirfile, string cutfile, string varname, string binfile, s
 
   //Save array of efficiencies in desired file
   ofstream fout;
+  double chi2 = 0;
   fout.open(outfile.c_str());
   for(int i=0;i<NBins-1;i++)
   {
     fout << (binning[i]+binning[i+1])/2. << "  |  " << bineff[i] << " \u00B1 " <<  errbineff[i] << endl;
+    chi2 += pow((eff-bineff[i])/errbineff[i],2.);
   }
+  //Save also the chi^2/nDOF result
+  fout << endl;
+  fout << "X^2/DoF: " << chi2/(NBins-2) << endl;
 
   //Time to create our graph. We have the Y axis but we need to build the X too
   double* bin = new double[NBins-1];
