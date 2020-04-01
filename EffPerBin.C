@@ -25,25 +25,25 @@ void EffPerBin(string dirfile, string cutfile, string varname, string binfile, s
   TChain* chain = GetChain(dirfile);
 
   //Get the binning!
-  int NBins=0;
+  int NBins = 0;
   double* binning = ReadNumbers(NBins, binfile);
   //Construct the array for bin-efficiency
-  double* bineff = new double[NBins-1];
-  double* errbineff = new double[NBins-1];
+  double* bineff = new double[NBins - 1];
+  double* errbineff = new double[NBins - 1];
   //Total efficiency and error
   double eff;
   //double erreff;
   //Get total efficiency and error, total and per bin
   stringstream bincut;
-  bincut << " * (" << varname << " > " << binning[0] << ") * (" << varname << " < " << binning[NBins-1] << ")";
-  eff = GetMeanEntries(chain, cuts+bincut.str(), weight)/GetMeanEntries(chain, precuts+bincut.str(), weight);
+  bincut << " * (" << varname << " > " << binning[0] << ") * (" << varname << " < " << binning[NBins - 1] << ")";
+  eff = GetMeanEntries(chain, cuts + bincut.str(), weight) / GetMeanEntries(chain, precuts + bincut.str(), weight);
   //erreff = TMath::Sqrt(eff*(1-eff)/chain->GetEntries()*GetMeanEntries(chain, precuts+bincut.str(), weight+ " * "+weight))/GetMeanEntries(chain, precuts+bincut.str(), weight);
   bincut.str("");
-  for(int i=0;i<NBins-1;i++)
+  for (int i = 0; i < NBins - 1; i++)
   {
-    bincut << " * (" << varname << " > " << binning[i] << ") * (" << varname << " < " << binning[i+1] << ")";
-    bineff[i] = GetMeanEntries(chain, cuts+bincut.str(), weight)/GetMeanEntries(chain, precuts+bincut.str(), weight);
-    errbineff[i] = TMath::Sqrt(bineff[i]*(1-bineff[i])/chain->GetEntries()*GetMeanEntries(chain, precuts+bincut.str(), weight+ " * "+weight))/GetMeanEntries(chain, precuts+bincut.str(), weight);
+    bincut << " * (" << varname << " > " << binning[i] << ") * (" << varname << " < " << binning[i + 1] << ")";
+    bineff[i] = GetMeanEntries(chain, cuts + bincut.str(), weight) / GetMeanEntries(chain, precuts + bincut.str(), weight);
+    errbineff[i] = TMath::Sqrt(bineff[i] * (1 - bineff[i]) / chain->GetEntries() * GetMeanEntries(chain, precuts + bincut.str(), weight + " * " + weight)) / GetMeanEntries(chain, precuts + bincut.str(), weight);
     bincut.str("");
   }
 
@@ -51,26 +51,26 @@ void EffPerBin(string dirfile, string cutfile, string varname, string binfile, s
   ofstream fout;
   double chi2 = 0;
   fout.open(outfile.c_str());
-  for(int i=0;i<NBins-1;i++)
+  for (int i = 0; i < NBins - 1; i++)
   {
-    fout << (binning[i]+binning[i+1])/2. << "  |  " << bineff[i] << " \u00B1 " <<  errbineff[i] << endl;
-    chi2 += pow((eff-bineff[i])/errbineff[i],2.);
+    fout << (binning[i] + binning[i + 1]) / 2. << "  |  " << bineff[i] << " \u00B1 " <<  errbineff[i] << endl;
+    chi2 += pow((eff - bineff[i]) / errbineff[i], 2.);
   }
   //Save also the chi^2/nDOF result
   fout << endl;
-  fout << "X^2/DoF: " << chi2/(NBins-2) << endl;
+  fout << "X^2/DoF: " << chi2 / (NBins - 2) << endl;
 
   //Time to create our graph. We have the Y axis but we need to build the X too
-  double* bin = new double[NBins-1];
-  double* errbin = new double[NBins-1];
-  for(int i =0;i<NBins-1;i++)
+  double* bin = new double[NBins - 1];
+  double* errbin = new double[NBins - 1];
+  for (int i = 0; i < NBins - 1; i++)
   {
-    bin[i] = (binning[i]+binning[i+1])/2.;
-    errbin[i] = (binning[i+1] - binning[i])/2.;
+    bin[i] = (binning[i] + binning[i + 1]) / 2.;
+    errbin[i] = (binning[i + 1] - binning[i]) / 2.;
   }
   //Construct graph
-  TGraphErrors* graph = new TGraphErrors(NBins-1, bin, bineff, errbin, errbineff);
-  if(title==""){title=";"+varname+";Efficiency";} //Set some default title
+  TGraphErrors* graph = new TGraphErrors(NBins - 1, bin, bineff, errbin, errbineff);
+  if (title == "") {title = ";" + varname + ";Efficiency";} //Set some default title
   graph->SetTitle(title.c_str());
   graph->SetMarkerStyle(kFullCircle);
   graph->SetMarkerSize(0.5);
@@ -102,23 +102,23 @@ void EffPerBin(string dirfile, string cutfile, string varname, string binfile, s
 #if !defined(__CLING__)
 int main(int argc, char** argv)
 {
-  switch(argc-1)
+  switch (argc - 1)
   {
-    case 6:
+  case 6:
     EffPerBin(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
     break;
-    case 7:
+  case 7:
     EffPerBin(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])));
     break;
-    case 8:
+  case 8:
     EffPerBin(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])));
     break;
-    case 9:
+  case 9:
     EffPerBin(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])));
     break;
-    default:
+  default:
     cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
-    return(1);
+    return (1);
     break;
   }
   return 0;
