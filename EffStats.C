@@ -40,16 +40,16 @@ void EffStats(string dirfiles, string cutfile, string precutfile = "", string tr
 	double* N0 = new double[N];
 	double* err = new double[N];
 
-	//Finally, it is time to get the efficiency in each chain, and save it in an array. Efficiency cannot go below zero, so we'll treat any negative efficiency as zero
+	//Finally, it is time to get the efficiency in each chain, and save it in an array. Final efficiency cannot go below zero, but we'll allow iteration efficiencies to be negative
 	double* eff = new double[N];
 	for (int i = 0; i < N; i++)
 	{
 		N0[i] = GetMeanEntries(chain[i], precuts, weight);
-		eff[i] = max(GetMeanEntries(chain[i], cuts, weight) / N0[i], 0.);
-		err[i] = sqrt(eff[i] * (1 - eff[i]) / chain[i]->GetEntries() * GetMeanEntries(chain[i], precuts, w2)) / N0[i];
+		eff[i] = GetMeanEntries(chain[i], cuts, weight) / N0[i];
+		err[i] = sqrt(max(eff[i], 0.) * (1 - max(eff[i], 0.)) / chain[i]->GetEntries() * GetMeanEntries(chain[i], precuts, w2)) / N0[i];
 	}
 	//Now we can make some statistics, mainly get the mean and standard deviation of the sample
-	double mean_eff = GetArrayMean(eff, N);
+	double mean_eff = max(GetArrayMean(eff, N), 0.);
 	double stddev_eff = GetArrayStdDev(eff, N);
 	double stat_error = stddev_eff / sqrt(N);
 	double syst_err = sqrt(GetArraySumSq(err, N)) / N;
