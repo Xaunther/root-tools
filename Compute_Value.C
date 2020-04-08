@@ -18,11 +18,11 @@ Long64_t DoOperation(TChain* chain, string file)
 
   //double all_evts = Interpol_exp(chain->GetEntries(cuts_down.c_str()), chain->GetEntries(cuts_up.c_str()));
   //return all_evts-chain->GetEntries(cuts_down.c_str())-chain->GetEntries(cuts_up.c_str());
-  return chain->GetEntries((GetCuts(file) + " * (B_M012_Subst0_K2p > 5300) * (B_M012_Subst0_K2p < 5900)").c_str());
+  return chain->GetEntries(GetCuts(file).c_str());
 }
 
 
-void Compute_Value(string datadir, string filetoloop, string outfilename = "result_value.txt")
+void Compute_Value(string datadir, string filetoloop, string extracut = "1", string outfilename = "result_value.txt")
 {
   int N_loops = 0;
   ofstream outfile;
@@ -32,6 +32,8 @@ void Compute_Value(string datadir, string filetoloop, string outfilename = "resu
 
   //Get chain with data to use
   TChain* chain = GetChain(datadir);
+  //Get common cuts for all (extra)
+  string cuts = GetCuts(extracut);
 
   //Open file
   outfile.open(outfilename.c_str());
@@ -39,7 +41,7 @@ void Compute_Value(string datadir, string filetoloop, string outfilename = "resu
   for (int i = 0; i < N_loops; i++)
   {
     //Do Operation defined on top (easily editable)
-    outfile << filename[i] << " | " << DoOperation(chain, filename[i]) << endl;
+    outfile << filename[i] << " | " << DoOperation(chain, GetCuts(filename[i]) + " * " + cuts) << endl;
     if (i % 100 == 0)
     {
       cout << "Read file number " << i << endl;
@@ -60,6 +62,9 @@ int main(int argc, char** argv)
     break;
   case 3:
     Compute_Value(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+    break;
+  case 4:
+    Compute_Value(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
     break;
   default:
     cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
