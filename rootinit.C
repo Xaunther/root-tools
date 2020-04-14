@@ -72,6 +72,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L " + path + "root/Fit_NstG.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/Fit_NstG_ppimumu.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/Fit_NstG_pKmumu.C+").c_str());
+  gROOT->ProcessLine((".L " + path + "root/Fit_NstG_Simult.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/HomoBins.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/InvertCut.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/LatexTable.C+").c_str());
