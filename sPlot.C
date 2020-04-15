@@ -119,10 +119,10 @@ void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, 
   //I should plot 4 things:
   //Var 1 normal and sWeighted (N_bkgs+1 contributions)
   //Var 2 normal and sWeighted (N_bkgs+1 contributions)
-  RooPlot* pframe = pVar->frame(RooFit::Bins(const_list.bins));
-  RooPlot* pframeW = pVar->frame(RooFit::Bins(const_list.bins));
-  RooPlot* wframe = wVar->frame(RooFit::Bins(const_list.bins));
-  RooPlot* wframeW = wVar->frame(RooFit::Bins(const_list.bins));
+  RooPlot* pframe = pVar->frame(RooFit::Bins(const_list.bins[0]));
+  RooPlot* pframeW = pVar->frame(RooFit::Bins(const_list.bins[0]));
+  RooPlot* wframe = wVar->frame(RooFit::Bins(const_list.bins[0]));
+  RooPlot* wframeW = wVar->frame(RooFit::Bins(const_list.bins[0]));
 
   RooDataSet** compdata = new RooDataSet*[N_comps];
   for (int i = 0; i < N_comps; i++)
