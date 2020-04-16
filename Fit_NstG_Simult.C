@@ -39,7 +39,7 @@ void Fit_NstG_Simult(string varnamelist, string filedirdata, string cutfilelist,
   //Apply cuts and save
   for (int i = 0; i < N_cuts; i++)
   {
-    pidcutfile[i] = TFile::Open(("Tuples/temp" + std::to_string(i) + "_Simult.root").c_str());
+    pidcutfile[i] = TFile::Open(("Tuples/temp" + std::to_string(i) + "_Simult.root").c_str(), "RECREATE");
     pidcutfile[i]->cd();
     pidcuttree[i] = (TTree*)chain->CopyTree(cuts[i].c_str());
     pidcuttree[i]->Write();
