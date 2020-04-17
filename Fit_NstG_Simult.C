@@ -49,8 +49,10 @@ void Fit_NstG_Simult(string varnamelist, string filedirdata, string cutfilelist,
   //Do the fit
   RooWorkspace* Final_ws = FitLb2NstG_Simult(varnames, pidcuttree, opts);
 
-  //Plot with linear scale
-  GoodPlot_Simult(Final_ws, varnames, N_vars, "", "", opts);
+  //Plot with linear scale. I'm going to define here the titles for each plot, the list is semicolon separated "; "
+  GoodPlot_Simult(Final_ws, varnames, N_vars, "p #pi^{-} #gamma mass. 2011+12; K^{+} #pi^{-} #gamma mass. 2011+12; p K^{-} #gamma mass. 2011+12", "m_{p#pi^{-}#gamma}; m_{K#pi^{-}#gamma}; m_{pK^{-}#gamma}", opts);
+  //Plot with log scale
+  GoodPlot_Simult(Final_ws, varnames, N_vars, "p #pi^{-} #gamma mass. 2011+12; K^{+} #pi^{-} #gamma mass. 2011+12; p K^{-} #gamma mass. 2011+12", "m_{p#pi^{-}#gamma}; m_{K#pi^{-}#gamma}; m_{pK^{-}#gamma}", opts + "_log", "_log");
   //Maybe repeat plots in log scale?
 
   //Clean up

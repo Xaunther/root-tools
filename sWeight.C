@@ -49,7 +49,7 @@ void sWeight(string varname, string tupledir, string outfilename, FitOption fito
   ws = fitf[fitopt](varname, temptree, w_var, 0, 0, opts);
 
   //Number of backgrounds
-  int N_comps = ((RooAddPdf*)ws->pdf(name_list.pdfmodel.c_str()))->pdfList().getSize();
+  int N_comps = ((RooAddPdf*)ws->pdf(name_list.pdfmodel[0].c_str()))->pdfList().getSize();
 
   //Can only do sPlot if we have a fit with 2 components, at least
   if (N_comps <= 1)
@@ -78,7 +78,7 @@ void sWeight(string varname, string tupledir, string outfilename, FitOption fito
     Yield_list.add(*fcomp[i]);
   }
 
-  RooStats::SPlot sData = RooStats::SPlot("sData", "An SPlot", *data, ws->pdf(name_list.pdfmodel.c_str()), Yield_list);
+  RooStats::SPlot sData = RooStats::SPlot("sData", "An SPlot", *data, ws->pdf(name_list.pdfmodel[0].c_str()), Yield_list);
 
   /************************************************************************************************************************************************/
   // Check that our weights have the desired properties
