@@ -13,7 +13,7 @@ Some_Folder
 ├── OTHER
 ```
 
-The package has been developed under the latest ROOT version available, which at the time of writing this is `ROOT 6.18/02`.
+The package has been developed under the latest ROOT version available, which at the time of writing this is `ROOT 6.20/02`.
 
 ## Compilation with ACLiC
 
@@ -22,10 +22,24 @@ The package has been developed under the latest ROOT version available, which at
 
 ## Compilation with gcc
 
-There is now an alternative way to use each .C outside of root, as standalone executables. It hasn't been tested yet, though... This allows for faster processing, as it doesn't need to load root and all the libraries every time.
-It has been compiled on lxplus, where all the libraries needed are available (roofit, roofitcore, roostats, etc.)
+The recommended way to use the package is compiling the code with gcc, so each .C script is executable. This allows for faster processing, as it doesn't need to load root and all the libraries every time.
+It has been compiled on lxplus, where all the libraries needed are available (roofit, roofitcore, roostats, etc.). It has also been tested in local PCs, the only requirement is to build root
 
-To compile, just go into [root build folder](https://gitlab.cern.ch/aalfonso-Analysis-Tools/root/build), and run:
+To compile, take into account the following:
+* The compiler version must be newer than gcc7, older version may not work with some ROOT features.
+* The ROOT version to be used can be seen using `root-config --version`, and specified by running the `thisroot.sh` script provided in the ROOT installation folder
+
+For example, in lxplus you can set up gcc9 compiler (default is gcc4...) using:
+```bash
+export CC=/cvmfs/lhcb.cern.ch/lib/lcg/releases/gcc/9.2.0-afc57/x86_64-centos7/bin/gcc
+export CXX=/cvmfs/lhcb.cern.ch/lib/lcg/releases/gcc/9.2.0-afc57/x86_64-centos7/bin/g++
+```
+And `ROOT 6.20/02` can be manually specified using:
+```bash
+source /cvmfs/lhcb.cern.ch/lib/lcg/releases/ROOT/v6.20.02-10e75/x86_64-centos7-gcc9-opt/bin/thisroot.sh
+```
+
+Once you have chosen your compiler and root versions, just go into [root build folder](https://gitlab.cern.ch/aalfonso-Analysis-Tools/root/build), and run:
 ```
 cmake .. && make
 ```
