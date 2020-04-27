@@ -26,7 +26,7 @@ The recommended way to use the package is compiling the code with gcc, so each .
 It has been compiled on lxplus, where all the libraries needed are available (roofit, roofitcore, roostats, etc.). It has also been tested in local PCs, the only requirement is to build root
 
 To compile, take into account the following:
-* The compiler version must be newer than gcc7, older version may not work with some ROOT features.
+* The compiler version must be newer than gcc7, older versions may not work with some ROOT features.
 * The ROOT version to be used can be seen using `root-config --version`, and specified by running the `thisroot.sh` script provided in the ROOT installation folder
 
 For example, in lxplus you can set up gcc9 compiler (default is gcc4...) using:
@@ -46,6 +46,11 @@ cmake .. && make
 It should configure and compile all the .C scripts into their respective .out executables. To run any of them, simply write:
 ```
 <path-to-this-root-folder>/<script-name>.out <arg1> <arg2> .... <argN>
+```
+
+As April 2020, lxplus has some of the dependencies broken and the LD\_LIBRARY\_PATH variable is not properly configured. A fix is provided in [setup.sh](https://gitlab.cern.ch/aalfonso-Analysis-Tools/root/setup.sh). Simply do:
+```bash
+source setup.sh
 ```
 
 ## Small disclaimer
