@@ -11,6 +11,17 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 execute_process(COMMAND root-config --cflags --libs OUTPUT_VARIABLE CMAKE_CXX_FLAGS)
 string(REGEX REPLACE "\n$" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 string(APPEND CMAKE_CXX_FLAGS " -Wall -Wextra -lTMVA -lRooFit -lRooFitCore -lRooStats")
+
+#Lxplus is fucked up and there are missing links to libraries, these are the ones needed to compile...
+#GSL
+string(APPEND CMAKE_CXX_FLAGS " -L/cvmfs/lhcb.cern.ch/lib/lcg/releases/GSL/2.5-32fc5/x86_64-centos7-gcc8-opt/lib -lgsl -lgslcblas -lm")
+#Davix
+string(APPEND CMAKE_CXX_FLAGS " -L/cvmfs/lhcb.cern.ch/lib/lcg/releases/Davix/0.7.3-d94fa/x86_64-centos7-gcc8-opt/lib64 -ldavix")
+#tbb
+string(APPEND CMAKE_CXX_FLAGS " -L/cvmfs/lhcb.cern.ch/lib/lcg/releases/tbb/2019_U7-ba3eb/x86_64-centos7-gcc8-opt/lib -ltbb")
+#vdt
+string(APPEND CMAKE_CXX_FLAGS " -L/cvmfs/lhcb.cern.ch/lib/lcg/releases/vdt/0.4.3-992df/x86_64-centos7-gcc8-opt/lib -lvdt")
+
 #Add Boost Library (Recommended local install folder. Version 1.72.0)
 string(APPEND CMAKE_CXX_FLAGS " -I /usr/local/boost_1_72_0")
 #Add Boost Library (Lxplus releases. Version 1.70.0)
