@@ -7,6 +7,7 @@
 #include "TBranch.h"
 #include "TTree.h"
 #include "TFile.h"
+#include "TError.h"
 #include "../Functions/TreeTools.h"
 #include "../Functions/Filereading.h"
 #include "../Functions/StringTools.h"
@@ -26,9 +27,18 @@ void AppendVars(string file1, string file2, string outfile, string cutfile1 = ""
   //Print Number of events in each ntuple
   cout << "Tuple 1: " << chain1->GetEntries() << " events" << endl;
   cout << "Tuple 2: " << chain2->GetEntries() << " events" << endl;
-  if (chain1->GetEntries() == 0 || chain2->GetEntries() == 0)
+  if (chain1->GetEntries() == 0 || chain2->GetEntries() == 0) //Just do nothing. I need this behaviour for PhiG ntuples where I might have 0 entries after selection...
   {
     exit(0);
+  }
+  if(chain1->GetEntries() != chain2->GetEntries())
+  {
+  	Error("AppendVars.C", "The number of entries in each ntuple must be equal!");
+  	//Close correctly to avoid other root errors
+  	file->Close();
+  	CloseChain(chain2);
+  	CloseChain(raw_chain1);
+  	exit(1);
   }
   //Get list of variables from file2
   //List size
