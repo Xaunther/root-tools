@@ -39,7 +39,7 @@ void AddBranch(string branchname, string tupleinfile, string tupleoutfile, strin
       cout << "Processing event: " << i << " / " << inchain->GetEntries() << endl;
     }
   }
-  tree->Print();
+  //tree->Print();
   tree->Write();
 
   file->Close();
