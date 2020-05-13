@@ -25,3 +25,4 @@ UraniaDev*
 *.sublime-workspace
 #VSCode
 *.code-workspace
+.vscode
