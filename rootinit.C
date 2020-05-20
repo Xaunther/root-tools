@@ -56,6 +56,7 @@ void rootinit(std::string path)
   //gROOT->ProcessLine((".L " + path + "root/BinEfficiencyAfter.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/BRatio_NstG.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/BRatio_NstG_split.C+").c_str());
+  gROOT->ProcessLine((".L " + path + "root/BRatio_NstG_Simult.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/CheckMultiplicity.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/CompareVar.C+").c_str());
   gROOT->ProcessLine((".L " + path + "root/Compute_Value.C+").c_str());
