@@ -38,7 +38,7 @@ void BRatio_NstG_Simult(string outfile)
 	TUncertainty N_pKG = 0;
 	eff1 = TUncertainty(stod(GetValueFor("f_ppiG_mass_pKGMC", "SimultaneousFit/NstG_MultiPlot_RooYields.txt")),
 		stod(GetErrorFor("f_ppiG_mass_pKGMC", "SimultaneousFit/NstG_MultiPlot_RooYields.txt")));
-	eff2 = TUncertainty(stod(GetValueFor("R_pKG_mass_pKGMC", "SimultaneousFit/NstG_MultiPlot_RooYields.txt"))
+	eff2 = TUncertainty(stod(GetValueFor("R_pKG_mass_pKGMC", "SimultaneousFit/NstG_MultiPlot_RooYields.txt")),
 		stod(GetErrorFor("R_pKG_mass_pKGMC", "SimultaneousFit/NstG_MultiPlot_RooYields.txt")));
 		N_pKG = eff1 * eff2;
 	//Generator
