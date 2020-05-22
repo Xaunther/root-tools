@@ -31,7 +31,7 @@ void BRatio_NstG_Simult(string outfile)
 
 	//Yield of each channel
 	TUncertainty N_ppiG(stod(GetValueFor("f_ppiG_mass_ppiGMC", "SimultaneousFit/NstG_MultiPlot_RooYields.txt")), {
-		stod(GetErrorFor("f_ppiG_mass_ppiGMC", "output/B_M012_Subst0_K2p_RooYields.txt")),
+		stod(GetErrorFor("f_ppiG_mass_ppiGMC", "SimultaneousFit/NstG_MultiPlot_RooYields.txt")),
 		0, 0, 0,
 		stod(GetValueFor("Uncertainty", "Systematics/Fit/rel_uncertainty.txt"))*stod(GetValueFor("f_ppiG_mass_ppiGMC", "SimultaneousFit/NstG_MultiPlot_RooYields.txt"))
 	});
