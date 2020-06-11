@@ -17,39 +17,62 @@ void EntriesTable(string samples, string varcut, double var_min, double var_max,
 {
   int N_samples = 0; //Number of samples (columns in output)
   string* files = SplitString(N_samples, samples, ", ");
-  if(N_samples < 1)
-    {
-      cout << "No samples provided" << endl;
-      return;
-    }
+  if (N_samples < 1)
+  {
+    cout << "No samples provided" << endl;
+    return;
+  }
   //Prepare chains and blah blah blah...
   TChain** chain = new TChain*[N_samples];
-  for(int i=0;i<N_samples;i++)
-    {
-      chain[i] = GetChain(files[i], "", false);
-    }
+  for (int i = 0; i < N_samples; i++)
+  {
+    chain[i] = GetChain(files[i], "", false);
+  }
 
   //Get cuts
   string cuts = GetCuts(varcut);
-  if(cuts.substr(cuts.size()-2, 1) == ")")
-    {
-      cuts = cuts.substr(0, cuts.size()-1); //Remove the last parenthesis if has been read from cutfile!
-    }
+  if (cuts.substr(cuts.size() - 2, 1) == ")")
+  {
+    cuts = cuts.substr(0, cuts.size() - 1); //Remove the last parenthesis if has been read from cutfile!
+  }
   //Output in file
   ofstream outf;
   outf.open(output.c_str());
-  for(int i=0;i<=steps;i++)
+  for (int i = 0; i <= steps; i++)
+  {
+    for (int j = 0; j < N_samples; j++)
     {
-      for(int j=0;j<N_samples;j++)
-	{
-	  double cut = var_min+(var_max-var_min)/steps*double(i);
-	  stringstream ss;
-	  ss << cuts << " " << cut;
-	  outf << setfill(' ') << setw(col_width) << GetEvents(chain[j], ss.str()) << " ";
-	  ss.str("");
-	}
-      outf << endl;
+      double cut = var_min + (var_max - var_min) / steps * double(i);
+      stringstream ss;
+      ss << cuts << " " << cut;
+      outf << setfill(' ') << setw(col_width) << GetEvents(chain[j], ss.str()) << " ";
+      ss.str("");
     }
+    outf << endl;
+  }
   outf.close();
   return;
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch (argc - 1)
+  {
+  case 4:
+    EntriesTable(*(new string(argv[1])), *(new string(argv[2])), stod(*(new string(argv[3]))), stod(*(new string(argv[4]))));
+    break;
+  case 5:
+    EntriesTable(*(new string(argv[1])), *(new string(argv[2])), stod(*(new string(argv[3]))), stod(*(new string(argv[4]))), stoi(*(new string(argv[5]))));
+    break;
+  case 6:
+    EntriesTable(*(new string(argv[1])), *(new string(argv[2])), stod(*(new string(argv[3]))), stod(*(new string(argv[4]))), stoi(*(new string(argv[5]))), *(new string(argv[6])));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
+  return 0;
+}
+#endif

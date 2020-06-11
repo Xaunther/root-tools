@@ -33,6 +33,37 @@ void BDTApply(string fileapplied)
       datatree->SetBranchAddress(variable_list[i].c_str(), &var[i]);
       tree->Branch(variable_list[i].c_str(), &var[i]);
     }
+  }
+  for (int i = 0; i < N_extravars; i++)
+  {
+    datatree->SetBranchAddress(extravar_list[i].c_str(), &uservar[N_variables + i]);
+    tree->Branch(extravar_list[i].c_str(), &uservar[N_variables + i]);
+  }
+  for (int i = 0; i < N_extrauint; i++)
+  {
+    datatree->SetBranchAddress(extrauint_list[i].c_str(), &useruint[i]);
+    tree->Branch(extrauint_list[i].c_str(), &useruint[i]);
+  }
+  for (int i = 0; i < N_extraulong64; i++)
+  {
+    datatree->SetBranchAddress(extraulong64_list[i].c_str(), &userulong64[i]);
+    tree->Branch(extraulong64_list[i].c_str(), &userulong64[i]);
+  }
+  for (int i = 0; i < N_extraint; i++)
+  {
+    datatree->SetBranchAddress(extraint_list[i].c_str(), &userint[i]);
+    tree->Branch(extraint_list[i].c_str(), &userint[i]);
+  }
+  for (int i = 0; i < N_extrashort; i++)
+  {
+    datatree->SetBranchAddress(extrashort_list[i].c_str(), &usershort[i]);
+    tree->Branch(extrashort_list[i].c_str(), &usershort[i]);
+  }
+  for (int i = 0; i < N_extrabool; i++)
+  {
+    datatree->SetBranchAddress(extrabool_list[i].c_str(), &userbool[i]);
+    tree->Branch(extrabool_list[i].c_str(), &userbool[i]);
+  }
 
   //Add branch to store B mass
   double B_M;
@@ -43,7 +74,10 @@ void BDTApply(string fileapplied)
   tree->Branch("BDT_response", &BDT_response);
 
   //Apply BDT
-  for(long k=0; k<datatree->GetEntries(); k++)
+  for (long k = 0; k < datatree->GetEntries(); k++)
+  {
+    //Some output to see it's still alive
+    if (k % 100000 == 0)
     {
       datatree->GetEntry(k);
       BDT_response = reader->TMVA::Reader::EvaluateMVA("BDT method");
@@ -51,8 +85,37 @@ void BDTApply(string fileapplied)
     }
   //Save ntuple
   tree->Write();
-  
+
   data->Close();
   target->Close();
 }
 
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  bool excludeBDTvars = false;
+  switch (argc - 1)
+  {
+  case 2:
+    BDTApply(*(new string(argv[1])), *(new string(argv[2])));
+    break;
+  case 3:
+    if (*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1") {excludeBDTvars = true;}
+    BDTApply(*(new string(argv[1])), *(new string(argv[2])), excludeBDTvars);
+    break;
+  case 4:
+    if (*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1") {excludeBDTvars = true;}
+    BDTApply(*(new string(argv[1])), *(new string(argv[2])), excludeBDTvars, *(new string(argv[4])));
+    break;
+  case 5:
+    if (*(new string(argv[3])) == "true" || *(new string(argv[3])) == "1") {excludeBDTvars = true;}
+    BDTApply(*(new string(argv[1])), *(new string(argv[2])), excludeBDTvars, *(new string(argv[4])), *(new string(argv[5])));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
+  return 0;
+}
+#endif

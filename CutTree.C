@@ -10,47 +10,73 @@
 #include "TLeaf.h"
 #include "../Functions/Dictreading.h"
 #include "../Functions/Filereading.h"
+#include "../Functions/TreeTools.h"
+#include "../Functions/StringTools.h"
 using namespace std;
 
-void CutTree(string outputfile = "Tuples/cuttree.root", string cutsfilename = "Variables/PreCuts.txt", string tupledir = "Directories/Alltuples.dir", string variablefile = "", int fentries = 1, int initentries = 1)
+void CutTree(string outputfile, string cutsfilename = "", string tupledir = "", string variablefile = "", int fentries = 1, int initentries = 1)
 {
   string cuts = GetCuts(cutsfilename);
   cout << cuts << endl;
-
-  int N_files = 0;
-  string* filenames = ReadVariables(N_files, tupledir);
 
   //Variables Used
   int N_variables = 0;
   string* variable_list = ReadVariables(N_variables, variablefile);
 
   //Data chain
-  string treename = GetTreeName(tupledir);
-  cout << "Reading Tree " << treename << endl;
-  TChain* chain = new TChain(treename.c_str());
-
-  //Add to chain and get N of entries
-  for(int i=0;i<N_files;i++)
-    {
-      chain->Add(filenames[i].c_str());
-    }
-
+  TChain* chain = GetChain(tupledir);
+  TFile* cutfile = new TFile(Gridify(outputfile).c_str(), "recreate");
+  if (chain->GetEntries() == 0)
+  {
+    exit(0);
+  }
   //Select only desired variables if any are selected. Else, select all
   if (N_variables > 0)
+  {
+    chain->SetBranchStatus("*", 0);
+    for (int i = 0; i < N_variables; i++)
     {
-      chain->SetBranchStatus("*",0);
-      for(int i=0;i<N_variables;i++)
-	{
-	  chain->SetBranchStatus(variable_list[i].c_str(), 1);
-	}
+      chain->SetBranchStatus(variable_list[i].c_str(), 1);
     }
+  }
 
   //Cut chain into new TChain in a temp root file
-  TFile* cutfile = new TFile(outputfile.c_str(), "recreate");
-  TTree* cuttree = (TTree*)chain->CopyTree(cuts.c_str(), "", long(chain->GetEntries()/double(fentries)), long(double((initentries-1)*chain->GetEntries())/fentries));
+  TTree* cuttree = (TTree*)chain->CopyTree(cuts.c_str(), "", long(chain->GetEntries() / double(fentries)), long(double((initentries - 1) * chain->GetEntries()) / fentries));
   cutfile->cd();
   cuttree->Write();
 
   cout << "Tree cut" << endl;
   cutfile->Close();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch (argc - 1)
+  {
+  case 1:
+    CutTree(*(new string(argv[1])));
+    break;
+  case 2:
+    CutTree(*(new string(argv[1])), *(new string(argv[2])));
+    break;
+  case 3:
+    CutTree(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+    break;
+  case 4:
+    CutTree(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+    break;
+  case 5:
+    CutTree(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), stoi(*(new string(argv[5]))));
+    break;
+  case 6:
+    CutTree(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), stoi(*(new string(argv[5]))), stoi(*(new string(argv[6]))));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
+  return 0;
+}
+#endif

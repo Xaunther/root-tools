@@ -1,40 +1,42 @@
+//Script that reads histogram and computes area.
+//Designed to compute ROC area from ROC Curve histogram from TMVA
 #include <iostream>
-#include <iomanip>
-#include <fstream>
 #include <string>
-#include <sstream>
-#include "TTree.h"
+#include "TH1D.h"
 #include "TFile.h"
+#include "../Functions/StringTools.h"
 using namespace std;
 
-void ROC_Area(string treename, int steps = 100, string filename = "Tuples/BDT-results_OP.root")
+void ROC_Area(string filename, string histname = "default/Method_BDT/BDT/MVA_BDT_trainingRejBvsS")
 {
-  TFile* file = new TFile(filename.c_str());
-  TTree* tree = (TTree*)file->Get(treename.c_str());
-
-  int N_sig_init = tree->GetEntries("classID==0");
-  int N_bkg_init = tree->GetEntries("classID==1");
-
-  double x0 = -1.;
-  double xf = 1.;
-  double w = (xf-x0)/double(steps);
+  TFile* file = new TFile(Gridify(filename).c_str());
+  TH1D* hist = (TH1D*)file->Get(histname.c_str());
   double area = 0;
-  for(int i=0;i<steps;i++)
-    {
-      stringstream cut0, cutf;
-      cut0 << "BDT > " << x0 + w*i;
-      cutf << "BDT > " << x0 + w*(i+1);
-      
-      int N_sig0 = tree->GetEntries(("classID==0 && " + cut0.str()).c_str());
-      int N_sigf = tree->GetEntries(("classID==0 && " + cutf.str()).c_str());
-      int N_bkg0 = tree->GetEntries(("classID==1 && " + cut0.str()).c_str());
-      int N_bkgf = tree->GetEntries(("classID==1 && " + cutf.str()).c_str());
+  for (int i = 1; i <= hist->GetEntries(); i++)
+  {
+    area += hist->GetBinWidth(i) * hist->GetAt(i);
+  }
 
-      area += (double(-N_sigf+N_sig0)/double(N_sig_init))*(2-double(N_bkgf)/double(N_bkg_init)-double(N_bkg0)/double(N_bkg_init))/2.;
-      cut0.str("");
-      cutf.str("");
-    }
-  
   cout << endl << "Area of the curve: " << area << endl << endl;
   file->Close();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch (argc - 1)
+  {
+  case 1:
+    ROC_Area(*(new string(argv[1])));
+    break;
+  case 2:
+    ROC_Area(*(new string(argv[1])), *(new string(argv[2])));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
+  return 0;
+}
+#endif

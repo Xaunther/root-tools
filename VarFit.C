@@ -11,13 +11,11 @@
 #include "../Functions/PlotTools.h"
 using namespace std;
 
-void VarFit(string variablename, FitOption fitopt, string filedir, string cutfile = "", string w_var = "", string title = "", string Xtitle = "")
+void VarFit(string variablename, FitOption fitopt, string filedir, string cutfile = "", string w_var = "", string title = "", string Xtitle = "", string opts = "")
 {
   FitFunction* fitf = FitFunction_init();
   RooWorkspace* ws = new RooWorkspace();
 
-  int N_files = 0;
-  string* filenames = ReadVariables(N_files, filedir);
   //Load TChain
   string cuts = GetCuts(cutfile);
 
@@ -30,11 +28,48 @@ void VarFit(string variablename, FitOption fitopt, string filedir, string cutfil
   temptree = (TTree*)chain->CopyTree(cuts.c_str());
   tempfile->Write();
 
+  //If opts not specified, use default
+  if (opts == "")
+  {
+    opts = GetValueFor("Project_name", "Dictionaries/Project_variables.txt");
+  }
   //Do fit depending on request
-  ws = fitf[fitopt](variablename, temptree, w_var, 0, 0);
+  ws = fitf[fitopt](variablename, temptree, w_var, 0, 0, opts);
 
-  //Proceed to the plot
-  GoodPlot(ws, variablename, true, title, Xtitle);
+  GoodPlot(ws, variablename, title, Xtitle, opts);
 
   cout << temptree->GetEntries() << " events plotted" << endl;
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  FitOption fitopt = StringToFitOption(*(new string(argv[2])));
+  switch (argc - 1)
+  {
+  case 3:
+    VarFit(*(new string(argv[1])), fitopt, *(new string(argv[3])));
+    break;
+  case 4:
+    VarFit(*(new string(argv[1])), fitopt, *(new string(argv[3])), *(new string(argv[4])));
+    break;
+  case 5:
+    VarFit(*(new string(argv[1])), fitopt, *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+    break;
+  case 6:
+    VarFit(*(new string(argv[1])), fitopt, *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
+    break;
+  case 7:
+    VarFit(*(new string(argv[1])), fitopt, *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])));
+    break;
+  case 8:
+    VarFit(*(new string(argv[1])), fitopt, *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
+  return 0;
+}
+#endif

@@ -17,37 +17,54 @@ void Trigger_effs(string mode)
   string configs[N_configs]; configs[0] = "VLoose"; configs[1] = "Loose"; configs[2] = "Tight"; configs[3] = "VTight";
   //Matriz de eficiencias (N1 x N2 x N3)
   double effs[N_lines][N_samples][N_configs];
-  
-  for(int i=0;i<N_lines;i++)
-    {
-      for(int j=0;j<N_samples;j++)
-	{
-	  TChain* chain = GetChain("../Directories/Trigger_HLT1_"+samples[j]+".dir", "CandidatesFromLine"+line[i]+"/DecayTree", false);
-	  for(int k=0;k<N_configs;k++)
-	    {
-	      string cuts = GetCuts("Variables/HLT1Cut_"+mode+"_"+configs[k]+".txt");
-	      effs[i][j][k] = GetEvents(chain, cuts);
-	    }
-	}
-    }
 
-  for(int i=0;i<N_lines;i++)
+  for (int i = 0; i < N_lines; i++)
+  {
+    for (int j = 0; j < N_samples; j++)
     {
-      cout << line[i] << " Line" << endl;
-      cout << "---------------" << endl;
-      cout << "         ";
-      for(int l=0;l<N_configs;l++){cout << configs[l] << "  ";}
-      cout << endl;
-      for(int j=0;j<N_samples;j++)
-	{
-	  cout << samples[j] << "  ";
-	  for(int k=0;k<N_configs;k++)
-	    {
-	      //Escribo en pantalla
-	      cout << effs[i][j][k] << "  ";	      
-	    }
-	  cout << endl;
-	}
-      cout << endl << endl;
+      TChain* chain = GetChain("../Directories/Trigger_HLT1_" + samples[j] + ".dir", "CandidatesFromLine" + line[i] + "/DecayTree", false);
+      for (int k = 0; k < N_configs; k++)
+      {
+        string cuts = GetCuts("Variables/HLT1Cut_" + mode + "_" + configs[k] + ".txt");
+        effs[i][j][k] = GetEvents(chain, cuts);
+      }
     }
+  }
+
+  for (int i = 0; i < N_lines; i++)
+  {
+    cout << line[i] << " Line" << endl;
+    cout << "---------------" << endl;
+    cout << "         ";
+    for (int l = 0; l < N_configs; l++) {cout << configs[l] << "  ";}
+    cout << endl;
+    for (int j = 0; j < N_samples; j++)
+    {
+      cout << samples[j] << "  ";
+      for (int k = 0; k < N_configs; k++)
+      {
+        //Escribo en pantalla
+        cout << effs[i][j][k] << "  ";
+      }
+      cout << endl;
+    }
+    cout << endl << endl;
+  }
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch (argc - 1)
+  {
+  case 1:
+    Trigger_effs(*(new string(argv[1])));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
+  return 0;
+}
+#endif

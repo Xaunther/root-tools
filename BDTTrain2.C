@@ -22,10 +22,16 @@ void BDTTrain2()
   //Declare factory :mgalletas:
   TMVA::Factory *factory = new TMVA::Factory("TMVAClassification", outfile, "V:!Silent:Color:Transformations=I:DrawProgressBar:AnalysisType=Classification");
   TMVA::DataLoader *dl = new TMVA::DataLoader();
-  
+
+  //Get list of files and weights. Space separated
+  int Nfiles = 0, Nw = 0;
+  string* bkg_file = SplitString(Nfiles, bkg_filelist, " ");
+  string* bkg_w_str = SplitString(Nw, bkgweightlist, " ");
   //Weights for signal and background
   double signalW = 1;
-  double backgroundW = 1;
+  double* bkg_w = new double[Nfiles];
+  for (int i = 0; i < Nw; i++) {bkg_w[i] = stod(bkg_w_str[i]);}
+  for (int i = Nw; i < Nfiles; i++) {bkg_w[i] = 1.;}
 
   //Open input MC and signal files
   TFile* sigfile = new TFile("Archivo_MC_cut.root");
@@ -57,3 +63,39 @@ void BDTTrain2()
   factory->TestAllMethods();
   factory->EvaluateAllMethods();
 }
+
+#if !defined(__CLING__)
+int main(int argc, char** argv)
+{
+  switch (argc - 1)
+  {
+  case 2:
+    BDTTrain2(*(new string(argv[1])), *(new string(argv[2])));
+    break;
+  case 3:
+    BDTTrain2(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
+    break;
+  case 4:
+    BDTTrain2(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+    break;
+  case 5:
+    BDTTrain2(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+    break;
+  case 6:
+    BDTTrain2(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
+    break;
+  case 7:
+    BDTTrain2(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])));
+    break;
+  case 8:
+    BDTTrain2(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])),
+              *(new string(argv[8])));
+    break;
+  default:
+    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    return (1);
+    break;
+  }
+  return 0;
+}
+#endif

@@ -15,6 +15,14 @@ UraniaDev*
 *.so
 *.d
 *.pcm
+*.out
 
 #Emacs shit
 *~
+
+#Sublime shittier
+*.sublime-project
+*.sublime-workspace
+#VSCode
+*.code-workspace
+.vscode
