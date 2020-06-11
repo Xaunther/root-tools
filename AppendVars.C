@@ -22,7 +22,7 @@ void AppendVars(string filename1,
 	TTree *tree2 = (TTree *)file2->Get("DecayTree");
 	//Define outtree
 	TFile *outfile = TFile::Open(outfilename.c_str(), "RECREATE");
-	TTree *outtree = tree1->CloneTree();
+	TTree *outtree = tree1->CloneTree(0);
 
 	//Define branches
 	double weight;
@@ -35,7 +35,7 @@ void AppendVars(string filename1,
 	{
 		tree2->GetEntry(i);
 		outtree->GetEntry(i);
-		newbranch->Fill();
+		outtree->Fill();
 	}
 
 	outtree->Write();
