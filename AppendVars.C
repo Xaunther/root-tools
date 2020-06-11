@@ -12,7 +12,7 @@ using namespace std;
 
 void AppendVars(string filename1,
 				string filename2,
-				string outfile,
+				string outfilename,
 				string varname)
 {
 	//Get 2 input files
@@ -21,7 +21,7 @@ void AppendVars(string filename1,
 	TFile *file2 = TFile::Open(filename2.c_str());
 	TTree *tree2 = (TTree *)file2->Get("DecayTree");
 	//Define outtree
-	TFile *outfile = TFile::Open(outfile.c_str(), "RECREATE");
+	TFile *outfile = TFile::Open(outfilename.c_str(), "RECREATE");
 	TTree *outtree = tree1->CloneTree();
 
 	//Define branches
