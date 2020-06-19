@@ -14,7 +14,7 @@
 #include "../Functions/StringTools.h"
 using namespace std;
 
-void CutEff(string dirfile, string cutfile, string precutfile = "", string outfile = "CutEff_results.txt", string weight = "")
+void CutEff(string dirfile, string cutfile, string precutfile = "", string outfile = "CutEff_results.txt", string weight = "", string treename = "")
 {
   //Load list of cuts to apply and previous cuts
   string allcuts = GetCuts(cutfile);
@@ -38,7 +38,7 @@ void CutEff(string dirfile, string cutfile, string precutfile = "", string outfi
   if(weight != ""){w2 = weight+"*"+weight;}
 
   //Open chain here
-  TChain* chain = GetChain(dirfile);
+  TChain* chain = GetChain(dirfile, treename);
 
   //Simply compute #of evts before and after
   N0 = GetMeanEntries(chain, allprecuts, weight);
@@ -83,19 +83,22 @@ int main(int argc, char** argv)
 {
   switch(argc-1)
   {
-    case 2:
+  case 2:
     CutEff(*(new string(argv[1])), *(new string(argv[2])));
     break;
-    case 3:
+  case 3:
     CutEff(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
     break;
-    case 4:
+  case 4:
     CutEff(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
     break;
-    case 5:
+  case 5:
     CutEff(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
     break;
-    default:
+  case 6:
+    CutEff(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
+    break;
+  default:
     cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
     return(1);
     break;

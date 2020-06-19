@@ -13,7 +13,7 @@
 #include "../Functions/Filereading.h"
 #include "../Functions/TreeTools.h"
 using namespace std;
-void PlotUsedVars(string varlist, string tupledir, string cutfile = "Variables/Cuts.txt", string plotopt = "", string prefix = "")
+void PlotUsedVars(string varlist, string tupledir, string cutfile = "Variables/Cuts.txt", string plotopt = "", string prefix = "", string treename = "")
 {
   int N_vars = 0;
   string *varnames = ReadVariables(N_vars, varlist);
@@ -21,7 +21,7 @@ void PlotUsedVars(string varlist, string tupledir, string cutfile = "Variables/C
   string cuts = GetCuts(cutfile);
 
   //Data chain
-  TChain *chain = GetChain(tupledir);
+  TChain *chain = GetChain(tupledir, treename);
 
   TCanvas *c1 = new TCanvas();
   for (int i = 0; i < N_vars; i++)
@@ -48,6 +48,9 @@ int main(int argc, char **argv)
     break;
   case 5:
     PlotUsedVars(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+    break;
+  case 6:
+    PlotUsedVars(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
     break;
   default:
     cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
