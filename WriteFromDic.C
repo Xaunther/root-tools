@@ -4,7 +4,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "../Functions/Dictreading.h"
+#include "Functions/Dictreading.h"
 using namespace std;
 
 void WriteFromDic(string dicfilename, string varname, string outfilename);

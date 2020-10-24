@@ -6,8 +6,8 @@
 #include "TTree.h"
 #include "TFile.h"
 #include "TMath.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/TreeTools.h"
+#include "Functions/Filereading.h"
+#include "Functions/TreeTools.h"
 using namespace std;
 
 void PIDTable(string filedir, string resultsfile = "PIDEff.txt", bool abspath = false, string varname = "Event_PIDCalibEff", string wfile = "", string weight = "1")

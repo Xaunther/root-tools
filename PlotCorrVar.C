@@ -9,8 +9,8 @@
 #include "TLeaf.h"
 #include <sstream>
 #include "TMath.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/TreeTools.h"
+#include "Functions/Filereading.h"
+#include "Functions/TreeTools.h"
 using namespace std;
 void PlotCorrVar(string histopt = "", string drawopt = "", string varfile = "Variables/VariablesCorr.txt", string cutfile = "Variables/Cuts.txt", string tupledir = "Directories/Cuttuples2.dir", string fileext = ".pdf")
 {

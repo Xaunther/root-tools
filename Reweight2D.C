@@ -6,9 +6,9 @@
 #include "TTreeFormula.h"
 #include "TFile.h"
 #include "TTree.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/StringTools.h"
+#include "Functions/TreeTools.h"
+#include "Functions/Filereading.h"
+#include "Functions/StringTools.h"
 using namespace std;
 
 void Reweight2D(string vars1, string vars2, string reffile, string applyfile, string outfile,

@@ -4,7 +4,7 @@
 #include <string>
 #include "TH1D.h"
 #include "TFile.h"
-#include "../Functions/StringTools.h"
+#include "Functions/StringTools.h"
 using namespace std;
 
 void ROC_Area(string filename, string histname = "default/Method_BDT/BDT/MVA_BDT_trainingRejBvsS")

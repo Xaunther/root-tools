@@ -2,7 +2,7 @@
 
 #include <string>
 #include <iostream>
-#include "../Functions/Dictreading.h"
+#include "Functions/Dictreading.h"
 using namespace std;
 
 void Ratio_NstG()

@@ -3,10 +3,10 @@
 #include <iostream>
 #include <fstream>
 #include "TChain.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/Dictreading.h"
-#include "../Functions/Interpol_exp.h"
-#include "../Functions/TreeTools.h"
+#include "Functions/Filereading.h"
+#include "Functions/Dictreading.h"
+#include "Functions/Interpol_exp.h"
+#include "Functions/TreeTools.h"
 
 using namespace std;
 

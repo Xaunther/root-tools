@@ -28,11 +28,11 @@ string(APPEND CMAKE_CXX_FLAGS " -I /usr/local/boost_1_72_0")
 string(APPEND CMAKE_CXX_FLAGS " -I /cvmfs/lhcb.cern.ch/lib/lcg/releases/Boost/1.72.0-d1982/x86_64-centos7-gcc9-opt/include")
 
 #Bring the headers, such as Student.h into the project
-include_directories(../Dictionaries ../Functions)
+include_directories(./)
 
 #My two libraries
-file(GLOB DICTIONARIES "../Dictionaries/*.cxx")
-file(GLOB FUNCTIONS "../Functions/*.cxx")
+file(GLOB DICTIONARIES "./Dictionaries/*.cxx")
+file(GLOB FUNCTIONS "./Functions/*.cxx")
 add_library(aalfonso-dict ${DICTIONARIES})
 add_library(aalfonso-func ${FUNCTIONS} ${DICTIONARIES})
 

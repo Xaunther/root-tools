@@ -7,16 +7,16 @@
 #include "TFile.h"
 #include "TCanvas.h"
 #include "RooStats/SPlot.h"
-#include "../Functions/Fits.h"
-#include "../Functions/Dictreading.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/Constantize.h"
-#include "../Functions/TreeTools.h"
+#include "Functions/Fits.h"
+#include "Functions/Dictreading.h"
+#include "Functions/Filereading.h"
+#include "Functions/Constantize.h"
+#include "Functions/TreeTools.h"
 #include "RooWorkspace.h"
 #include "RooDataSet.h"
 #include "RooAddPdf.h"
-#include "../Dictionaries/Constants.h"
-#include "../Dictionaries/Names.h"
+#include "Dictionaries/Constants.h"
+#include "Dictionaries/Names.h"
 using namespace std;
 
 void sPlot(string wVarname, string pVarname, string tupledir, FitOption fitopt, string cutfile = "", string w_var = "", string opts = "")

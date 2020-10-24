@@ -11,11 +11,11 @@
 
 #include <string>
 #include <iostream>
-#include "../Functions/TreeTools.h"
-#include "../Dictionaries/Constants.h"
-#include "../Functions/Dictreading.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/StringTools.h"
+#include "Functions/TreeTools.h"
+#include "Dictionaries/Constants.h"
+#include "Functions/Dictreading.h"
+#include "Functions/Filereading.h"
+#include "Functions/StringTools.h"
 #include "TH1F.h"
 using namespace std;
 

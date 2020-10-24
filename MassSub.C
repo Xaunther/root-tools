@@ -11,8 +11,8 @@
 #include "TLorentzVector.h"
 #include <string>
 #include "TMath.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/StringTools.h"
+#include "Functions/TreeTools.h"
+#include "Functions/StringTools.h"
 using namespace std;
 
 #define Kmass 493.677

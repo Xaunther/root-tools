@@ -43,12 +43,12 @@ Now, the general formula does not make much sense, one has to be clever to use t
 #include <sstream>
 #include "TChain.h"
 #include "TMath.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/StringTools.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/Dictreading.h"
-#include "../Functions/ProgressBar.h"
-#include "../Dictionaries/Constants.h"
+#include "Functions/TreeTools.h"
+#include "Functions/StringTools.h"
+#include "Functions/Filereading.h"
+#include "Functions/Dictreading.h"
+#include "Functions/ProgressBar.h"
+#include "Dictionaries/Constants.h"
 using namespace std;
 
 void CutSig(string sigfile, string bkglist, string datafile, string instrfile, string bkgyieldlist, string dumpname, string cutname, string precutsfile = "", string sigtree = "", string bkgtreelist = "", string datatree = "", string sigw = "1", string bkgwlist = "1", string massvar = "B_M", string opts = "", const double sigma = 5., const double spb_pow = 0.5);

@@ -4,9 +4,9 @@
 #include "TH1.h"
 #include "TCanvas.h"
 #include "TStyle.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/StringTools.h"
+#include "Functions/TreeTools.h"
+#include "Functions/Filereading.h"
+#include "Functions/StringTools.h"
 using namespace std;
 void PlotVar(string plotvar, string plotopt = "", string tupledir = "Directories/Bd2KstG_tuples.dir", string cutfile = "Variables/Cuts.txt", string title = "")
 {

@@ -4,9 +4,9 @@
 #include <string>
 #include <iostream>
 #include <iomanip>
-#include "../Functions/StringTools.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/Filereading.h"
+#include "Functions/StringTools.h"
+#include "Functions/TreeTools.h"
+#include "Functions/Filereading.h"
 using namespace std;
 
 #define col_width 5

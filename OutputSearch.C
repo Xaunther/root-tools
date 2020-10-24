@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "../Functions/Filereading.h"
+#include "Functions/Filereading.h"
 using namespace std;
 
 #define Nresults 5

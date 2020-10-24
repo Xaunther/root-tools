@@ -5,9 +5,9 @@
 #include "TLine.h"
 #include "TStyle.h"
 #include <string>
-#include "../Dictionaries/Constants.h"
-#include "../Functions/Dictreading.h"
-#include "../Functions/StringTools.h"
+#include "Dictionaries/Constants.h"
+#include "Functions/Dictreading.h"
+#include "Functions/StringTools.h"
 using namespace std;
 
 void BDT_BvsS(string filename, double yfactor = 1, double xfactor = 1, double oldrate = 0, double oldeff = 0, string output = "plots/BDT_BvsS.pdf")

@@ -6,8 +6,8 @@
 #include "TChain.h"
 #include "TTree.h"
 #include "TFile.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/StringTools.h"
+#include "Functions/TreeTools.h"
+#include "Functions/StringTools.h"
 using namespace std;
 
 void AddPIDBranch(string tupleinfile, string tupleoutfile, string treename = "", string p1 = "Kplus", string p2 = "piminus")

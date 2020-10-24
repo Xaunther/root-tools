@@ -7,9 +7,9 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
-#include "../Functions/StringTools.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/Filereading.h"
+#include "Functions/StringTools.h"
+#include "Functions/TreeTools.h"
+#include "Functions/Filereading.h"
 using namespace std;
 
 #define col_width 7 //Spaces allowed for each number (max)

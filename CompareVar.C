@@ -8,11 +8,11 @@
 #include "TCanvas.h"
 #include "TLeaf.h"
 #include "TChain.h"
-#include "../Functions/Fits.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/Dictreading.h"
-#include "../Functions/StringTools.h"
+#include "Functions/Fits.h"
+#include "Functions/Filereading.h"
+#include "Functions/TreeTools.h"
+#include "Functions/Dictreading.h"
+#include "Functions/StringTools.h"
 using namespace std;
 
 void CompareVar(string variablename, string filedir1, string opts)

@@ -5,9 +5,9 @@
 #include "TH1.h"
 #include <string>
 #include <iostream>
-#include "../Functions/TreeTools.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/StringTools.h"
+#include "Functions/TreeTools.h"
+#include "Functions/Filereading.h"
+#include "Functions/StringTools.h"
 
 using namespace std;
 void Compare(string filename1, string filename2, string var1, string var2, string cutfile1, string cutfile2, string treename1 = "", string treename2 = "", string wvar1 = "1", string wvar2 = "1", string title = "", string outputname = "")

@@ -6,12 +6,12 @@
 #include <sstream>
 #include "TChain.h"
 #include <stdio.h>
-#include "../Functions/TISTOS.h"
-#include "../Functions/Dictreading.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/ArrayTools.h"
-#include "../Functions/TUncertainty.h"
+#include "Functions/TISTOS.h"
+#include "Functions/Dictreading.h"
+#include "Functions/Filereading.h"
+#include "Functions/TreeTools.h"
+#include "Functions/ArrayTools.h"
+#include "Functions/TUncertainty.h"
 using namespace std;
 
 void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_results.txt", string L0_lines = "Variables/L0_TISTOS.txt", string Hlt1_lines = "Variables/Hlt1_TISTOS.txt", string Hlt2_lines = "Variables/Hlt2_TISTOS.txt")

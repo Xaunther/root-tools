@@ -6,10 +6,10 @@
 #include <iostream>
 #include <fstream>
 #include <math.h>
-#include "../Functions/StringTools.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/ArrayTools.h"
+#include "Functions/StringTools.h"
+#include "Functions/Filereading.h"
+#include "Functions/TreeTools.h"
+#include "Functions/ArrayTools.h"
 using namespace std;
 
 void EffStats(string dirfiles, string cutfile, string precutfile = "", string treename = "", string outfile = "EffStats_results.txt", string weight = "")

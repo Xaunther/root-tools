@@ -1,9 +1,9 @@
 //Script to merge trigger lines with an OR
 #include <string>
 #include <iostream>
-#include "../Functions/Filereading.h"
-#include "../Functions/ArrayTools.h"
-#include "../Functions/Filesaving.h"
+#include "Functions/Filereading.h"
+#include "Functions/ArrayTools.h"
+#include "Functions/Filesaving.h"
 using namespace std;
 
 //Read, merge, save

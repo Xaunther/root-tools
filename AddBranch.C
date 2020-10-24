@@ -8,8 +8,8 @@
 #include "TTree.h"
 #include "TTreeFormula.h"
 #include "TBranch.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/StringTools.h"
+#include "Functions/TreeTools.h"
+#include "Functions/StringTools.h"
 using namespace std;
 void AddBranch(string branchname, string tupleinfile, string tupleoutfile, string formula, string treename = "")
 {

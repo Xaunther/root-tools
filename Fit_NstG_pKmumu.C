@@ -7,14 +7,14 @@
 #include "TTree.h"
 #include "RooRealVar.h"
 #include "TObject.h"
-#include "../Functions/Fits.h"
-#include "../Functions/AnalFits.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/Filereading.h"
-#include "../Dictionaries/Names.h"
-#include "../Functions/Dictreading.h"
-#include "../Functions/PlotTools.h"
-#include "../Functions/Extract_Var.h"
+#include "Functions/Fits.h"
+#include "Functions/AnalFits.h"
+#include "Functions/TreeTools.h"
+#include "Functions/Filereading.h"
+#include "Dictionaries/Names.h"
+#include "Functions/Dictreading.h"
+#include "Functions/PlotTools.h"
+#include "Functions/Extract_Var.h"
 using namespace std;
 
 #define Nbkgs_pKmumu 1

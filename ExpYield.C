@@ -2,8 +2,8 @@
 #include <fstream>
 #include <stdlib.h>
 #include <iostream>
-#include "../Functions/Filereading.h"
-#include "../Functions/Dictreading.h"
+#include "Functions/Filereading.h"
+#include "Functions/Dictreading.h"
 using namespace std;
 
 void ExpYield(string yield_file, string eff_file, string out_file, string cut = "Global")

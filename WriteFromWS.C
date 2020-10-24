@@ -7,10 +7,10 @@
 #include "RooWorkspace.h"
 #include "RooRealVar.h"
 #include "TFile.h"
-#include "../Functions/Dictreading.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/StringTools.h"
-#include "../Dictionaries/Names.h"
+#include "Functions/Dictreading.h"
+#include "Functions/TreeTools.h"
+#include "Functions/StringTools.h"
+#include "Dictionaries/Names.h"
 using namespace std;
 
 void WriteFromWS(string wsfilename, string varname, string outfilename, string wsname = "", string opts = "");

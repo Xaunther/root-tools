@@ -5,7 +5,7 @@
 #include <sstream>
 #include "TTree.h"
 #include "TFile.h"
-#include "../Functions/StringTools.h"
+#include "Functions/StringTools.h"
 using namespace std;
 
 void Err_Frac(int steps = 100, string filename = "Tuples/BDT-results_OP.root", string treename = "TestTree")

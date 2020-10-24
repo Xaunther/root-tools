@@ -8,8 +8,8 @@
 #include "TTree.h"
 #include "TChain.h"
 #include "TFile.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/StringTools.h"
+#include "Functions/TreeTools.h"
+#include "Functions/StringTools.h"
 using namespace std;
 
 void PhaseSpace(double mothermass, string daughtermasses, string pnames, string outfilename, int N_evts = 100000, string mother_P_filename = "", string mother_P_prefix = "B_P")

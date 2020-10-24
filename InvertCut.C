@@ -1,8 +1,8 @@
 //File to invert the cut number pos. Comes in handy for N*gam analysis
 #include <string>
-#include "../Functions/StringTools.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/Filesaving.h"
+#include "Functions/StringTools.h"
+#include "Functions/Filereading.h"
+#include "Functions/Filesaving.h"
 using namespace std;
 void InvertCut(string filein, string fileout, int pos)
 {

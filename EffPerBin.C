@@ -10,9 +10,9 @@
 #include "TGraphErrors.h"
 #include "TCanvas.h"
 #include "TLine.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/Dictreading.h"
-#include "../Functions/TreeTools.h"
+#include "Functions/Filereading.h"
+#include "Functions/Dictreading.h"
+#include "Functions/TreeTools.h"
 using namespace std;
 
 void EffPerBin(string dirfile, string cutfile, string varname, string binfile, string outfile, string plotfile, string precutfile = "1", string weight = "1", string title = "")

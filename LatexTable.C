@@ -3,11 +3,11 @@
 #include "TChain.h"
 #include "TTree.h"
 #include "TFile.h"
-#include "../Functions/Fits.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/Filesaving.h"
-#include "../Functions/Dictreading.h"
+#include "Functions/Fits.h"
+#include "Functions/TreeTools.h"
+#include "Functions/Filereading.h"
+#include "Functions/Filesaving.h"
+#include "Functions/Dictreading.h"
 using namespace std;
 
 //Does the same as VarFit, but making a latextable with the result instead of a plot

@@ -4,11 +4,11 @@
 #include "TChain.h"
 #include "TFile.h"
 #include "TTree.h"
-#include "../Functions/AnalFits.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/PlotTools.h"
-#include "../Functions/StringTools.h"
+#include "Functions/AnalFits.h"
+#include "Functions/TreeTools.h"
+#include "Functions/Filereading.h"
+#include "Functions/PlotTools.h"
+#include "Functions/StringTools.h"
 using namespace std;
 
 /************************************************************************************************************************************************/

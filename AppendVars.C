@@ -8,9 +8,9 @@
 #include "TTree.h"
 #include "TFile.h"
 #include "TError.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/StringTools.h"
+#include "Functions/TreeTools.h"
+#include "Functions/Filereading.h"
+#include "Functions/StringTools.h"
 using namespace std;
 
 void AppendVars(string file1, string file2, string outfile, string cutfile1 = "", string treename1 = "", string treename2 = "")

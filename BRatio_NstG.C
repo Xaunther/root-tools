@@ -6,8 +6,8 @@
 #include <string>
 #include <fstream>
 #include <cmath>
-#include "../Functions/TUncertainty.h"
-#include "../Functions/Dictreading.h"
+#include "Functions/TUncertainty.h"
+#include "Functions/Dictreading.h"
 using namespace std;
 
 //Compute BRatio for NstG analysis. The formula is as follows

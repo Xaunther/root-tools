@@ -6,10 +6,10 @@
 #include "TTreeFormula.h"
 #include "TFile.h"
 #include "TTree.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/StringTools.h"
-#include "../Functions/Ordenar.h"
+#include "Functions/TreeTools.h"
+#include "Functions/Filereading.h"
+#include "Functions/StringTools.h"
+#include "Functions/Ordenar.h"
 using namespace std;
 
 //Script to do unbinned reweight. It follows the same scheme as Reweight2D but for 1D, and no bins!(well, actually each entry is a bin)

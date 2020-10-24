@@ -1,14 +1,13 @@
 ## Summary
 
-Place where common root scripts are defined. These scripts are independent from each other (althought the output of one might be an input for another) but might be used in different analyses.
+This repository contains personal ROOT scripts. Each of the scripts defined in the top folder are independent, only sharing common Functions/Dictionaries, defined in their own folders.
+Some of this scripts, however, are designed to "fit" each other, as the output of one can be the input for another. The idea is that most of the scripts are flexible enough to be used in different analyses.
 
 ## Set-up
 
-Need the developed [analysis root code](https://gitlab.cern.ch/aalfonso-Analysis-Tools) (3 repositories, Directories is not actually needed). Create a new folder and inside that you must have the 3 analysis tools folders (there may be other folders inside). Instructions to compile the code are in the [root repository](https://gitlab.cern.ch/aalfonso-Analysis-Tools/root).<br />
+Need the developed [analysis root code](https://gitlab.cern.ch/aalfonso-Analysis-Tools) (1 repository, Directories is not actually needed). Create a new folder and inside that you must have the analysis tools folders (there may be other folders inside). Instructions to compile the code are in the [root repository](https://gitlab.cern.ch/aalfonso-Analysis-Tools/root).<br />
 ```bash
 Some_Folder
-├── Dictionaries
-├── Functions
 ├── root
 ├── OTHER
 ```

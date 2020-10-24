@@ -11,9 +11,9 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "TTreeFormula.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/StringTools.h"
-#include "../Functions/Filereading.h"
+#include "Functions/TreeTools.h"
+#include "Functions/StringTools.h"
+#include "Functions/Filereading.h"
 using namespace std;
 
 void AssignRefWeight(string mainfile, string reffile, string outfilename, string wvar, string idvar)

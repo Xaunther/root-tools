@@ -1,16 +1,16 @@
 //Function to do a 2D plot from a file with data
 //For now, hard-coded bin range and width
 
-#include "../Functions/Styles.h"
+#include "Functions/Styles.h"
 #include "TCanvas.h"
 #include "TLine.h"
 #include "TStyle.h"
 #include "TH2F.h"
 #include <string>
 #include <iostream>
-#include "../Functions/Dictreading.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/StringTools.h"
+#include "Functions/Dictreading.h"
+#include "Functions/Filereading.h"
+#include "Functions/StringTools.h"
 using namespace std;
 
 //Constantitllsos

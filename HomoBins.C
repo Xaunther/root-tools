@@ -8,9 +8,9 @@
 #include "TTree.h"
 #include "TFile.h"
 #include "TTreeFormula.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/Ordenar.h"
+#include "Functions/TreeTools.h"
+#include "Functions/Filereading.h"
+#include "Functions/Ordenar.h"
 using namespace std;
 
 void HomoBins(string var, int Nbins, string filedir, string cutfile, string outfile, string treename = "", string wvar = "")

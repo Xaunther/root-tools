@@ -10,8 +10,8 @@
 #include <fstream>
 #include <stdlib.h>
 #include "TMath.h"
-#include "../Functions/StringTools.h"
-#include "../Functions/Filereading.h"
+#include "Functions/StringTools.h"
+#include "Functions/Filereading.h"
 using namespace std;
 
 int* Get2Indices(string word);

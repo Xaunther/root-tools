@@ -5,8 +5,8 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "../Functions/StringTools.h"
-#include "../Functions/Filereading.h"
+#include "Functions/StringTools.h"
+#include "Functions/Filereading.h"
 using namespace std;
 
 void ScaleYields(string yieldlist, string totyieldfile, string suffix = "_Rescaled", string separator = " ");

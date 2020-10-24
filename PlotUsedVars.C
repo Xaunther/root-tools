@@ -9,9 +9,9 @@
 #include "TLeaf.h"
 #include <sstream>
 #include "TMath.h"
-#include "../Functions/Dictreading.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/TreeTools.h"
+#include "Functions/Dictreading.h"
+#include "Functions/Filereading.h"
+#include "Functions/TreeTools.h"
 using namespace std;
 void PlotUsedVars(string varlist, string tupledir, string cutfile = "Variables/Cuts.txt", string plotopt = "", string prefix = "", string treename = "")
 {

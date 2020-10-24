@@ -4,9 +4,9 @@
 #include "TGraph.h"
 #include "TCanvas.h"
 #include "TAxis.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/Dictreading.h"
-#include "../Dictionaries/Constants.h"
+#include "Functions/Filereading.h"
+#include "Functions/Dictreading.h"
+#include "Dictionaries/Constants.h"
 using namespace std;
 
 void PlotTable(string tablesdir, string plot_opts = "APL", double x_factor = 1., double y_factor = 1.)

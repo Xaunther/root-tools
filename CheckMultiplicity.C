@@ -1,8 +1,8 @@
 #include <string>
 #include <iostream>
-#include "../Functions/TreeTools.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/Probability.h"
+#include "Functions/TreeTools.h"
+#include "Functions/Filereading.h"
+#include "Functions/Probability.h"
 #include "TChain.h"
 #include "TFile.h"
 #include "TTree.h"

@@ -14,9 +14,9 @@
 #include <fstream>
 #include "TMatrixT.h"
 #include "TVectorT.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/Dictreading.h"
-#include "../Functions/BoostTools.h"
+#include "Functions/Filereading.h"
+#include "Functions/Dictreading.h"
+#include "Functions/BoostTools.h"
 #include <boost/math/tools/polynomial.hpp>
 using namespace std;
 

@@ -7,11 +7,11 @@
 #include <string>
 #include "TChain.h"
 #include "TMath.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/Dictreading.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/ArrayTools.h"
-#include "../Functions/StringTools.h"
+#include "Functions/Filereading.h"
+#include "Functions/Dictreading.h"
+#include "Functions/TreeTools.h"
+#include "Functions/ArrayTools.h"
+#include "Functions/StringTools.h"
 using namespace std;
 
 void CutEff(string dirfile, string cutfile, string precutfile = "", string outfile = "CutEff_results.txt", string weight = "", string treename = "")

@@ -9,12 +9,12 @@
 #include "TCanvas.h"
 #include "TLeaf.h"
 #include <sstream>
-#include "../Dictionaries/Constants.h"
-#include "../Functions/Dictreading.h"
-#include "../Functions/Filereading.h"
-#include "../Functions/ArrayTools.h"
-#include "../Functions/TreeTools.h"
-#include "../Functions/RunInfo.h"
+#include "Dictionaries/Constants.h"
+#include "Functions/Dictreading.h"
+#include "Functions/Filereading.h"
+#include "Functions/ArrayTools.h"
+#include "Functions/TreeTools.h"
+#include "Functions/RunInfo.h"
 using namespace std;
 
 void BDTMerit(RunNumber run_number, double init_value, double final_value, int steps = 100, string filename = "Tuples/data-mva_outputMC.root", string BDTvarname = "BDT_response")

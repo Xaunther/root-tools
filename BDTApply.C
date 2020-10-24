@@ -11,8 +11,8 @@
 #include "TMVA/Tools.h"
 #include "TMVA/Reader.h"
 #include <sstream>
-#include "../Functions/Filereading.h"
-#include "../Functions/StringTools.h"
+#include "Functions/Filereading.h"
+#include "Functions/StringTools.h"
 using namespace std;
 
 //BDTApply is the original function, which requires input  on which variables need to be saved. These must be listed in different files which are described below, classified by variable type. It also provides a way to use formulas for the BDT, setting excludeBDTvars = true
