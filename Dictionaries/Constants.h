@@ -119,6 +119,8 @@ public:
   //BDT options
   string BDT_Prepare_options;
   string BDT_Method_options;
+  //Working directory
+  string workingdir;
 };
 
 #endif

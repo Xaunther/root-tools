@@ -519,17 +519,17 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   for (unsigned int i = 0; i < ws_ppiG_mass.size(); i++) //ppiG mass fits
   {
     GoodPlot(ws_ppiG_mass[i], variablename[0], "p #pi^{-} #gamma mass. " + latex_massnames[i] + " MC", "m_{p#pi^{-}#gamma}", opts + "_MC", "_MC_" + massnames[i], 60);
-    SaveRooVars(ws_ppiG_mass[i], "SimultaneousFit/" + variablename[0] + "_RooYields_MC_" + massnames[i] + ".txt");
+    SaveRooVars(ws_ppiG_mass[i], const_list.workingdir + variablename[0] + "_RooYields_MC_" + massnames[i] + ".txt");
   }
   for (unsigned int i = 0; i < ws_KpiG_mass.size(); i++) //KpiG mass fits
   {
     GoodPlot(ws_KpiG_mass[i], variablename[1], "K^{+} #pi^{-} #gamma mass. " + latex_massnames[i] + " MC", "m_{K^{+}#pi^{-}#gamma}", opts + "_MC", "_MC_" + massnames[i], 60);
-    SaveRooVars(ws_KpiG_mass[i], "SimultaneousFit/" + variablename[1] + "_RooYields_MC_" + massnames[i] + ".txt");
+    SaveRooVars(ws_KpiG_mass[i], const_list.workingdir + variablename[1] + "_RooYields_MC_" + massnames[i] + ".txt");
   }
   for (unsigned int i = 0; i < ws_pKG_mass.size(); i++) //pKG mass fits
   {
     GoodPlot(ws_pKG_mass[i], variablename[2], "p K^{-} #gamma mass. " + latex_massnames[i] + " MC", "m_{pK^{-}#gamma}", opts + "_MC", "_MC_" + massnames[i], 60);
-    SaveRooVars(ws_pKG_mass[i], "SimultaneousFit/" + variablename[2] + "_RooYields_MC_" + massnames[i] + ".txt");
+    SaveRooVars(ws_pKG_mass[i], const_list.workingdir + variablename[2] + "_RooYields_MC_" + massnames[i] + ".txt");
   }
 
   //Nicely done with the MCs, now it is time to close them all, they are no longer needed. Also deallocate the arrays
@@ -589,7 +589,12 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   //ppiG mass
   //Define all components and then add
   Info("AnalFits.cxx", "Starting to define ppiG mass pdf");
+  //This mean can be shifted. The shift is read from a fit to data, and the dictionary dictates whether it is used, added, or substracted (factor)
   value = ws_ppiG_mass[0]->var(name_list.mean[0].c_str())->getValV();
+  if (const_list.shift1 != 0.)
+  {
+    value = value + const_list.shift1 * TMath::Abs(stod(GetValueFor("#mu_{K#pi#gamma}", "output/B_M012_RooYields_WrongMassFit.txt")) - stod(GetValueFor("#mu_{K#pi#gamma}", "output/" + variablename[0] + "_RooYields_MC0_Wrong.txt")));
+  }
   RooRealVar mean_ppiGmass_KpiGMC(name_list.mean[0].c_str(), name_list.mean[0].c_str(), value);
   mean_ppiGmass_KpiGMC.setConstant();
   value = ws_ppiG_mass[0]->var(name_list.width[0].c_str())->getValV();
@@ -606,7 +611,12 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   n_ppiGmass_KpiGMC.setConstant();
   RooCBExp pdf_ppiGmass_KpiGMC(name_list.comppdf[0].c_str(), name_list.comppdf[0].c_str(), b_masses[0], mean_ppiGmass_KpiGMC, sigma_ppiGmass_KpiGMC, alphaL_ppiGmass_KpiGMC, n_ppiGmass_KpiGMC, alphaR_ppiGmass_KpiGMC);
 
+  //This mean can be shifted. The shift is read from a fit to data, and the dictionary dictates whether it is used, added, or substracted (factor)
   value = ws_ppiG_mass[1]->var(name_list.mean[0].c_str())->getValV();
+  if (const_list.shift2 != 0.)
+  {
+    value = value + const_list.shift2 * TMath::Abs(stod(GetValueFor("#mu_{pK#gamma}", "output/B_M012_Subst01_Kpi2pK_RooYields_WrongMassFit.txt")) - stod(GetValueFor("#mu_{pK#gamma}", "output/" + variablename[0] + "_RooYields_MC1_Wrong.txt")));
+  }
   RooRealVar mean_ppiGmass_pKGMC(name_list.mean[1].c_str(), name_list.mean[1].c_str(), value);
   mean_ppiGmass_pKGMC.setConstant();
   value = ws_ppiG_mass[1]->var(name_list.width[0].c_str())->getValV();
@@ -1050,7 +1060,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   ws->import(data);
 
   //Save yields in a file
-  SaveRooVars(ws, "SimultaneousFit/NstG_MultiPlot_RooYields.txt");
+  SaveRooVars(ws, const_list.workingdir + "NstG_MultiPlot_RooYields.txt");
   return ws;
 }
 

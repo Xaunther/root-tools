@@ -118,6 +118,9 @@ void Constants::FillDefault()
   //BDT options
   BDT_Prepare_options = "SplitMode=Random:SplitSeed=100"; //Seed 100 is default
   BDT_Method_options = "NTrees=400:MaxDepth=2:CreateMVAPdfs=True";
+
+  //Working directory. Default will be current one
+  workingdir = "./";
 }
 Constants::Constants(std::string ananame)
 {
@@ -226,6 +229,7 @@ void Constants::Init(std::string ananame)
     Legend_xf_R = 0.95;
     Legend_y0 = 0.95; //This means auto height (0.065 per legend item)
     Legend_yf = 0.95;
+    workingdir = "SimultaneousFit/";
   }
   else if (ananame == "NstGamma_Simult_log")
   {
@@ -433,15 +437,17 @@ void Constants::Init(std::string ananame)
   }
   else if (ananame == "NstGamma_minmu")
   {
-    this->Init("NstGamma");
+    this->Init("NstGamma_Simult");
     shift1 = -1.;
     shift2 = -1.;
+    workingdir = "Systematics/Fit/minmu/";
   }
   else if (ananame == "NstGamma_maxmu")
   {
-    this->Init("NstGamma_minmu");
+    this->Init("NstGamma_Simult");
     shift1 = -shift1;
     shift2 = -shift2;
+    workingdir = "Systematics/Fit/maxmu/";
   }
   else if (ananame == "NstGamma_minmu_MC")
   {

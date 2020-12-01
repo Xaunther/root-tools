@@ -9,20 +9,44 @@ void Names::FillDefault()
   workspace = "Fit WS";
   dataset = "Data";
   pdfmodel[0] = "Fit";
-  for (int i = 1; i < TAM; i++) {pdfmodel[i] = "Fit" + std::to_string(i);}
+  for (int i = 1; i < TAM; i++)
+  {
+    pdfmodel[i] = "Fit" + std::to_string(i);
+  }
   //PDFs
   comppdf[0] = "Signal";
-  for (int i = 1; i < TAM; i++) {comppdf[i] = "bkg" + std::to_string(i);}
+  for (int i = 1; i < TAM; i++)
+  {
+    comppdf[i] = "bkg" + std::to_string(i);
+  }
   //Gaussian parameters
-  for (int i = 0; i < TAM; i++) {mean[i] = "#mu_{" + std::to_string(i + 1) + "}";}
-  for (int i = 0; i < TAM; i++) {width[i] = "#sigma_{" + std::to_string(i + 1) + "}";}
+  for (int i = 0; i < TAM; i++)
+  {
+    mean[i] = "#mu_{" + std::to_string(i + 1) + "}";
+  }
+  for (int i = 0; i < TAM; i++)
+  {
+    width[i] = "#sigma_{" + std::to_string(i + 1) + "}";
+  }
   //CB parameters
   alpha = "#alpha";
-  for (int i = 0; i < TAM; i++) {alphaL[i] = "#alpha_{L}^{" + std::to_string(i + 1) + "}";}
-  for (int i = 0; i < TAM; i++) {alphaR[i] = "#alpha_{R}^{" + std::to_string(i + 1) + "}";}
+  for (int i = 0; i < TAM; i++)
+  {
+    alphaL[i] = "#alpha_{L}^{" + std::to_string(i + 1) + "}";
+  }
+  for (int i = 0; i < TAM; i++)
+  {
+    alphaR[i] = "#alpha_{R}^{" + std::to_string(i + 1) + "}";
+  }
   n = "#n";
-  for (int i = 0; i < TAM; i++) {nL[i] = "#n_{L}^{" + std::to_string(i + 1) + "}";}
-  for (int i = 0; i < TAM; i++) {nR[i] = "#n_{R}^{" + std::to_string(i + 1) + "}";}
+  for (int i = 0; i < TAM; i++)
+  {
+    nL[i] = "#n_{L}^{" + std::to_string(i + 1) + "}";
+  }
+  for (int i = 0; i < TAM; i++)
+  {
+    nR[i] = "#n_{R}^{" + std::to_string(i + 1) + "}";
+  }
   //Linear parameters
   slope = "slope";
   //Argus parameters
@@ -32,10 +56,16 @@ void Names::FillDefault()
   width_Argus = "#sigma_{Argus}";
   //Exponential parameters
   exp_par[0] = "#tau";
-  for (int i = 1; i < TAM; i++) {exp_par[i] = "#tau_{" + std::to_string(i) + "}";}
+  for (int i = 1; i < TAM; i++)
+  {
+    exp_par[i] = "#tau_{" + std::to_string(i) + "}";
+  }
   //Components fractions
-  fcomp[0]  = "n_{S}";
-  for (int i = 1; i < TAM; i++) {fcomp[i] = "n_{B}^{" + std::to_string(i) + "}";}
+  fcomp[0] = "n_{S}";
+  for (int i = 1; i < TAM; i++)
+  {
+    fcomp[i] = "n_{B}^{" + std::to_string(i) + "}";
+  }
   //Number of bkgs
   N_comps = "N_comps";
   //Mean shifts
@@ -46,9 +76,15 @@ void Names::FillDefault()
   shift[4] = "shift_{#Lambda(1670)#gamma}";
   shift[5] = "shift_{#Lambda(1820)#gamma}";
   shift[6] = "shift_{#Lambda(1830)#gamma}";
-  for (int i = 7; i < TAM; i++) {exp_par[i] = "shift_{B}";}
+  for (int i = 7; i < TAM; i++)
+  {
+    exp_par[i] = "shift_{B}";
+  }
   //Yields
-  for (int i = 0; i < TAM; i++) {yield[i] = "yield_{" + std::to_string(i + 1) + "}";}
+  for (int i = 0; i < TAM; i++)
+  {
+    yield[i] = "yield_{" + std::to_string(i + 1) + "}";
+  }
   yield_factor = "yield0";
   //RooYield Interfix
   RooYield_suffix = "";
@@ -234,7 +270,7 @@ void Names::Init(std::string ananame)
   }
   else if (ananame == "NstGamma_minmu")
   {
-    this->Init("NstGamma");
+    this->Init("NstGamma_Simult");
     RooYield_suffix = "_minmu";
   }
   else if (ananame == "NstGamma_minmu_MC")
@@ -243,7 +279,7 @@ void Names::Init(std::string ananame)
   }
   else if (ananame == "NstGamma_maxmu")
   {
-    this->Init("NstGamma");
+    this->Init("NstGamma_Simult");
     RooYield_suffix = "_maxmu";
   }
   else if (ananame == "NstGamma_maxmu_MC")
@@ -274,7 +310,7 @@ void Names::Init(std::string ananame)
   {
     this->Init("NstG_pKmumu");
   }
-  else if(ananame == "KstG_Maths")
+  else if (ananame == "KstG_Maths")
   {
   }
   else
