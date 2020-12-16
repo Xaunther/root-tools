@@ -29,6 +29,12 @@ To compile, take into account the following:
 * The ROOT version to be used can be seen using `root-config --version`, and specified by running the `thisroot.sh` script provided in the ROOT installation folder
 * In lxplus, you may leave the default setup
 
+For example, in lxplus you can set up gcc10 compiler (default is gcc4...) using:
+```bash
+export CC=/cvmfs/lhcb.cern.ch/lib/bin/x86_64-centos7/lcg-gcc-10.1.0
+export CXX=/cvmfs/lhcb.cern.ch/lib/bin/x86_64-centos7/lcg-g++-10.1.0
+```
+
 Once you have chosen your compiler and root versions, just go into [root build folder](https://gitlab.cern.ch/aalfonso-Analysis-Tools/root/build), and run:
 ```
 cmake .. && make
@@ -45,12 +51,7 @@ There are parts of the code which will try to access some files stored under the
 ## Old fixes
 **These fixes are no longer required**, but they're here in case something similar is again needed in the future:
 
-For example, in lxplus you can set up gcc9 compiler (default is gcc4...) using:
-```bash
-export CC=/cvmfs/lhcb.cern.ch/lib/lcg/releases/gcc/9.2.0-afc57/x86_64-centos7/bin/gcc
-export CXX=/cvmfs/lhcb.cern.ch/lib/lcg/releases/gcc/9.2.0-afc57/x86_64-centos7/bin/g++
-```
-And `ROOT 6.20/02` can be manually specified using:
+`ROOT 6.20/02` can be manually specified using:
 ```bash
 source /cvmfs/lhcb.cern.ch/lib/lcg/releases/ROOT/v6.20.02-10e75/x86_64-centos7-gcc9-opt/bin/thisroot.sh
 ```
