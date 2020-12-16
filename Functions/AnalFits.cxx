@@ -823,11 +823,11 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   width_Argus_KpiGmass_KpipiGMC.setConstant();
   RooArgusGauss pdf_KpiGmass_KpipiGMC(name_list.comppdf[13].c_str(), name_list.comppdf[13].c_str(), b_masses[1], m0_Argus_KpiGmass_KpipiGMC, c_Argus_KpiGmass_KpipiGMC, p_Argus_KpiGmass_KpipiGMC, width_Argus_KpiGmass_KpipiGMC);
 
-  RooRealVar slope_KpiGmass_line(name_list.slope.c_str(), name_list.slope.c_str(), const_list.slope_0, const_list.slope_min, const_list.slope_max);
-  RooPolynomial pdf_KpiGmass_line(name_list.comppdf[14].c_str(), name_list.comppdf[14].c_str(), b_masses[1], slope_KpiGmass_line);
+  RooRealVar tau_KpiGmass_exp(name_list.exp_par[14].c_str(), name_list.exp_par[14].c_str(), const_list.bkgpar_0, const_list.bkgpar_min, const_list.bkgpar_max);
+  RooExponential pdf_KpiGmass_exp(name_list.comppdf[14].c_str(), name_list.comppdf[14].c_str(), b_masses[1], tau_KpiGmass_exp);
 
-  RooRealVar tau_KpiGmass_exp(name_list.exp_par[15].c_str(), name_list.exp_par[15].c_str(), const_list.bkgpar_0, const_list.bkgpar_min, const_list.bkgpar_max);
-  RooExponential pdf_KpiGmass_exp(name_list.comppdf[15].c_str(), name_list.comppdf[15].c_str(), b_masses[1], tau_KpiGmass_exp);
+  RooRealVar slope_KpiGmass_line(name_list.slope.c_str(), name_list.slope.c_str(), const_list.slope_0, const_list.slope_min, const_list.slope_max);
+  RooPolynomial pdf_KpiGmass_line(name_list.comppdf[15].c_str(), name_list.comppdf[15].c_str(), b_masses[1], slope_KpiGmass_line);
 
   //Yields in KpiG, depend on ppiG yields. This dependency takes into account the uncertainty on the PID efficiency
   value = stod(GetValueFor("Mean", "Systematics/PID/KstG_PIDInv1Eff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/KstG_PIDEff.txt"));
@@ -883,8 +883,8 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   RooFormulaVar f_KpiG_mass_KpiGRefMC(name_list.fcomp[11].c_str(), name_list.fcomp[11].c_str(), "@0*@1", RooArgList(f_ppiG_mass_KpiGMC, R_KpiG_mass_KpiGRefMC));
   RooFormulaVar f_KpiG_mass_pKGRefMC(name_list.fcomp[12].c_str(), name_list.fcomp[12].c_str(), "@0*@1", RooArgList(f_ppiG_mass_pKGMC, R_KpiG_mass_pKGRefMC));
   RooRealVar f_KpiG_mass_KpipiGMC(name_list.fcomp[13].c_str(), name_list.fcomp[13].c_str(), double(entries[1]) / 4., 0., double(entries[1]));
-  RooRealVar f_KpiG_mass_line(name_list.fcomp[14].c_str(), name_list.fcomp[14].c_str(), double(entries[1]) / 4., 0., double(entries[1]));
-  RooRealVar f_KpiG_mass_exp(name_list.fcomp[15].c_str(), name_list.fcomp[15].c_str(), double(entries[1]) / 2., 0., double(entries[1]));
+  RooRealVar f_KpiG_mass_exp(name_list.fcomp[14].c_str(), name_list.fcomp[14].c_str(), double(entries[1]) / 2., 0., double(entries[1]));
+  RooRealVar f_KpiG_mass_line(name_list.fcomp[15].c_str(), name_list.fcomp[15].c_str(), double(entries[1]) / 4., 0., double(entries[1]));
   model.push_back(RooAddPdf(name_list.pdfmodel[1].c_str(), name_list.pdfmodel[1].c_str(),
                             RooArgList(pdf_KpiGmass_KpiGMC, pdf_KpiGmass_pKGMC, pdf_KpiGmass_ppiGMC, pdf_KpiGmass_KpiGRefMC, pdf_KpiGmass_pKGRefMC, pdf_KpiGmass_KpipiGMC, pdf_KpiGmass_line, pdf_KpiGmass_exp),
                             RooArgList(f_KpiG_mass_KpiGMC, f_KpiG_mass_pKGMC, f_KpiG_mass_ppiGMC, f_KpiG_mass_KpiGRefMC, f_KpiG_mass_pKGRefMC, f_KpiG_mass_KpipiGMC, f_KpiG_mass_line, f_KpiG_mass_exp)));
