@@ -331,6 +331,8 @@ bool TreeExists(string filedir, string tuplename)
 void CloseChain(TChain *&chain)
 {
   TFile *file = chain->GetCurrentFile();
+  if (!file)
+    return;
   chain->SetDirectory(0);
   file->Close();
 }
@@ -339,6 +341,8 @@ void CloseChain(TChain *&chain)
 void CloseTree(TTree *&chain)
 {
   TFile *file = chain->GetCurrentFile();
+  if (!file)
+    return;
   chain->SetDirectory(0);
   file->Close();
 }
