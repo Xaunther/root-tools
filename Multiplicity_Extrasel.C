@@ -48,17 +48,20 @@ void Multiplicity_Extrasel(std::string filelist, std::string cutfile, std::strin
     fout << "               Multiplicity for each cut               " << endl;
     fout << "-------------------------------------------------------" << endl;
     int maxL = GetMaxLength(cuts, N_cuts);
+    if (!denom_OK)
+        fout << "Error: 0 events in the denominator!" << std::endl;
     for (int i = 0; i < N_cuts; i++)
     {
         if (denom_OK)
             fout << cuts[i] << setw(maxL + 5 - int(cuts[i].size())) << "  |  " << double(extra_chain->GetEntries(cuts[i].c_str())) / N_E << std::endl;
-        else
-            fout << "Error: 0 events in the denominator!" << std::endl;
     }
     //Close files and clean memory
     fout.close();
-    CloseChain(ref_chain);
-    CloseChain(extra_chain);
+    if (denom_OK)
+    {
+        CloseChain(ref_chain);
+        CloseChain(extra_chain);
+    }
     delete[] filenames;
     delete[] cuts;
     return;
