@@ -82,6 +82,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L " + path + "MakeVarList.C+").c_str());
   gROOT->ProcessLine((".L " + path + "MassSub.C+").c_str());
   gROOT->ProcessLine((".L " + path + "Merge_Trigger.C+").c_str());
+  gROOT->ProcessLine((".L " + path + "Multiplicity_Extrasel.C+").c_str());
   gROOT->ProcessLine((".L " + path + "OutputSearch.C+").c_str());
   gROOT->ProcessLine((".L " + path + "PhaseSpace.C+").c_str());
   //  gROOT->ProcessLine((".L "+path+"PIDMatrix.C+").c_str());
