@@ -60,7 +60,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L " + path + "BRatio_NstG_split.C+").c_str());
   gROOT->ProcessLine((".L " + path + "BRatio_NstG_Simult.C+").c_str());
   gROOT->ProcessLine((".L " + path + "CheckMultiplicity.C+").c_str());
-  gROOT->ProcessLine((".L " + path + "CompareVar.C+").c_str());
+  gROOT->ProcessLine((".L " + path + "CompareList.C+").c_str());
   gROOT->ProcessLine((".L " + path + "Compute_Value.C+").c_str());
   gROOT->ProcessLine((".L " + path + "Compare.C+").c_str());
   gROOT->ProcessLine((".L " + path + "Create_Cuts.C+").c_str());
