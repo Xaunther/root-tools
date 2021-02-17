@@ -13,6 +13,7 @@
 
 #include <string>
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <vector>
 #include "TChain.h"
@@ -53,7 +54,7 @@ void Multiplicity_Extrasel(std::string filelist, std::string cutfile, std::strin
     for (int i = 0; i < N_cuts; i++)
     {
         if (denom_OK)
-            fout << cuts[i] << setw(maxL + 5 - int(cuts[i].size())) << "  |  " << double(extra_chain->GetEntries(cuts[i].c_str())) / N_E << std::endl;
+            fout << cuts[i] << std::setw(maxL + 5 - int(cuts[i].size())) << "  |  " << double(extra_chain->GetEntries(cuts[i].c_str())) / N_E << std::endl;
     }
     //Close files and clean memory
     fout.close();
