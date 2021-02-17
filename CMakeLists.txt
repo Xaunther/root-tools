@@ -10,7 +10,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 #Add flags to compile using root libraries
 execute_process(COMMAND root-config --noauxcflags --cflags --libs OUTPUT_VARIABLE CMAKE_CXX_FLAGS)
 string(REGEX REPLACE "\n$" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-string(APPEND CMAKE_CXX_FLAGS " -D_GLIBCXX_USE_CXX11_ABI=1 -Wall -Wextra -lTMVA -lRooFit -lRooFitCore -lRooStats -static-libstdc++")
+#If you're on lxplus and with the default root binary, use D_GLIBCXX_USE_CXX11_ABI=0
+#When using your own build, or a debian distribution, use D_GLIBCXX_USE_CXX11_ABI=1
+string(APPEND CMAKE_CXX_FLAGS " -D_GLIBCXX_USE_CXX11_ABI=0 -Wall -Wextra -lTMVA -lRooFit -lRooFitCore -lRooStats -static-libstdc++")
 
 #Lxplus is fucked up and there are missing links to libraries, these are the ones needed to compile...
 #GSL
