@@ -13,15 +13,15 @@
 #include "Functions/Ordenar.h"
 using namespace std;
 
-void HomoBins(string var, int Nbins, string filedir, string cutfile, string outfile, string treename = "", string wvar = "")
+void HomoBins(string var, int Nbins, string filedir, string cutfile, string outfile, string treename = "", string wvar = "1")
 {
 	//Read TChain and cuts
-	TChain* chain = GetChain(filedir, treename);
+	TChain *chain = GetChain(filedir, treename);
 	string cuts = GetCuts(cutfile);
 
 	//Cut TChain and save it in temporary file
-	TFile* file = new TFile("Tuples/temp.root", "recreate");
-	TTree* tree = (TTree*)chain->CopyTree(cuts.c_str());
+	TFile *file = new TFile("Tuples/temp.root", "recreate");
+	TTree *tree = (TTree *)chain->CopyTree(cuts.c_str());
 	file->Write();
 
 	//We'll need the number of entries a few times, so just request it once
@@ -30,10 +30,10 @@ void HomoBins(string var, int Nbins, string filedir, string cutfile, string outf
 	double wentries = tree->GetEntries() * GetMeanEntries(tree, wvar);
 
 	//Time to create a matrix with the columns being the variable we want to use to order and the corresponding weight
-	double** var_array = new double*[entries];
+	double **var_array = new double *[entries];
 	//Loop over each entry and save important data in array of doubles
-	TTreeFormula* formulavar = new TTreeFormula(var.c_str(), var.c_str(), tree);
-	TTreeFormula* formulawvar = new TTreeFormula(wvar.c_str(), wvar.c_str(), tree);
+	TTreeFormula *formulavar = new TTreeFormula(var.c_str(), var.c_str(), tree);
+	TTreeFormula *formulawvar = new TTreeFormula(wvar.c_str(), wvar.c_str(), tree);
 	for (int i = 0; i < entries; i++)
 	{
 		var_array[i] = new double[2];
@@ -55,20 +55,19 @@ void HomoBins(string var, int Nbins, string filedir, string cutfile, string outf
 	double sum = 0;
 	for (int i = 0; index < Nbins; i++)
 	{
-		if (sum >= wentries / double(Nbins)*index)
+		if (sum >= wentries / double(Nbins) * index)
 		{
 			fout << var_array[i][0] << endl;
 			index++;
 		}
 		sum += var_array[i][1];
 	}
-	fout << var_array[entries-1][0] << endl;
+	fout << var_array[entries - 1][0] << endl;
 	fout.close();
-
 }
 
 #if !defined(__CLING__)
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
 	switch (argc - 1)
 	{
