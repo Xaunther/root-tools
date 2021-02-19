@@ -12,7 +12,7 @@ execute_process(COMMAND root-config --noauxcflags --cflags --libs OUTPUT_VARIABL
 string(REGEX REPLACE "\n$" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 #If you're on lxplus and with the default root binary, use D_GLIBCXX_USE_CXX11_ABI=0
 #When using your own build, or a debian distribution, use D_GLIBCXX_USE_CXX11_ABI=1
-string(APPEND CMAKE_CXX_FLAGS " -D_GLIBCXX_USE_CXX11_ABI=0 -Wall -Wextra -lTMVA -lRooFit -lRooFitCore -lRooStats -static-libstdc++")
+string(APPEND CMAKE_CXX_FLAGS " -D_GLIBCXX_USE_CXX11_ABI=1 -Wall -Wextra -lTMVA -lRooFit -lRooFitCore -lRooStats -static-libstdc++")
 
 #Lxplus is fucked up and there are missing links to libraries, these are the ones needed to compile...
 #GSL
@@ -100,6 +100,7 @@ add_executable(Trigger_effs.out Trigger_effs.C)
 add_executable(TupleCorr.out TupleCorr.C)
 add_executable(UnbinnedReweight.out UnbinnedReweight.C)
 add_executable(VarFit.out VarFit.C)
+add_executable(VarProfile.out VarProfile.C)
 add_executable(Vodka.out Vodka.C)
 add_executable(WriteFromDic.out WriteFromDic.C)
 add_executable(WriteFromWS.out WriteFromWS.C)
@@ -166,6 +167,7 @@ target_link_libraries(Trigger_effs.out aalfonso-dict aalfonso-func "${CMAKE_CXX_
 target_link_libraries(TupleCorr.out aalfonso-dict aalfonso-func "${CMAKE_CXX_FLAGS}")
 target_link_libraries(UnbinnedReweight.out aalfonso-dict aalfonso-func "${CMAKE_CXX_FLAGS}")
 target_link_libraries(VarFit.out aalfonso-dict aalfonso-func "${CMAKE_CXX_FLAGS}")
+target_link_libraries(VarProfile.out aalfonso-dict aalfonso-func "${CMAKE_CXX_FLAGS}")
 target_link_libraries(Vodka.out aalfonso-dict aalfonso-func "${CMAKE_CXX_FLAGS}")
 target_link_libraries(WriteFromDic.out aalfonso-dict aalfonso-func "${CMAKE_CXX_FLAGS}")
 target_link_libraries(WriteFromWS.out aalfonso-dict aalfonso-func "${CMAKE_CXX_FLAGS}")

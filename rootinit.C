@@ -105,6 +105,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L " + path + "TupleCorr.C+").c_str());
   gROOT->ProcessLine((".L " + path + "UnbinnedReweight.C+").c_str());
   gROOT->ProcessLine((".L " + path + "VarFit.C+").c_str());
+  gROOT->ProcessLine((".L " + path + "VarProfile.C+").c_str());
   gROOT->ProcessLine((".L " + path + "Vodka.C+").c_str());
   gROOT->ProcessLine((".L " + path + "WriteFromDic.C+").c_str());
   gROOT->ProcessLine((".L " + path + "WriteFromWS.C+").c_str());
