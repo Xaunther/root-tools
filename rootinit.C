@@ -64,6 +64,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L " + path + "Compute_Value.C+").c_str());
   gROOT->ProcessLine((".L " + path + "Compare.C+").c_str());
   gROOT->ProcessLine((".L " + path + "Create_Cuts.C+").c_str());
+  gROOT->ProcessLine((".L " + path + "CutCorrelation.C+").c_str());
   gROOT->ProcessLine((".L " + path + "CutEff.C+").c_str());
   gROOT->ProcessLine((".L " + path + "CutSig.C+").c_str());
   gROOT->ProcessLine((".L " + path + "CutTree.C+").c_str());

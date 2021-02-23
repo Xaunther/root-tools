@@ -12,7 +12,7 @@ execute_process(COMMAND root-config --noauxcflags --cflags --libs OUTPUT_VARIABL
 string(REGEX REPLACE "\n$" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 #If you're on lxplus and with the default root binary, use D_GLIBCXX_USE_CXX11_ABI=0
 #When using your own build, or a debian distribution, use D_GLIBCXX_USE_CXX11_ABI=1
-string(APPEND CMAKE_CXX_FLAGS " -D_GLIBCXX_USE_CXX11_ABI=1 -Wall -Wextra -lTMVA -lRooFit -lRooFitCore -lRooStats -static-libstdc++")
+string(APPEND CMAKE_CXX_FLAGS " -D_GLIBCXX_USE_CXX11_ABI=0 -Wall -Wextra -lTMVA -lRooFit -lRooFitCore -lRooStats -static-libstdc++")
 
 #Lxplus is fucked up and there are missing links to libraries, these are the ones needed to compile...
 #GSL
@@ -59,6 +59,7 @@ add_executable(Compare.out Compare.C)
 add_executable(CompareList.out CompareList.C)
 add_executable(Compute_Value.out Compute_Value.C)
 add_executable(Create_Cuts.out Create_Cuts.C)
+add_executable(CutCorrelation.out CutCorrelation.C)
 add_executable(CutEff.out CutEff.C)
 add_executable(CutSig.out CutSig.C)
 add_executable(CutTree.out CutTree.C)
@@ -126,6 +127,7 @@ target_link_libraries(Compare.out aalfonso-dict aalfonso-func "${CMAKE_CXX_FLAGS
 target_link_libraries(CompareList.out aalfonso-dict aalfonso-func "${CMAKE_CXX_FLAGS}")
 target_link_libraries(Compute_Value.out aalfonso-dict aalfonso-func "${CMAKE_CXX_FLAGS}")
 target_link_libraries(Create_Cuts.out aalfonso-dict aalfonso-func "${CMAKE_CXX_FLAGS}")
+target_link_libraries(CutCorrelation.out aalfonso-dict aalfonso-func "${CMAKE_CXX_FLAGS}")
 target_link_libraries(CutEff.out aalfonso-dict aalfonso-func "${CMAKE_CXX_FLAGS}")
 target_link_libraries(CutSig.out aalfonso-dict aalfonso-func "${CMAKE_CXX_FLAGS}")
 target_link_libraries(CutTree.out aalfonso-dict aalfonso-func "${CMAKE_CXX_FLAGS}")
