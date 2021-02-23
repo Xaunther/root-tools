@@ -8,7 +8,6 @@
 #include "Functions/Filereading.h"
 using namespace std;
 
-
 int GetNVariables(string filename)
 {
   ifstream input;
@@ -25,19 +24,19 @@ int GetNVariables(string filename)
   input.close();
   return N;
 }
-string* ReadVariables(int &N, string filename)
+string *ReadVariables(int &N, string filename)
 {
   if (filename.find(".root") != string::npos)
   {
     N = 1;
-    string* array = new string[1];
+    string *array = new string[1];
     array[0] = filename;
     return array;
   }
   ifstream input;
 
   N = GetNVariables(filename);
-  string* array = new string[N];
+  string *array = new string[N];
 
   input.open(filename.c_str());
   for (int i = 0; i < N; i++)
@@ -49,10 +48,10 @@ string* ReadVariables(int &N, string filename)
   return array;
 }
 
-double* ReadNumbers(int &N, string filename)
+double *ReadNumbers(int &N, string filename)
 {
-  string* array = ReadVariables(N, filename);
-  double* darray = new double[N];
+  string *array = ReadVariables(N, filename);
+  double *darray = new double[N];
   for (int i = 0; i < N; i++)
   {
     darray[i] = stod(array[i]);
@@ -60,13 +59,13 @@ double* ReadNumbers(int &N, string filename)
   return darray;
 }
 
-string* ReadVariablesWord(int &N, string filename, int pos)
+string *ReadVariablesWord(int &N, string filename, int pos)
 {
   ifstream input;
   string basura;
 
   N = GetNVariables(filename);
-  string* array = new string[N];
+  string *array = new string[N];
 
   input.open(filename.c_str());
   for (int i = 0; i < N; i++)
@@ -83,11 +82,11 @@ string* ReadVariablesWord(int &N, string filename, int pos)
   return array;
 }
 
-vartable* ReadVarTable(int N, string filename)
+vartable *ReadVarTable(int N, string filename)
 {
   ifstream input;
 
-  vartable* array = new vartable[N];
+  vartable *array = new vartable[N];
 
   input.open(filename.c_str());
   for (int i = 0; i < N; i++)
@@ -103,12 +102,12 @@ vartable* ReadVarTable(int N, string filename)
   return array;
 }
 
-double** GetData(string filename, int &N, int Ncol)
+double **GetData(string filename, int &N, int Ncol)
 {
   ifstream input;
 
   N = GetNVariables(filename);
-  double** data = new double*[N];
+  double **data = new double *[N];
 
   for (int i = 0; i < N; i++)
   {
@@ -127,7 +126,6 @@ double** GetData(string filename, int &N, int Ncol)
 
   return data;
 }
-
 
 string GetCuts(string filename)
 {
@@ -159,7 +157,7 @@ string GetCuts(string filename)
 
 string GetCutsVar(string cutsfilename, string varsfilename, int N_variables, int i, int j)
 {
-  vartable* array = ReadVarTable(N_variables, varsfilename);
+  vartable *array = ReadVarTable(N_variables, varsfilename);
   string cuts = "";
   string basura;
   double value;

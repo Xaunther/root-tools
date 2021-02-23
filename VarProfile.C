@@ -40,7 +40,7 @@ void VarProfile(std::string tupledir, std::string varX, std::string varY, std::s
     auto binning = ReadNumbers(NBins, binfileX);
 
     //Now define the TProfile
-    auto profile = new TProfile("profile", "profile", NBins, binning);
+    auto profile = new TProfile("profile", "profile", NBins - 1, binning);
 
     //This must be done manually, go through the ntuple and fill the profile
     FillProfileFromChain(profile, chain, varX, varY);
@@ -63,10 +63,9 @@ void VarProfile(std::string tupledir, std::string varX, std::string varY, std::s
     profile->Draw(plotopt.c_str());
 
     //Set the titles, then save
-    auto hist = chain->GetHistogram();
-    hist->SetTitle(titles[0].c_str());
-    hist->SetXTitle(titles[1].c_str());
-    hist->SetYTitle(titles[2].c_str());
+    profile->SetTitle(titles[0].c_str());
+    profile->SetXTitle(titles[1].c_str());
+    profile->SetYTitle(titles[2].c_str());
 
     c1->SaveAs(("plots/TProfile_" + varX + "_" + varY + ".pdf").c_str());
 }
