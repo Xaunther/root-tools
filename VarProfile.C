@@ -9,6 +9,8 @@
 #include "TTreeFormula.h"
 #include "TStyle.h"
 #include "TCanvas.h"
+#include "TMath.h"
+#include "Math/ProbFuncMathCore.h"
 #include "Functions/TreeTools.h"
 #include "Functions/Filereading.h"
 #include "Functions/StringTools.h"
@@ -68,6 +70,14 @@ void VarProfile(std::string tupledir, std::string varX, std::string varY, std::s
     profile->SetYTitle(titles[2].c_str());
 
     c1->SaveAs(("plots/TProfile_" + varX + "_" + varY + ".pdf").c_str());
+
+    //Some extra thingy. Perform a CHI2 test wrt a flat distribution and provide output on screen
+    double chi2 = 0;
+    double mean = profile->GetMean();
+    for (int i = 0; i < profile->GetNbinsX(); i++)
+        chi2 += TMath::Power((profile->GetBinContent(i) - mean) / profile->GetBinError(i), 2.);
+
+    std::cout << "Result of CHI2 test (w.r.t. uniform distribution) p-value: " << ROOT::Math::chisquared_cdf_c(chi2, profile->GetNbinsX() - 1) << std::endl;
 }
 
 #if !defined(__CLING__)
