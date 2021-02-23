@@ -73,8 +73,16 @@ void VarProfile(std::string tupledir, std::string varX, std::string varY, std::s
 
     //Some extra thingy. Perform a CHI2 test wrt a flat distribution and provide output on screen
     double chi2 = 0;
-    double mean = profile->GetMean();
-    for (int i = 0; i < profile->GetNbinsX(); i++)
+    double entries = 0;
+    double mean = 0;
+    //Loop to the the entries inside the range
+    for (int i = 1; i <= profile->GetNbinsX(); i++)
+        entries += profile->GetBinEntries(i);
+    //Loop to get the mean inside the range
+    for (int i = 1; i <= profile->GetNbinsX(); i++)
+        mean += profile->GetBinEntries(i) / entries * profile->GetBinContent(i);
+    //Loop once more to get the chi2
+    for (int i = 1; i <= profile->GetNbinsX(); i++)
         chi2 += TMath::Power((profile->GetBinContent(i) - mean) / profile->GetBinError(i), 2.);
 
     std::cout << "Result of CHI2 test (w.r.t. uniform distribution) p-value: " << ROOT::Math::chisquared_cdf_c(chi2, profile->GetNbinsX() - 1) << std::endl;
