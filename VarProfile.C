@@ -2,6 +2,7 @@
 //Binning must be specified (for example some homogeneous binning from HomoBins.C)
 //It gives the average value of Yvar in each bin of Xvar, using TProfile.
 //No weights can be assigned
+//If output file is not specified, it defaults to "plots/TProfile_{varX}_{varY}.pdf"
 #include <iostream>
 #include <string>
 #include "TProfile.h"
@@ -10,12 +11,13 @@
 #include "TStyle.h"
 #include "TCanvas.h"
 #include "TMath.h"
+#include "TTree.h"
 #include "Math/ProbFuncMathCore.h"
 #include "Functions/TreeTools.h"
 #include "Functions/Filereading.h"
 #include "Functions/StringTools.h"
 
-void FillProfileFromChain(TProfile *profile, TChain *chain, std::string varX, std::string varY)
+void FillProfileFromChain(TProfile *profile, TTree *chain, std::string varX, std::string varY)
 {
     //Define the formulas for the two variables
     auto formulaX = new TTreeFormula(varX.c_str(), varX.c_str(), chain);
@@ -31,12 +33,14 @@ void FillProfileFromChain(TProfile *profile, TChain *chain, std::string varX, st
     delete formulaY;
 }
 
-void VarProfile(std::string tupledir, std::string varX, std::string varY, std::string binfileX, std::string treename = "DecayTree", std::string cutfile = "", std::string plotopt = "", std::string title = "")
+void VarProfile(std::string tupledir, std::string varX, std::string varY, std::string binfileX, std::string treename = "DecayTree", std::string cutfile = "", std::string plotopt = "", std::string title = "", std::string outputfile = "")
 {
     //Open ntuple
-    auto chain = GetChain(tupledir, treename);
+    auto raw_chain = GetChain(tupledir, treename);
     //Get cuts
     std::string cuts = GetCuts(cutfile);
+    //Only use events passing the given selection
+    TTree *chain = raw_chain->CopyTree(cuts.c_str());
     //Get the binning!
     int NBins = 0;
     auto binning = ReadNumbers(NBins, binfileX);
@@ -69,7 +73,9 @@ void VarProfile(std::string tupledir, std::string varX, std::string varY, std::s
     profile->SetXTitle(titles[1].c_str());
     profile->SetYTitle(titles[2].c_str());
 
-    c1->SaveAs(("plots/TProfile_" + varX + "_" + varY + ".pdf").c_str());
+    if (outputfile == "")
+        outputfile = "plots/TProfile_" + varX + "_" + varY + ".pdf";
+    c1->SaveAs(outputfile.c_str());
 
     //Some extra thingy. Perform a CHI2 test wrt a flat distribution and provide output on screen
     double chi2 = 0;
@@ -107,6 +113,9 @@ int main(int argc, char **argv)
         break;
     case 8:
         VarProfile(*(new std::string(argv[1])), *(new std::string(argv[2])), *(new std::string(argv[3])), *(new std::string(argv[4])), *(new std::string(argv[5])), *(new std::string(argv[6])), *(new std::string(argv[7])), *(new std::string(argv[8])));
+        break;
+    case 9:
+        VarProfile(*(new std::string(argv[1])), *(new std::string(argv[2])), *(new std::string(argv[3])), *(new std::string(argv[4])), *(new std::string(argv[5])), *(new std::string(argv[6])), *(new std::string(argv[7])), *(new std::string(argv[8])), *(new std::string(argv[9])));
         break;
     default:
         std::cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << std::endl;
