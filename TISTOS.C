@@ -14,126 +14,64 @@
 #include "Functions/TUncertainty.h"
 using namespace std;
 
-void TISTOS(string dirfile, string cutsfilename, string outfile = "TISTOS_results.txt", string L0_lines = "Variables/L0_TISTOS.txt", string Hlt1_lines = "Variables/Hlt1_TISTOS.txt", string Hlt2_lines = "Variables/Hlt2_TISTOS.txt")
+void TISTOS(string dirfile_data, string dirfile_MC, string trigger_lines, string precutsfilename_data = "1", string precutsfilename_MC = "1", string outfile = "TISTOS_results.txt")
 {
-  //Obtain cuts (in case some cuts must be applied before TISTOSing)
-  string cuts = GetCuts(cutsfilename);
-  if (cuts == "") {cuts = "1";}
+  //Precuts we might want to provide
+  auto precuts_data = GetCuts(precutsfilename_data);
+  auto precuts_MC = GetCuts(precutsfilename_MC);
 
-  //Get chain
-  TChain* chain = GetChain(dirfile);
+  //Get chains
+  auto chain_data = GetChain(dirfile_data);
+  auto chain_MC = GetChain(dirfile_MC);
 
   //Trigger lines used for TISTOS
-  int N_L0 = 0, N_Hlt1 = 0, N_Hlt2 = 0;
-  string* L0_list = ReadVariables(N_L0, L0_lines);
-  string* Hlt1_list = ReadVariables(N_Hlt1, Hlt1_lines);
-  string* Hlt2_list = ReadVariables(N_Hlt2, Hlt2_lines);
+  int N_lines = 0;
+  auto trigger_list = ReadVariables(N_lines, trigger_lines);
   //Clean suffixes
-  L0_list = CleanTISTOS(L0_list, N_L0);
-  Hlt1_list = CleanTISTOS(Hlt1_list, N_Hlt1);
-  Hlt2_list = CleanTISTOS(Hlt2_list, N_Hlt2);
+  trigger_list = CleanTISTOS(trigger_list, N_lines);
   //Perform TIS and TISTOS Cuts
-  string L0_TIS = MakeTIS(L0_list, N_L0);
-  string L0_TISTOS = MakeTISTOS(L0_list, N_L0);
-  string Hlt1_TIS = MakeTIS(Hlt1_list, N_Hlt1);
-  string Hlt1_TISTOS = MakeTISTOS(Hlt1_list, N_Hlt1);
-  string Hlt2_TIS = MakeTIS(Hlt2_list, N_Hlt2);
-  string Hlt2_TISTOS = MakeTISTOS(Hlt2_list, N_Hlt2);
+  auto trigger_TIS = MakeTIS(trigger_list, N_lines);
+  auto trigger_TOS = MakeTOS(trigger_list, N_lines);
+  auto trigger_TISTOS = MakeTISTOS(trigger_list, N_lines);
 
   //Part where the output is stored into outfile
-  //We compute L0 efficiency
-  //Then, Hlt1 efficiency, having passed L0
+  //We compute trigger efficiency
   ofstream fout;
-  TUncertainty eff_TIS, eff_TISTOS;
+  TUncertainty eff_TIS, eff_MC;
   double N0;
-
   fout.open(outfile.c_str());
-  fout << "TISTOS method applied on tuples defined at " << dirfile << ":" << endl << endl;
-  //L0
-  fout << "         L0 lines used         " << endl;
-  fout << "-------------------------------" << endl;
-  for (int i = 0; i < N_L0; i++)
-  {
-    fout << L0_list[i] << endl;
-  }
-  fout << MakeTOS(L0_list, N_L0);
-  fout << endl;
-  cout << "Going for L0 TISTOS" << endl;
-  //Compute Numbers
-  N0 = chain->GetEntries(cuts.c_str());
-  eff_TIS = GetMean(chain, L0_TIS, cuts);
+  fout << "TISTOS method applied on tuples defined at " << dirfile_data << " (data) and " << dirfile_MC << " (MC):" << endl
+       << endl;
+  //List trigger lines
+  fout << "         Trigger lines used         " << endl;
+  fout << "------------------------------------" << endl;
+  for (int i = 0; i < N_lines; i++)
+    fout << trigger_list[i] << endl;
+
+  //Compute efficiency part from data
+  N0 = chain_data->GetEntries(precuts_data.c_str());
+  eff_TIS = GetMean(chain_data, trigger_TISTOS, precuts_data) / GetMean(chain_data, trigger_TOS, precuts_data);
   eff_TIS = TUncertainty(eff_TIS.GetValue(), sqrt(eff_TIS.GetValue() * (1 - eff_TIS.GetValue()) / N0));
-  eff_TISTOS = GetMean(chain, L0_TISTOS, cuts);
-  eff_TISTOS = TUncertainty(eff_TISTOS.GetValue(), sqrt(eff_TISTOS.GetValue() * (1 - eff_TISTOS.GetValue()) / N0));
 
-  fout << "L0_Trigger_eff = ";
-  (eff_TISTOS / eff_TIS).Print(fout, "rel");
+  //Compute efficiency part from MC
+  N0 = chain_MC->GetEntries(precuts_MC.c_str());
+  eff_MC = GetMean(chain_MC, trigger_TOS, precuts_MC) / GetMean(chain_MC, trigger_TIS, precuts_MC);
+  eff_MC = TUncertainty(eff_MC.GetValue(), sqrt(eff_MC.GetValue() * (1 - eff_MC.GetValue()) / N0));
+
+  fout << "Trigger_eff = ";
+  (eff_MC * eff_TIS).Print(fout, "rel");
   fout << endl;
-
-
-  //Hlt1
-  //Include L0 cuts into cuts
-  cuts = cuts + " * (" + MakeTOS(L0_list, N_L0) + ")";
-  fout << "        Hlt1 lines used        " << endl;
-  fout << "-------------------------------" << endl;
-  for (int i = 0; i < N_Hlt1; i++)
-  {
-    fout << Hlt1_list[i] << endl;
-  }
-  fout << MakeTOS(Hlt1_list, N_Hlt1);
-  fout << endl;
-  cout << "Going for Hlt1 TISTOS" << endl;
-   //Compute Numbers
-  N0 = chain->GetEntries(cuts.c_str());
-  eff_TIS = GetMean(chain, Hlt1_TIS, cuts);
-  eff_TIS = TUncertainty(eff_TIS.GetValue(), sqrt(eff_TIS.GetValue() * (1 - eff_TIS.GetValue()) / N0));
-  eff_TISTOS = GetMean(chain, Hlt1_TISTOS, cuts);
-  eff_TISTOS = TUncertainty(eff_TISTOS.GetValue(), sqrt(eff_TISTOS.GetValue() * (1 - eff_TISTOS.GetValue()) / N0));
-
-  fout << "Hlt1_Trigger_eff = ";
-  (eff_TISTOS / eff_TIS).Print(fout, "rel");
-  fout << endl;
-
-
-  //Hlt2
-  //Include Hlt1 cuts into cuts
-  cuts = cuts + " * (" + MakeTOS(Hlt1_list, N_Hlt1) + ")";
-  fout << "        Hlt2 lines used        " << endl;
-  fout << "-------------------------------" << endl;
-  for (int i = 0; i < N_Hlt2; i++)
-  {
-    fout << Hlt2_list[i] << endl;
-  }
-  fout << MakeTOS(Hlt2_list, N_Hlt2);
-  fout << endl;
-  cout << "Going for Hlt2 TISTOS" << endl;
-  //Compute Numbers
-  N0 = chain->GetEntries(cuts.c_str());
-  eff_TIS = GetMean(chain, Hlt2_TIS, cuts);
-  eff_TIS = TUncertainty(eff_TIS.GetValue(), sqrt(eff_TIS.GetValue() * (1 - eff_TIS.GetValue()) / N0));
-  eff_TISTOS = GetMean(chain, Hlt2_TISTOS, cuts);
-  eff_TISTOS = TUncertainty(eff_TISTOS.GetValue(), sqrt(eff_TISTOS.GetValue() * (1 - eff_TISTOS.GetValue()) / N0));
-
-  fout << "Hlt2_Trigger_eff = ";
-  (eff_TISTOS / eff_TIS).Print(fout, "rel");
-  fout << endl;
-
 
   fout.close();
-  CloseChain(chain);
+  CloseChain(chain_data);
+  CloseChain(chain_MC);
 }
 
 #if !defined(__CLING__)
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   switch (argc - 1)
   {
-  case 2:
-    TISTOS(*(new string(argv[1])), *(new string(argv[2])));
-    break;
-  case 3:
-    TISTOS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])));
-    break;
   case 4:
     TISTOS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
     break;
