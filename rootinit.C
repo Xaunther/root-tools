@@ -102,6 +102,8 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L " + path + "sPlot.C+").c_str());
   gROOT->ProcessLine((".L " + path + "sWeight.C+").c_str());
   gROOT->ProcessLine((".L " + path + "TISTOS.C+").c_str());
+  gROOT->ProcessLine((".L " + path + "TISTOS1.C+").c_str());
+  gROOT->ProcessLine((".L " + path + "TISTOS2.C+").c_str());
   gROOT->ProcessLine((".L " + path + "Trigger_effs.C+").c_str());
   gROOT->ProcessLine((".L " + path + "TupleCorr.C+").c_str());
   gROOT->ProcessLine((".L " + path + "UnbinnedReweight.C+").c_str());
