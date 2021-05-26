@@ -37,8 +37,13 @@ void TISTOS(string dirfile_data, string dirfile_MC, string trigger_lines, string
   //Part where the output is stored into outfile
   //We compute trigger efficiency
   ofstream fout;
-  TUncertainty eff_TIS, eff_MC;
-  double N0;
+  TUncertainty eff_TIS, N_TOS, N_TIS;
+  double N0, Nw, Nw2;
+  //We'll need the square of the weight for later
+  string w2 = "";
+  if (precuts_MC != "")
+    w2 = precuts_MC + "*" + precuts_MC;
+
   fout.open(outfile.c_str());
   fout << "TISTOS method applied on tuples defined at " << dirfile_data << " (data) and " << dirfile_MC << " (MC):" << endl
        << endl;
@@ -54,12 +59,20 @@ void TISTOS(string dirfile_data, string dirfile_MC, string trigger_lines, string
   eff_TIS = TUncertainty(eff_TIS.GetValue(), sqrt(eff_TIS.GetValue() * (1 - eff_TIS.GetValue()) / N0));
 
   //Compute efficiency part from MC
-  N0 = chain_MC->GetEntries(precuts_MC.c_str());
-  eff_MC = GetMean(chain_MC, trigger_TOS, precuts_MC) / GetMean(chain_MC, trigger_TIS, precuts_MC);
-  eff_MC = TUncertainty(eff_MC.GetValue(), sqrt(eff_MC.GetValue() * (1 - eff_MC.GetValue()) / N0));
+  N0 = chain_MC->GetEntries();
+
+  Nw = GetMeanEntries(chain_MC, trigger_TOS, precuts_MC);
+  Nw2 = GetMeanEntries(chain_MC, trigger_TOS, w2);
+  N_TOS = Nw * Nw / Nw2;
+  N_TOS = TUncertainty(N_TOS.GetValue(), sqrt(N_TOS.GetValue() / N0) / 2.); //Factor 2 from maximum binomial error (p=q=0.5)
+
+  Nw = GetMeanEntries(chain_MC, trigger_TIS, precuts_MC);
+  Nw2 = GetMeanEntries(chain_MC, trigger_TIS, w2);
+  N_TIS = Nw * Nw / Nw2;
+  N_TIS = TUncertainty(N_TIS.GetValue(), sqrt(N_TIS.GetValue() / N0) / 2.); //Factor 2 from maximum binomial error (p=q=0.5)
 
   fout << "Trigger_eff = ";
-  (eff_MC * eff_TIS).Print(fout, "rel");
+  (N_TOS / N_TIS * eff_TIS).Print(fout, "rel");
   fout << endl;
 
   fout.close();
