@@ -241,6 +241,37 @@ void Constants::Init(std::string ananame)
     this->Init("NstGamma_Simult");
     Legend = false;
   }
+  else if (ananame == "NstGamma_Simult_ppiG_KpiGRef")
+  {
+    this->Init("NstGamma_Simult");
+    //Gaussian parameters
+    mean_0 = 5620.0;
+    mean_min = xmin;
+    mean_max = xmax;
+    width_0 = 150.0;
+    width_min = 20.0;
+    width_max = 200.0;
+    //CB parameters
+    alpha_0 = 2;
+    alpha_min = 0.01;
+    alpha_max = 20;
+    n_0 = 1;
+    n_min = 0.1;
+    n_max = 200;
+    //Double CB parameters
+    alpha1_0 = 2.6;
+    alpha1_min = 0.01;
+    alpha1_max = 20;
+    alpha2_0 = 1.0;
+    alpha2_min = 0.01;
+    alpha2_max = 20;
+    n1_0 = 0.8;
+    n1_min = 0.1;
+    n1_max = 200;
+    n2_0 = 50.0;
+    n2_min = 0.1;
+    n2_max = 100;
+  }
   else if (ananame == "KstplusGamma")
   {
     //Double CB parameters
