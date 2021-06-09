@@ -13,19 +13,19 @@ using namespace std;
 
 void VarFit(string variablename, FitOption fitopt, string filedir, string cutfile = "", string w_var = "", string title = "", string Xtitle = "", string opts = "")
 {
-  FitFunction* fitf = FitFunction_init();
-  RooWorkspace* ws = new RooWorkspace();
+  FitFunction *fitf = FitFunction_init();
+  RooWorkspace *ws = new RooWorkspace();
 
   //Load TChain
   string cuts = GetCuts(cutfile);
 
-  TChain* chain = GetChain(filedir);
-  TTree* temptree = new TTree();
-  TFile* tempfile = new TFile();
+  TChain *chain = GetChain(filedir);
+  TTree *temptree = new TTree();
+  TFile *tempfile = new TFile();
 
   //Cut chain into new TChain in a temp root file
   tempfile = new TFile("Tuples/temp.root", "recreate");
-  temptree = (TTree*)chain->CopyTree(cuts.c_str());
+  temptree = (TTree *)chain->CopyTree(cuts.c_str());
   tempfile->Write();
 
   //If opts not specified, use default
@@ -39,10 +39,15 @@ void VarFit(string variablename, FitOption fitopt, string filedir, string cutfil
   GoodPlot(ws, variablename, title, Xtitle, opts);
 
   cout << temptree->GetEntries() << " events plotted" << endl;
+
+  CloseChain(chain);
+  delete temptree;
+  delete tempfile;
+  delete ws;
 }
 
 #if !defined(__CLING__)
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   FitOption fitopt = StringToFitOption(*(new string(argv[2])));
   switch (argc - 1)
