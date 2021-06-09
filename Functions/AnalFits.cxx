@@ -419,7 +419,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   std::vector<RooWorkspace *> ws_ppiG_mass;
   std::vector<RooWorkspace *> ws_KpiG_mass;
   std::vector<RooWorkspace *> ws_pKG_mass;
-  //KpiG, pKG ppiG, KpiG Ref, pKG Ref, KpipiG MCs
+  //KpiG, pKG, ppiG, KpiG Ref, pKG Ref, KpipiG MCs
   std::vector<string> fileindex = {"0", "5", "4", "6", "9", "2"};
   //We also need to add the global weight variable to each PID weight...
   for (unsigned int i = 0; i < fileindex.size(); i++)
@@ -466,7 +466,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   ws_ppiG_mass.push_back(fitf[DoubleGaussExp](variablename[0], MCtree[1], "Event_PIDCalibEff_global_weight", 0, 0, opts)); //pKG MC
   cout << "ppiG MC" << endl
        << "-------" << endl;
-  ws_ppiG_mass.push_back(fitf[CBExp](variablename[0], MCtree[2], "Event_PIDCalibEff_global_weight", 0, 0, opts)); //ppiG MC
+  ws_ppiG_mass.push_back(fitf[DoubleGaussExp](variablename[0], MCtree[2], "Event_PIDCalibEff_global_weight", 0, 0, opts)); //ppiG MC
   cout << "KpiG MC Reflected" << endl
        << "-------" << endl;
   ws_ppiG_mass.push_back(fitf[CBExp](variablename[0], MCtree[3], "Event_PIDCalibEff_global_weight", 0, 0, opts + "_ppiG_KpiGRef")); //KpiG MC Reflected
@@ -482,7 +482,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   ws_KpiG_mass.push_back(fitf[CBExp](variablename[1], MCtree[0], "Event_PIDCalibEff_pbarpi_global_weight", 0, 0, opts)); //KpiG MC
   cout << "pKG MC" << endl
        << "------" << endl;
-  ws_KpiG_mass.push_back(fitf[CBExp](variablename[1], MCtree[1], "Event_PIDCalibEff_pbarpi_global_weight", 0, 0, opts)); //pKG MC
+  ws_KpiG_mass.push_back(fitf[DoubleGaussExp](variablename[1], MCtree[1], "Event_PIDCalibEff_pbarpi_global_weight", 0, 0, opts)); //pKG MC
   cout << "ppiG MC" << endl
        << "-------" << endl;
   ws_KpiG_mass.push_back(fitf[CBExp](variablename[1], MCtree[2], "Event_PIDCalibEff_pbarpi_global_weight", 0, 0, opts)); //ppiG MC
@@ -510,7 +510,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   ws_pKG_mass.push_back(fitf[CBExp](variablename[2], MCtree[2], "Event_PIDCalibEff_ppibar_global_weight", 0, 0, opts)); //ppiG MC
   cout << "KpiG MC Reflected" << endl
        << "-------" << endl;
-  ws_pKG_mass.push_back(fitf[CBExp](variablename[2], MCtree[3], "Event_PIDCalibEff_ppibar_global_weight", 0, 0, opts)); //KpiG MC Reflected
+  ws_pKG_mass.push_back(fitf[DoubleGaussExp](variablename[2], MCtree[3], "Event_PIDCalibEff_ppibar_global_weight", 0, 0, opts)); //KpiG MC Reflected
   cout << "pKG MC Reflected" << endl
        << "-------" << endl;
   ws_pKG_mass.push_back(fitf[DoubleGaussExp](variablename[2], MCtree[4], "Event_PIDCalibEff_ppibar_global_weight", 0, 0, opts)); //pKG MC Reflected
