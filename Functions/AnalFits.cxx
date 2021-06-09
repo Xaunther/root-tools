@@ -419,7 +419,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   std::vector<RooWorkspace *> ws_ppiG_mass;
   std::vector<RooWorkspace *> ws_KpiG_mass;
   std::vector<RooWorkspace *> ws_pKG_mass;
-  //KpiG, pKG, ppiG, KpiG Ref, pKG Ref, KpipiG MCs
+  //KpiG, pKG ppiG, KpiG Ref, pKG Ref, KpipiG MCs
   std::vector<string> fileindex = {"0", "5", "4", "6", "9", "2"};
   //We also need to add the global weight variable to each PID weight...
   for (unsigned int i = 0; i < fileindex.size(); i++)
@@ -466,7 +466,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   ws_ppiG_mass.push_back(fitf[DoubleGaussExp](variablename[0], MCtree[1], "Event_PIDCalibEff_global_weight", 0, 0, opts)); //pKG MC
   cout << "ppiG MC" << endl
        << "-------" << endl;
-  ws_ppiG_mass.push_back(fitf[DoubleGaussExp](variablename[0], MCtree[2], "Event_PIDCalibEff_global_weight", 0, 0, opts)); //ppiG MC
+  ws_ppiG_mass.push_back(fitf[CBExp](variablename[0], MCtree[2], "Event_PIDCalibEff_global_weight", 0, 0, opts)); //ppiG MC
   cout << "KpiG MC Reflected" << endl
        << "-------" << endl;
   ws_ppiG_mass.push_back(fitf[CBExp](variablename[0], MCtree[3], "Event_PIDCalibEff_global_weight", 0, 0, opts + "_ppiG_KpiGRef")); //KpiG MC Reflected
@@ -485,7 +485,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   ws_KpiG_mass.push_back(fitf[DoubleGaussExp](variablename[1], MCtree[1], "Event_PIDCalibEff_pbarpi_global_weight", 0, 0, opts)); //pKG MC
   cout << "ppiG MC" << endl
        << "-------" << endl;
-  ws_KpiG_mass.push_back(fitf[CBExp](variablename[1], MCtree[2], "Event_PIDCalibEff_pbarpi_global_weight", 0, 0, opts)); //ppiG MC
+  ws_KpiG_mass.push_back(fitf[DoubleGaussExp](variablename[1], MCtree[2], "Event_PIDCalibEff_pbarpi_global_weight", 0, 0, opts)); //ppiG MC
   cout << "KpiG MC Reflected" << endl
        << "-------" << endl;
   ws_KpiG_mass.push_back(fitf[CBExp](variablename[1], MCtree[3], "Event_PIDCalibEff_pbarpi_global_weight", 0, 0, opts)); //KpiG MC Reflected
@@ -753,10 +753,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   value = ws_KpiG_mass[1]->var(name_list.alphaR[0].c_str())->getValV();
   RooRealVar alphaR_KpiGmass_pKGMC(name_list.alphaR[9].c_str(), name_list.alphaR[9].c_str(), value);
   alphaR_KpiGmass_pKGMC.setConstant();
-  value = ws_KpiG_mass[1]->var(name_list.n.c_str())->getValV();
-  RooRealVar n_KpiGmass_pKGMC(name_list.nL[9].c_str(), name_list.nL[9].c_str(), value);
-  n_KpiGmass_pKGMC.setConstant();
-  RooCBExp pdf_KpiGmass_pKGMC(name_list.comppdf[9].c_str(), name_list.comppdf[9].c_str(), b_masses[1], mean_KpiGmass_pKGMC, sigma_KpiGmass_pKGMC, alphaL_KpiGmass_pKGMC, n_KpiGmass_pKGMC, alphaR_KpiGmass_pKGMC);
+  RooDoubleGaussExp pdf_KpiGmass_pKGMC(name_list.comppdf[9].c_str(), name_list.comppdf[9].c_str(), b_masses[1], mean_KpiGmass_pKGMC, sigma_KpiGmass_pKGMC, alphaL_KpiGmass_pKGMC, alphaR_KpiGmass_pKGMC);
 
   value = ws_KpiG_mass[2]->var(name_list.mean[0].c_str())->getValV();
   RooRealVar mean_KpiGmass_ppiGMC(name_list.mean[10].c_str(), name_list.mean[10].c_str(), value);
@@ -770,10 +767,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   value = ws_KpiG_mass[2]->var(name_list.alphaR[0].c_str())->getValV();
   RooRealVar alphaR_KpiGmass_ppiGMC(name_list.alphaR[10].c_str(), name_list.alphaR[10].c_str(), value);
   alphaR_KpiGmass_ppiGMC.setConstant();
-  value = ws_KpiG_mass[2]->var(name_list.n.c_str())->getValV();
-  RooRealVar n_KpiGmass_ppiGMC(name_list.nL[10].c_str(), name_list.nL[10].c_str(), value);
-  n_KpiGmass_ppiGMC.setConstant();
-  RooCBExp pdf_KpiGmass_ppiGMC(name_list.comppdf[10].c_str(), name_list.comppdf[10].c_str(), b_masses[1], mean_KpiGmass_ppiGMC, sigma_KpiGmass_ppiGMC, alphaL_KpiGmass_ppiGMC, n_KpiGmass_ppiGMC, alphaR_KpiGmass_ppiGMC);
+  RooDoubleGaussExp pdf_KpiGmass_ppiGMC(name_list.comppdf[10].c_str(), name_list.comppdf[10].c_str(), b_masses[1], mean_KpiGmass_ppiGMC, sigma_KpiGmass_ppiGMC, alphaL_KpiGmass_ppiGMC, alphaR_KpiGmass_ppiGMC);
 
   value = ws_KpiG_mass[3]->var(name_list.mean[0].c_str())->getValV();
   RooRealVar mean_KpiGmass_KpiGRefMC(name_list.mean[11].c_str(), name_list.mean[11].c_str(), value);
@@ -953,10 +947,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   value = ws_pKG_mass[3]->var(name_list.alphaR[0].c_str())->getValV();
   RooRealVar alphaR_pKGmass_KpiGRefMC(name_list.alphaR[19].c_str(), name_list.alphaR[19].c_str(), value);
   alphaR_pKGmass_KpiGRefMC.setConstant();
-  value = ws_pKG_mass[3]->var(name_list.n.c_str())->getValV();
-  RooRealVar n_pKGmass_KpiGRefMC(name_list.nL[19].c_str(), name_list.nL[19].c_str(), value);
-  n_pKGmass_KpiGRefMC.setConstant();
-  RooCBExp pdf_pKGmass_KpiGRefMC(name_list.comppdf[19].c_str(), name_list.comppdf[19].c_str(), b_masses[2], mean_pKGmass_KpiGRefMC, sigma_pKGmass_KpiGRefMC, alphaL_pKGmass_KpiGRefMC, n_pKGmass_KpiGRefMC, alphaR_pKGmass_KpiGRefMC);
+  RooDoubleGaussExp pdf_pKGmass_KpiGRefMC(name_list.comppdf[19].c_str(), name_list.comppdf[19].c_str(), b_masses[2], mean_pKGmass_KpiGRefMC, sigma_pKGmass_KpiGRefMC, alphaL_pKGmass_KpiGRefMC, alphaR_pKGmass_KpiGRefMC);
 
   value = ws_pKG_mass[4]->var(name_list.mean[0].c_str())->getValV();
   RooRealVar mean_pKGmass_pKGRefMC(name_list.mean[20].c_str(), name_list.mean[20].c_str(), value);
