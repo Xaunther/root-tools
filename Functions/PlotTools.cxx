@@ -158,7 +158,7 @@ void GoodPlot(RooWorkspace *ws, string variablename, string title, string Xtitle
   //Define data points style. Plot them first
   data->plotOn(xframe, RooFit::MarkerColor(kBlack), RooFit::MarkerStyle(kFullDotMedium), RooFit::LineColor(kBlack), RooFit::DataError((RooAbsData::ErrorType)const_list.SumW2Error));
   //Define legend
-  TLegend *leg;
+  TLegend *leg = 0;
   if (N_comps > 0) //We have a fit to plot!
   {
     //Extract the list of pdfs and iterate on it
