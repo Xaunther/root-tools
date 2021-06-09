@@ -472,7 +472,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   ws_ppiG_mass.push_back(fitf[CBExp](variablename[0], MCtree[3], "Event_PIDCalibEff_global_weight", 0, 0, opts + "_ppiG_KpiGRef")); //KpiG MC Reflected
   cout << "pKG MC Reflected" << endl
        << "-------" << endl;
-  ws_ppiG_mass.push_back(fitf[CBExp](variablename[0], MCtree[4], "Event_PIDCalibEff_global_weight", 0, 0, opts)); //pKG MC Reflected
+  ws_ppiG_mass.push_back(fitf[CBExp](variablename[0], MCtree[4], "Event_PIDCalibEff_global_weight", 0, 0, opts + "_ppiG_pKGRef")); //pKG MC Reflected
 
   //Let's continue with fits to KpiG mass
   cout << "Starting MC fits to KpiG mass" << endl;

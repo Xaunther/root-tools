@@ -165,6 +165,10 @@ void Names::Init(std::string ananame)
   {
     this->Init("NstGamma_Simult");
   }
+  else if (ananame == "NstGamma_Simult_ppiG_pKGRef")
+  {
+    this->Init("NstGamma_Simult");
+  }
   else if (ananame == "KstplusGamma")
   {
   }
