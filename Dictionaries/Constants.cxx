@@ -297,6 +297,22 @@ void Constants::Init(std::string ananame)
     alpha2_min = 0.01;
     alpha2_max = 20;
   }
+  else if (ananame == "NstGamma_minmu_ppiG_KpiGRef")
+  {
+    this->Init("NstGamma_Simult_ppiG_KpiGRef");
+  }
+  else if (ananame == "NstGamma_minmu_ppiG_pKGRef")
+  {
+    this->Init("NstGamma_Simult_ppiG_KpiGRef");
+  }
+  else if (ananame == "NstGamma_maxmu_ppiG_KpiGRef")
+  {
+    this->Init("NstGamma_Simult_ppiG_KpiGRef");
+  }
+  else if (ananame == "NstGamma_maxmu_ppiG_pKGRef")
+  {
+    this->Init("NstGamma_Simult_ppiG_KpiGRef");
+  }
   else if (ananame == "KstplusGamma")
   {
     //Double CB parameters
@@ -374,6 +390,8 @@ void Constants::Init(std::string ananame)
     alpha2_0 = 0.5;
     alpha2_min = 0.01;
     alpha2_max = 20;
+    plot_title = "p #pi^{-} #gamma combined mass 2011+12";
+    plot_Xtitle = "m_{p#pi^{-}#gamma}";
   }
   else if (ananame == "NstG_KpiG_Wrong_log")
   {
@@ -435,6 +453,8 @@ void Constants::Init(std::string ananame)
     mean_0 = 5450.0;
     fsig_0 = 0.3;
     fbkg_0 = 0.7;
+    plot_title = "p #pi^{-} #gamma combined mass 2011+12";
+    plot_Xtitle = "m_{p#pi^{-}#gamma}";
   }
   else if (ananame == "NstG_pKG_Wrong_MC")
   {

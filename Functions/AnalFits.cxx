@@ -1459,7 +1459,7 @@ RooWorkspace *FitLb2NstG_Kpi_Wrong(string variablename, TTree *chain, string opt
   cout << "------------------------" << endl
        << endl;
   //Fit and plot
-  RooWorkspace *MCws0 = fitf[DoubleCB](variablename, MCtree, "Event_PIDCalibEff_pbarpi_global_weight", 0, 0, opts + "_MC");
+  RooWorkspace *MCws0 = fitf[CBExp](variablename, MCtree, "Event_PIDCalibEff_pbarpi_global_weight", 0, 0, opts + "_MC");
   GoodPlot(MCws0, variablename, "", "", opts + "_MC", "_MC0_Wrong");
   SaveRooVars(MCws0, "output/" + variablename + "_RooYields_MC0_Wrong.txt");
   //Close file
@@ -1498,13 +1498,10 @@ RooWorkspace *FitLb2NstG_Kpi_Wrong(string variablename, TTree *chain, string opt
   value = MCws0->var(name_list.alphaR[0].c_str())->getValV();
   RooRealVar KpiG_alphaR(name_list.alphaR[0].c_str(), name_list.alphaR[0].c_str(), value);
   KpiG_alphaR.setConstant();
-  value = MCws0->var(name_list.nL[0].c_str())->getValV();
+  value = MCws0->var(name_list.n.c_str())->getValV();
   RooRealVar KpiG_nL(name_list.nL[0].c_str(), name_list.nL[0].c_str(), value);
   KpiG_nL.setConstant();
-  value = MCws0->var(name_list.nR[0].c_str())->getValV();
-  RooRealVar KpiG_nR(name_list.nR[0].c_str(), name_list.nR[0].c_str(), value);
-  KpiG_nR.setConstant();
-  BifurcatedCB KpiG_pdf(name_list.comppdf[0].c_str(), name_list.comppdf[0].c_str(), B_M, KpiG_mean, KpiG_width, KpiG_alphaL, KpiG_nL, KpiG_alphaR, KpiG_nR);
+  RooCBExp KpiG_pdf(name_list.comppdf[0].c_str(), name_list.comppdf[0].c_str(), B_M, KpiG_mean, KpiG_width, KpiG_alphaL, KpiG_nL, KpiG_alphaR);
   RooRealVar KpiG_f(name_list.fcomp[0].c_str(), name_list.fcomp[0].c_str(), 8000., 0., double(entries));
   //Constantize automatically if we set equal limits
   KpiG_mean.setConstant(!(const_list.mean_min - const_list.mean_max));
@@ -1514,11 +1511,6 @@ RooWorkspace *FitLb2NstG_Kpi_Wrong(string variablename, TTree *chain, string opt
   RooRealVar Kpipi0X_tau(name_list.exp_par[1].c_str(), name_list.exp_par[1].c_str(), -0.0019, -1., -0.0001);
   RooExponential Kpipi0X_pdf(name_list.comppdf[1].c_str(), name_list.comppdf[1].c_str(), B_M, Kpipi0X_tau);
   RooRealVar Kpipi0X_f(name_list.fcomp[1].c_str(), name_list.fcomp[1].c_str(), 41000., 0., double(entries));
-
-  //Initialize Line for combinatorial
-  RooRealVar comb_slope(name_list.slope.c_str(), name_list.slope.c_str(), const_list.slope_0, const_list.slope_min, const_list.slope_max);
-  RooPolynomial comb_pdf(name_list.comppdf[2].c_str(), name_list.comppdf[2].c_str(), B_M, comb_slope);
-  RooRealVar comb_f(name_list.fcomp[2].c_str(), name_list.fcomp[2].c_str(), 11500., 0., double(entries));
 
   //Part reco (KpipiG)
   //Initialize DoubleGaussExp
@@ -1537,7 +1529,7 @@ RooWorkspace *FitLb2NstG_Kpi_Wrong(string variablename, TTree *chain, string opt
   RooDoubleGaussExp KpipiG_pdf(name_list.comppdf[3].c_str(), name_list.comppdf[3].c_str(), B_M, KpipiG_mean, KpipiG_width, KpipiG_alphaL, KpipiG_alphaR);
   RooRealVar KpipiG_f(name_list.fcomp[3].c_str(), name_list.fcomp[3].c_str(), 4000., 0., double(entries));
 
-  RooAddPdf model(name_list.pdfmodel[0].c_str(), name_list.pdfmodel[0].c_str(), RooArgList(KpiG_pdf, Kpipi0X_pdf, comb_pdf, KpipiG_pdf), RooArgList(KpiG_f, Kpipi0X_f, comb_f, KpipiG_f));
+  RooAddPdf model(name_list.pdfmodel[0].c_str(), name_list.pdfmodel[0].c_str(), RooArgList(KpiG_pdf, Kpipi0X_pdf, KpipiG_pdf), RooArgList(KpiG_f, Kpipi0X_f, KpipiG_f));
   RooDataSet data(name_list.dataset.c_str(), name_list.dataset.c_str(), chain, B_M);
   //Perform the fit
   model.fitTo(data /*, RooFit::ExternalConstraints(gc_list)*/);

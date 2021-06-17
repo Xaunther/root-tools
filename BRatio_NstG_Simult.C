@@ -28,7 +28,7 @@ double Avg_Trigger_Variation()
 {
 	auto chain_2011 = GetChain("../Directories/Lb2pKG_2011_2hG_tuples.dir");
 	auto chain_2012 = GetChain("../Directories/Lb2pKG_2hG_tuples.dir");
-	auto precuts = GetCuts("test.txt");
+	auto precuts = GetCuts("Variables/PreCuts_2hG.txt");
 	double eff2011 = 1, eff2012 = 1;
 	//pKG
 	eff2011 = (stod(GetValueFor("pKG_2011_Down_eff", "Systematics/Generation/GenLevelCut_Eff.txt")) + stod(GetValueFor("pKG_2011_Up_eff", "Systematics/Generation/GenLevelCut_Eff.txt"))) / 2.;
@@ -132,13 +132,13 @@ void BRatio_NstG_Simult(string outfile)
 
 	eff_Gen.push_back((eff1 + eff2) / 2.);
 
-	//Full event cut
-	eff1 = TUncertainty(stod(GetValueFor("pKG_2012_Down_eff", "Systematics/Generation/FullEventCut_Eff.txt")), {0,
-																												stod(GetValueFor("pKG_2012_Down_err", "Systematics/Generation/FullEventCut_Eff.txt"))});
-	eff2 = TUncertainty(stod(GetValueFor("pKG_2012_Up_eff", "Systematics/Generation/FullEventCut_Eff.txt")), {0,
-																											  stod(GetValueFor("pKG_2012_Up_err", "Systematics/Generation/FullEventCut_Eff.txt"))});
+	//Full event cut. Pick difference from alternative reweighting
+	eff1 = TUncertainty(stod(GetValueFor("Global", "output/CutEff_Gauss_pKG_2hG.txt")), {0,
+																						 stod(GetValueFor("Error", "output/CutEff_Gauss_pKG_2hG.txt"))});
+	eff2 = TUncertainty(0, {0, 0, 0,
+							abs(stod(GetValueFor("Global", "Systematics/Reweight/CutEff_Gauss_pKG_2hG_alt.txt")) - eff1.GetValue())});
 
-	eff_Full.push_back((eff1 + eff2) / 2.);
+	eff_Full.push_back(eff1 + eff2);
 
 	//Stripping
 	eff1 = TUncertainty(stod(GetValueFor("pKG_2012_Down_eff", "Systematics/DST/Global_Eff.txt")), {0,
@@ -157,17 +157,25 @@ void BRatio_NstG_Simult(string outfile)
 	//Offline selection. Pick difference from alternative reweighting. Add trigger differences between 2011 and 2012
 	eff1 = TUncertainty(stod(GetValueFor("Global", "output/PreCutEff_pKG_2hG.txt")), {0,
 																					  stod(GetValueFor("Error", "output/PreCutEff_pKG_2hG.txt")), 0, 0, 0, Avg_Trigger_Variation() * stod(GetValueFor("Global", "output/PreCutEff_pKG_2hG.txt"))});
-	eff2 = TUncertainty(stod(GetValueFor("Global", "output/CutEff_pKG_2hG.txt")), {0,
-																				   stod(GetValueFor("Error", "output/CutEff_pKG_2hG.txt"))});
+	eff2 = TUncertainty(0, {0, 0, 0,
+							abs(stod(GetValueFor("Global", "Systematics/Reweight/PreCutEff_pKG_2hG_alt.txt")) - eff1.GetValue())});
 
-	eff_Pre.push_back(eff1);
-	eff_sel.push_back(eff2);
+	eff_Pre.push_back(eff1 + eff2);
+
+	eff1 = TUncertainty(stod(GetValueFor("Global", "output/CutEff_pKG_2hG.txt")), {0,
+																				   stod(GetValueFor("Error", "output/CutEff_pKG_2hG.txt"))});
+	eff2 = TUncertainty(0, {0, 0, 0,
+							abs(stod(GetValueFor("Global", "Systematics/Reweight/CutEff_pKG_2hG_alt.txt")) - eff1.GetValue())});
+
+	eff_sel.push_back(eff1 + eff2);
 
 	//PID
 	eff1 = TUncertainty(stod(GetValueFor("Mean", "Systematics/PID/pKG_PIDInv2Eff.txt")), {0,
 																						  stod(GetValueFor("Error", "Systematics/PID/pKG_PIDInv2Eff.txt"))});
+	eff2 = TUncertainty(0, {0, 0, 0,
+							abs(stod(GetValueFor("Mean", "Systematics/Reweight/pKG_alt_PIDEffInv2.txt")) - eff1.GetValue())});
 
-	eff_PID.push_back(eff1);
+	eff_PID.push_back(eff1 + eff2);
 
 	//Compute the efficiencies for each channel
 	eff_ppiG = eff_Gen[0] * eff_Full[0] * eff_DST[0] * eff_MCM[0] * eff_Pre[0] * eff_sel[0] * eff_PID[0];

@@ -169,6 +169,22 @@ void Names::Init(std::string ananame)
   {
     this->Init("NstGamma_Simult");
   }
+  else if (ananame == "NstGamma_minmu_ppiG_KpiGRef")
+  {
+    this->Init("NstGamma_minmu");
+  }
+  else if (ananame == "NstGamma_minmu_ppiG_pKGRef")
+  {
+    this->Init("NstGamma_minmu");
+  }
+  else if (ananame == "NstGamma_maxmu_ppiG_KpiGRef")
+  {
+    this->Init("NstGamma_maxmu");
+  }
+  else if (ananame == "NstGamma_maxmu_ppiG_pKGRef")
+  {
+    this->Init("NstGamma_maxmu");
+  }
   else if (ananame == "KstplusGamma")
   {
   }
