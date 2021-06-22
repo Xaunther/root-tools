@@ -10,19 +10,19 @@
 #include "Functions/StringTools.h"
 
 using namespace std;
-void Compare(string filename1, string filename2, string var1, string var2, string cutfile1, string cutfile2, string treename1 = "", string treename2 = "", string wvar1 = "1", string wvar2 = "1", string title = "", string outputname = "")
+void Compare(string filename1, string filename2, string var1, string var2, string cutfile1, string cutfile2, string treename1 = "", string treename2 = "", string wvar1 = "1", string wvar2 = "1", string title = "", string outputname = "", string opts = "HISTO NORM")
 {
   //Open files and tuples
-  TChain* chain1 = GetChain(filename1, treename1);
-  TChain* chain2 = GetChain(filename2, treename2);
+  TChain *chain1 = GetChain(filename1, treename1);
+  TChain *chain2 = GetChain(filename2, treename2);
   string cuts1 = GetCuts(cutfile1);
   string cuts2 = GetCuts(cutfile2);
-  TCanvas* c1 = new TCanvas();
+  TCanvas *c1 = new TCanvas();
 
   //Deal with the titles
   int title_index = 0;
-  string* _titles = SplitString(title_index, title, ";");
-  string* titles = new string[3];
+  string *_titles = SplitString(title_index, title, ";");
+  string *titles = new string[3];
   int max_index = (title_index > 3) ? 3 : title_index;
   for (int i = 0; i < max_index; i++)
   {
@@ -32,11 +32,11 @@ void Compare(string filename1, string filename2, string var1, string var2, strin
   }
 
   gStyle->SetOptStat(0);
-  chain1->Draw(var1.c_str(), ("(" + cuts1 + ")*" + wvar1).c_str(), "HISTO NORM");
-  chain2->Draw(var2.c_str(), ("(" + cuts2 + ")*" + wvar2).c_str(), "HISTO NORM SAME");
+  chain1->Draw(var1.c_str(), ("(" + cuts1 + ")*" + wvar1).c_str(), opts.c_str());
+  chain2->Draw(var2.c_str(), ("(" + cuts2 + ")*" + wvar2).c_str(), (opts + " SAME").c_str());
 
-  TH1* hist1 = chain1->GetHistogram();
-  TH1* hist2 = chain2->GetHistogram();
+  TH1 *hist1 = chain1->GetHistogram();
+  TH1 *hist2 = chain2->GetHistogram();
 
   hist1->SetFillColorAlpha(kBlue, 1);
   hist2->SetFillColorAlpha(kRed, 1);
@@ -47,7 +47,7 @@ void Compare(string filename1, string filename2, string var1, string var2, strin
   hist1->SetFillStyle(3004);
   hist2->SetFillStyle(3005);
 
-  hist1->SetTitle (titles[0].c_str());
+  hist1->SetTitle(titles[0].c_str());
   hist1->SetXTitle(titles[1].c_str());
   hist1->SetYTitle(titles[2].c_str());
 
@@ -59,11 +59,10 @@ void Compare(string filename1, string filename2, string var1, string var2, strin
   {
     c1->SaveAs(outputname.c_str());
   }
-
 }
 
 #if !defined(__CLING__)
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   switch (argc - 1)
   {
@@ -93,6 +92,10 @@ int main(int argc, char** argv)
   case 12:
     Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
             *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])), *(new string(argv[12])));
+    break;
+  case 13:
+    Compare(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])),
+            *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])), *(new string(argv[11])), *(new string(argv[12])), *(new string(argv[13])));
     break;
   default:
     cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
