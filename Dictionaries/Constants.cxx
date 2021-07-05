@@ -297,6 +297,28 @@ void Constants::Init(std::string ananame)
     alpha2_min = 0.01;
     alpha2_max = 20;
   }
+  else if (ananame == "NstGamma_Simult_KpiG_pKG")
+  {
+    this->Init("NstGamma_Simult");
+    //Gaussian parameters
+    mean_0 = 5300.0;
+    mean_min = xmin;
+    mean_max = xmax;
+    width_0 = 115.0;
+    width_min = 50.0;
+    width_max = 200.0;
+    //CB parameters
+    alpha_0 = 0.7;
+    alpha_min = 0.01;
+    alpha_max = 20;
+    //Double CB parameters
+    alpha1_0 = 0.7;
+    alpha1_min = 0.01;
+    alpha1_max = 20;
+    alpha2_0 = 1.4;
+    alpha2_min = 0.01;
+    alpha2_max = 20;
+  }
   else if (ananame == "NstGamma_minmu_ppiG_KpiGRef")
   {
     this->Init("NstGamma_Simult_ppiG_KpiGRef");
@@ -305,6 +327,10 @@ void Constants::Init(std::string ananame)
   {
     this->Init("NstGamma_Simult_ppiG_KpiGRef");
   }
+  else if (ananame == "NstGamma_minmu_KpiG_pKG")
+  {
+    this->Init("NstGamma_Simult_KpiG_pKG");
+  }
   else if (ananame == "NstGamma_maxmu_ppiG_KpiGRef")
   {
     this->Init("NstGamma_Simult_ppiG_KpiGRef");
@@ -312,6 +338,10 @@ void Constants::Init(std::string ananame)
   else if (ananame == "NstGamma_maxmu_ppiG_pKGRef")
   {
     this->Init("NstGamma_Simult_ppiG_KpiGRef");
+  }
+  else if (ananame == "NstGamma_maxmu_KpiG_pKG")
+  {
+    this->Init("NstGamma_Simult_KpiG_pKG");
   }
   else if (ananame == "KstplusGamma")
   {

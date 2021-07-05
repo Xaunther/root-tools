@@ -482,7 +482,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   ws_KpiG_mass.push_back(fitf[CBExp](variablename[1], MCtree[0], "Event_PIDCalibEff_pbarpi_global_weight", 0, 0, opts)); //KpiG MC
   cout << "pKG MC" << endl
        << "------" << endl;
-  ws_KpiG_mass.push_back(fitf[DoubleGaussExp](variablename[1], MCtree[1], "Event_PIDCalibEff_pbarpi_global_weight", 0, 0, opts)); //pKG MC
+  ws_KpiG_mass.push_back(fitf[DoubleGaussExp](variablename[1], MCtree[1], "Event_PIDCalibEff_pbarpi_global_weight", 0, 0, opts + "_KpiG_pKG")); //pKG MC
   cout << "ppiG MC" << endl
        << "-------" << endl;
   ws_KpiG_mass.push_back(fitf[DoubleGaussExp](variablename[1], MCtree[2], "Event_PIDCalibEff_pbarpi_global_weight", 0, 0, opts)); //ppiG MC
@@ -697,7 +697,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   error += pow(stod(GetValueFor("Error", "Systematics/PID/KstG_Ref_PIDEff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/KstG_Ref_PIDEff.txt")), 2.);
   error += pow(stod(GetValueFor("Error", "Systematics/PID/KstG_PIDEff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/KstG_PIDEff.txt")), 2.);
   error = sqrt(error) * value;
-  RooRealVar R_ppiG_mass_KpiGRefMC("R_ppiG_mass_KpiGRefMC", "R_ppiG_mass_KpiGRefMC", value, value - 5 * error, value + 5 * error);
+  RooRealVar R_ppiG_mass_KpiGRefMC("R_ppiG_mass_KpiGRefMC", "R_ppiG_mass_KpiGRefMC", value, TMath::Max(value - 5 * error, 0.), value + 5 * error);
   RooGaussian RG_ppiG_mass_KpiGRefMC("RG_ppiG_mass_KpiGRefMC", "RG_ppiG_mass_KpiGRefMC", R_ppiG_mass_KpiGRefMC, RooFit::RooConst(value), RooFit::RooConst(error));
 
   value = stod(GetValueFor("Global", "output/PreCutEff_pKG_Ref_2hG.txt")) / stod(GetValueFor("Global", "output/PreCutEff_pKG_2hG.txt"));
@@ -710,12 +710,12 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   error += pow(stod(GetValueFor("Error", "Systematics/PID/pKG_Ref_PIDEff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/pKG_Ref_PIDEff.txt")), 2.);
   error += pow(stod(GetValueFor("Error", "Systematics/PID/pKG_PIDEff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/pKG_PIDEff.txt")), 2.);
   error = sqrt(error) * value;
-  RooRealVar R_ppiG_mass_pKGRefMC("R_ppiG_mass_pKGRefMC", "R_ppiG_mass_pKGRefMC", value, value - 5 * error, value + 5 * error);
+  RooRealVar R_ppiG_mass_pKGRefMC("R_ppiG_mass_pKGRefMC", "R_ppiG_mass_pKGRefMC", value, TMath::Max(value - 5 * error, 0.), value + 5 * error);
   RooGaussian RG_ppiG_mass_pKGRefMC("RG_ppiG_mass_pKGRefMC", "RG_ppiG_mass_pKGRefMC", R_ppiG_mass_pKGRefMC, RooFit::RooConst(value), RooFit::RooConst(error));
 
-  RooRealVar f_ppiG_mass_KpiGMC(name_list.fcomp[0].c_str(), name_list.fcomp[0].c_str(), 25, 0., double(entries[0]));
-  RooRealVar f_ppiG_mass_pKGMC(name_list.fcomp[1].c_str(), name_list.fcomp[1].c_str(), 25, 0., double(entries[0]));
-  RooRealVar f_ppiG_mass_ppiGMC(name_list.fcomp[2].c_str(), name_list.fcomp[2].c_str(), 50, 0., double(entries[0]));
+  RooRealVar f_ppiG_mass_KpiGMC(name_list.fcomp[0].c_str(), name_list.fcomp[0].c_str(), 6, 0., double(entries[0]));
+  RooRealVar f_ppiG_mass_pKGMC(name_list.fcomp[1].c_str(), name_list.fcomp[1].c_str(), 13, 0., double(entries[0]));
+  RooRealVar f_ppiG_mass_ppiGMC(name_list.fcomp[2].c_str(), name_list.fcomp[2].c_str(), 30, 0., double(entries[0]));
   RooFormulaVar f_ppiG_mass_KpiGRefMC(name_list.fcomp[3].c_str(), name_list.fcomp[3].c_str(), "@0*@1", RooArgList(f_ppiG_mass_KpiGMC, R_ppiG_mass_KpiGRefMC));
   RooFormulaVar f_ppiG_mass_pKGRefMC(name_list.fcomp[4].c_str(), name_list.fcomp[4].c_str(), "@0*@1", RooArgList(f_ppiG_mass_pKGMC, R_ppiG_mass_pKGRefMC));
   RooRealVar f_ppiG_mass_exp(name_list.fcomp[7].c_str(), name_list.fcomp[7].c_str(), double(entries[0]) / 2., 0., double(entries[0]));
@@ -828,21 +828,21 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   error = pow(stod(GetValueFor("Error", "Systematics/PID/KstG_PIDInv1Eff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/KstG_PIDInv1Eff.txt")), 2.);
   error += pow(stod(GetValueFor("Error", "Systematics/PID/KstG_PIDEff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/KstG_PIDEff.txt")), 2.);
   error = sqrt(error) * value;
-  RooRealVar R_KpiG_mass_KpiGMC("R_KpiG_mass_KpiGMC", "R_KpiG_mass_KpiGMC", value, value - 5 * error, value + 5 * error);
+  RooRealVar R_KpiG_mass_KpiGMC("R_KpiG_mass_KpiGMC", "R_KpiG_mass_KpiGMC", value, TMath::Max(value - 5 * error, 0.), value + 5 * error);
   RooGaussian RG_KpiG_mass_KpiGMC("RG_KpiG_mass_KpiGMC", "RG_KpiG_mass_KpiGMC", R_KpiG_mass_KpiGMC, RooFit::RooConst(value), RooFit::RooConst(error));
 
   value = stod(GetValueFor("Mean", "Systematics/PID/pKG_PIDInv1Eff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/pKG_PIDEff.txt"));
   error = pow(stod(GetValueFor("Error", "Systematics/PID/pKG_PIDInv1Eff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/pKG_PIDInv1Eff.txt")), 2.);
   error += pow(stod(GetValueFor("Error", "Systematics/PID/pKG_PIDEff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/pKG_PIDEff.txt")), 2.);
   error = sqrt(error) * value;
-  RooRealVar R_KpiG_mass_pKGMC("R_KpiG_mass_pKGMC", "R_KpiG_mass_pKGMC", value, value - 5 * error, value + 5 * error);
+  RooRealVar R_KpiG_mass_pKGMC("R_KpiG_mass_pKGMC", "R_KpiG_mass_pKGMC", value, TMath::Max(value - 5 * error, 0.), value + 5 * error);
   RooGaussian RG_KpiG_mass_pKGMC("RG_KpiG_mass_pKGMC", "RG_KpiG_mass_pKGMC", R_KpiG_mass_pKGMC, RooFit::RooConst(value), RooFit::RooConst(error));
 
   value = stod(GetValueFor("Mean", "Systematics/PID/NstG_PIDInv1Eff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/NstG_PIDEff.txt"));
   error = pow(stod(GetValueFor("Error", "Systematics/PID/NstG_PIDInv1Eff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/NstG_PIDInv1Eff.txt")), 2.);
   error += pow(stod(GetValueFor("Error", "Systematics/PID/NstG_PIDEff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/NstG_PIDEff.txt")), 2.);
   error = sqrt(error) * value;
-  RooRealVar R_KpiG_mass_ppiGMC("R_KpiG_mass_ppiGMC", "R_KpiG_mass_ppiGMC", value, value - 5 * error, value + 5 * error);
+  RooRealVar R_KpiG_mass_ppiGMC("R_KpiG_mass_ppiGMC", "R_KpiG_mass_ppiGMC", value, TMath::Max(value - 5 * error, 0.), value + 5 * error);
   RooGaussian RG_KpiG_mass_ppiGMC("RG_KpiG_mass_ppiGMC", "RG_KpiG_mass_ppiGMC", R_KpiG_mass_ppiGMC, RooFit::RooConst(value), RooFit::RooConst(error));
 
   value = stod(GetValueFor("Global", "output/PreCutEff_KstG_Ref_2hG.txt")) / stod(GetValueFor("Global", "output/PreCutEff_KstG_2hG.txt"));
@@ -855,7 +855,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   error += pow(stod(GetValueFor("Error", "Systematics/PID/KstG_Ref_PIDInv1Eff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/KstG_Ref_PIDInv1Eff.txt")), 2.);
   error += pow(stod(GetValueFor("Error", "Systematics/PID/KstG_PIDEff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/KstG_PIDEff.txt")), 2.);
   error = sqrt(error) * value;
-  RooRealVar R_KpiG_mass_KpiGRefMC("R_KpiG_mass_KpiGRefMC", "R_KpiG_mass_KpiGRefMC", value, value - 5 * error, value + 5 * error);
+  RooRealVar R_KpiG_mass_KpiGRefMC("R_KpiG_mass_KpiGRefMC", "R_KpiG_mass_KpiGRefMC", value, TMath::Max(value - 5 * error, 0.), value + 5 * error);
   RooGaussian RG_KpiG_mass_KpiGRefMC("RG_KpiG_mass_KpiGRefMC", "RG_KpiG_mass_KpiGRefMC", R_KpiG_mass_KpiGRefMC, RooFit::RooConst(value), RooFit::RooConst(error));
 
   value = stod(GetValueFor("Global", "output/PreCutEff_pKG_Ref_2hG.txt")) / stod(GetValueFor("Global", "output/PreCutEff_pKG_2hG.txt"));
@@ -868,7 +868,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   error += pow(stod(GetValueFor("Error", "Systematics/PID/pKG_Ref_PIDInv1Eff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/pKG_Ref_PIDInv1Eff.txt")), 2.);
   error += pow(stod(GetValueFor("Error", "Systematics/PID/pKG_PIDEff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/pKG_PIDEff.txt")), 2.);
   error = sqrt(error) * value;
-  RooRealVar R_KpiG_mass_pKGRefMC("R_KpiG_mass_pKGRefMC", "R_KpiG_mass_pKGRefMC", value, value - 5 * error, value + 5 * error);
+  RooRealVar R_KpiG_mass_pKGRefMC("R_KpiG_mass_pKGRefMC", "R_KpiG_mass_pKGRefMC", value, TMath::Max(value - 5 * error, 0.), value + 5 * error);
   RooGaussian RG_KpiG_mass_pKGRefMC("RG_KpiG_mass_pKGRefMC", "RG_KpiG_mass_pKGRefMC", R_KpiG_mass_pKGRefMC, RooFit::RooConst(value), RooFit::RooConst(error));
 
   RooFormulaVar f_KpiG_mass_KpiGMC(name_list.fcomp[8].c_str(), name_list.fcomp[8].c_str(), "@0*@1", RooArgList(f_ppiG_mass_KpiGMC, R_KpiG_mass_KpiGMC));
@@ -971,21 +971,21 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   error = pow(stod(GetValueFor("Error", "Systematics/PID/KstG_PIDInv2Eff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/KstG_PIDInv2Eff.txt")), 2.);
   error += pow(stod(GetValueFor("Error", "Systematics/PID/KstG_PIDEff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/KstG_PIDEff.txt")), 2.);
   error = sqrt(error) * value;
-  RooRealVar R_pKG_mass_KpiGMC("R_pKG_mass_KpiGMC", "R_pKG_mass_KpiGMC", value, value - 5 * error, value + 5 * error);
+  RooRealVar R_pKG_mass_KpiGMC("R_pKG_mass_KpiGMC", "R_pKG_mass_KpiGMC", value, TMath::Max(value - 5 * error, 0.), value + 5 * error);
   RooGaussian RG_pKG_mass_KpiGMC("RG_pKG_mass_KpiGMC", "RG_pKG_mass_KpiGMC", R_pKG_mass_KpiGMC, RooFit::RooConst(value), RooFit::RooConst(error));
 
   value = stod(GetValueFor("Mean", "Systematics/PID/pKG_PIDInv2Eff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/pKG_PIDEff.txt"));
   error = pow(stod(GetValueFor("Error", "Systematics/PID/pKG_PIDInv2Eff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/pKG_PIDInv2Eff.txt")), 2.);
   error += pow(stod(GetValueFor("Error", "Systematics/PID/pKG_PIDEff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/pKG_PIDEff.txt")), 2.);
   error = sqrt(error) * value;
-  RooRealVar R_pKG_mass_pKGMC("R_pKG_mass_pKGMC", "R_pKG_mass_pKGMC", value, value - 5 * error, value + 5 * error);
+  RooRealVar R_pKG_mass_pKGMC("R_pKG_mass_pKGMC", "R_pKG_mass_pKGMC", value, TMath::Max(value - 5 * error, 0.), value + 5 * error);
   RooGaussian RG_pKG_mass_pKGMC("RG_pKG_mass_pKGMC", "RG_pKG_mass_pKGMC", R_pKG_mass_pKGMC, RooFit::RooConst(value), RooFit::RooConst(error));
 
   value = stod(GetValueFor("Mean", "Systematics/PID/NstG_PIDInv2Eff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/NstG_PIDEff.txt"));
   error = pow(stod(GetValueFor("Error", "Systematics/PID/NstG_PIDInv2Eff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/NstG_PIDInv2Eff.txt")), 2.);
   error += pow(stod(GetValueFor("Error", "Systematics/PID/NstG_PIDEff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/NstG_PIDEff.txt")), 2.);
   error = sqrt(error) * value;
-  RooRealVar R_pKG_mass_ppiGMC("R_pKG_mass_ppiGMC", "R_pKG_mass_ppiGMC", value, value - 5 * error, value + 5 * error);
+  RooRealVar R_pKG_mass_ppiGMC("R_pKG_mass_ppiGMC", "R_pKG_mass_ppiGMC", value, TMath::Max(value - 5 * error, 0.), value + 5 * error);
   RooGaussian RG_pKG_mass_ppiGMC("RG_pKG_mass_ppiGMC", "RG_pKG_mass_ppiGMC", R_pKG_mass_ppiGMC, RooFit::RooConst(value), RooFit::RooConst(error));
 
   value = stod(GetValueFor("Global", "output/PreCutEff_KstG_Ref_2hG.txt")) / stod(GetValueFor("Global", "output/PreCutEff_KstG_2hG.txt"));
@@ -998,7 +998,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   error += pow(stod(GetValueFor("Error", "Systematics/PID/KstG_Ref_PIDInv2Eff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/KstG_Ref_PIDInv2Eff.txt")), 2.);
   error += pow(stod(GetValueFor("Error", "Systematics/PID/KstG_PIDEff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/KstG_PIDEff.txt")), 2.);
   error = sqrt(error) * value;
-  RooRealVar R_pKG_mass_KpiGRefMC("R_pKG_mass_KpiGRefMC", "R_pKG_mass_KpiGRefMC", value, value - 5 * error, value + 5 * error);
+  RooRealVar R_pKG_mass_KpiGRefMC("R_pKG_mass_KpiGRefMC", "R_pKG_mass_KpiGRefMC", value, TMath::Max(value - 5 * error, 0.), value + 5 * error);
   RooGaussian RG_pKG_mass_KpiGRefMC("RG_pKG_mass_KpiGRefMC", "RG_pKG_mass_KpiGRefMC", R_pKG_mass_KpiGRefMC, RooFit::RooConst(value), RooFit::RooConst(error));
 
   value = stod(GetValueFor("Global", "output/PreCutEff_pKG_Ref_2hG.txt")) / stod(GetValueFor("Global", "output/PreCutEff_pKG_2hG.txt"));
@@ -1011,7 +1011,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   error += pow(stod(GetValueFor("Error", "Systematics/PID/pKG_Ref_PIDInv2Eff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/pKG_Ref_PIDInv2Eff.txt")), 2.);
   error += pow(stod(GetValueFor("Error", "Systematics/PID/pKG_PIDEff.txt")) / stod(GetValueFor("Mean", "Systematics/PID/pKG_PIDEff.txt")), 2.);
   error = sqrt(error) * value;
-  RooRealVar R_pKG_mass_pKGRefMC("R_pKG_mass_pKGRefMC", "R_pKG_mass_pKGRefMC", value, value - 5 * error, value + 5 * error);
+  RooRealVar R_pKG_mass_pKGRefMC("R_pKG_mass_pKGRefMC", "R_pKG_mass_pKGRefMC", value, TMath::Max(value - 5 * error, 0.), value + 5 * error);
   RooGaussian RG_pKG_mass_pKGRefMC("RG_pKG_mass_pKGRefMC", "RG_pKG_mass_pKGRefMC", R_pKG_mass_pKGRefMC, RooFit::RooConst(value), RooFit::RooConst(error));
 
   RooFormulaVar f_pKG_mass_KpiGMC(name_list.fcomp[16].c_str(), name_list.fcomp[16].c_str(), "@0*@1", RooArgList(f_ppiG_mass_KpiGMC, R_pKG_mass_KpiGMC));
