@@ -233,6 +233,10 @@ void Names::Init(std::string ananame)
     nR[3] = "n_{R}^{K#pi#pi#gamma}";
     fcomp[3] = "n_{K#pi#pi#gamma}";
   }
+  else if (ananame == "NstG_KpiG_BDT")
+  {
+    this->Init("NstG_KpiG");
+  }
   else if (ananame == "NstG_KpiG_Wrong")
   {
     this->Init("NstG_KpiG");
@@ -261,6 +265,10 @@ void Names::Init(std::string ananame)
     //Combinatorial
     exp_par[1] = "#tau_{comb}";
     fcomp[1] = "n_{comb}";
+  }
+  else if (ananame == "NstG_pKG_BDT")
+  {
+    this->Init("NstG_pKG");
   }
   else if (ananame == "NstG_pKG_Wrong")
   {

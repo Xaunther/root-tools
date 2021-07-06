@@ -405,6 +405,30 @@ void Constants::Init(std::string ananame)
     plot_title = "K^{+} #pi^{-} #gamma combined mass 2011+12";
     plot_Xtitle = "m_{K^{+}#pi^{-}#gamma}";
   }
+  else if (ananame == "NstG_KpiG_BDT")
+  {
+    this->Init("NstG_KpiG");
+    bins[0] = 150;
+    //Exponential parameters
+    bkgpar_0 = -0.00228221;
+    bkgpar_min = -0.04;
+    bkgpar_max = 0.004;
+    //Linear parameters
+    slope_0 = -0.000125019;
+    slope_min = slope_0 - 0.1;
+    slope_max = slope_0 + 0.1;
+    //Gaussian
+    mean_0 = 5280.0;
+    mean_min = mean_0 - 200.;
+    mean_max = mean_0 + 200.;
+    width_0 = 82.0;
+    width_min = width_0 - 20.;
+    width_max = width_0 + 50.;
+    //Yields
+    fsig_0 = 0.16;
+    fbkg_0 = 0.75;
+    Legend = false;
+  }
   else if (ananame == "NstG_KpiG_Wrong")
   {
     this->Init("NstG_KpiG");
@@ -476,6 +500,12 @@ void Constants::Init(std::string ananame)
     slope_0 = 3e-02;
     slope_min = slope_0 - 0.1;
     slope_max = slope_0 + 0.1;
+  }
+  else if (ananame == "NstG_pKG_BDT")
+  {
+    this->Init("NstG_pKG");
+    bins[0] = 150;
+    Legend = false;
   }
   else if (ananame == "NstG_pKG_Wrong")
   {
