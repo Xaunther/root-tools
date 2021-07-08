@@ -1,68 +1,39 @@
 #include <string>
+#include <vector>
 #include "Functions/TISTOS.h"
 using namespace std;
 
-string MakeTIS(string* list, int N)
+std::string MakeTIS(const std::vector<std::string> &v)
 {
-  string line = "";
-  for (int i = 0; i < N - 1; i++)
-  {
-    line += list[i] + "_TIS || ";
-  }
-  line += list[N - 1] + "_TIS";
-  return line;
+    return MakeAny(v, "_TIS");
+}
+std::string MakeTOS(const std::vector<std::string> &v)
+{
+    return MakeAny(v, "_TOS");
+}
+std::string MakeTISTOS(const std::vector<std::string> &v)
+{
+    return MakeTIS(v) + " && " + MakeTOS(v);
+}
+std::string MakeAny(const std::vector<std::string> &v, const std::string &suffix)
+{
+    std::vector<std::string> v_suffix;
+    for (auto &_v : v)
+        v_suffix.push_back(_v + suffix);
+    return JoinCutsAND(v_suffix);
 }
 
-string MakeTISTOS(string* list, int N)
+std::string JoinCutsAND(const std::vector<std::string> &v)
 {
-  string line = "";
-  for (int i = 0; i < N - 1; i++)
-  {
-    line += "(" + list[i] + "_TIS && " + list[i] + "_TOS) || ";
-  }
-  line += "(" + list[N - 1] + "_TIS && " + list[N - 1] + "_TOS)";
-  return line;
-}
-
-string MakeTOS(string* list, int N)
-{
-  string line = "";
-  for (int i = 0; i < N - 1; i++)
-  {
-    line += list[i] + "_TOS || ";
-  }
-  line += list[N - 1] + "_TOS";
-  return line;
-}
-
-string MakeTISorTOS(string* list, int N)
-{
-  string line = "";
-  for (int i = 0; i < N - 1; i++)
-  {
-    line += "(" + list[i] + "_TIS || " + list[i] + "_TOS) || ";
-  }
-  line += "(" + list[N - 1] + "_TIS || " + list[N - 1] + "_TOS)";
-  return line;
-}
-
-//Remove _TIS, _TOS and _Dec suffixes
-string* CleanTISTOS(string* list, int N)
-{
-  for (int i = 0; i < N; i++)
-  {
-    while (list[i].find("_TIS") != string::npos)
+    std::string result = "";
+    bool first = true;
+    for (auto &_v : v)
     {
-      list[i].replace(list[i].find("_TIS"), string::npos, "");
+        if (first)
+            result = result + "(" + _v + ")";
+        else
+            result = result + " && (" + _v + ")";
+        first = false;
     }
-    while (list[i].find("_TOS") != string::npos)
-    {
-      list[i].replace(list[i].find("_TOS"), string::npos, "");
-    }
-    while (list[i].find("_Dec") != string::npos)
-    {
-      list[i].replace(list[i].find("_Dec"), string::npos, "");
-    }
-  }
-  return list;
+    return result;
 }

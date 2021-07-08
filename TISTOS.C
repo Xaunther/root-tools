@@ -1,83 +1,66 @@
-//Trigger efficiency, assuming one is accepting TOS events
+//Script to compute trigger efficiency trough TISTOS method
+//To start with, no binning is made
+//Can be used both on MC or data
+//The Trigger efficiency is computed as eff(Trig)=N(trig)/N(TIS)*N(TISTOS)/N(TOS)
+//Trig refers to our trigger selection of choice
+//TIS, TOS and TISTOS, refer to L0, HLT1 and HLT2 Physical lines all either TIS, TOS or TISTOS
 
+//One needs to provide a data sample to work with, another file containing the custom trigger selection and the weight variable (if applicable).
+//The name of the tree can be specified, otherwise it will search on Dictionaries/treenames.dic in the execution folder (not here) and if not found it defaults to "DecayTree"
+//Physical L0, HLT1 and HLT2 trigger lines are given some default names, but they can be overriden
+
+#include <string>
+#include <vector>
 #include <iostream>
 #include <fstream>
-#include <string>
-#include <sstream>
-#include "TChain.h"
-#include <stdio.h>
-#include "Functions/TISTOS.h"
-#include "Functions/Dictreading.h"
-#include "Functions/Filereading.h"
+#include <stdlib.h>
 #include "Functions/TreeTools.h"
-#include "Functions/ArrayTools.h"
-#include "Functions/TUncertainty.h"
-using namespace std;
+#include "Functions/Filereading.h"
+#include "Functions/TISTOS.h"
 
-void TISTOS(string dirfile_data, string dirfile_MC, string trigger_lines, string precutsfilename_data = "1", string precutsfilename_MC = "1", string outfile = "TISTOS_results.txt")
+void PrintOutput(const std::string &datadir, const std::string &outfile, const std::string &triggercuts, const std::string &TIScuts, const std::string &TOScuts, const std::string &TISTOScuts, const double &eff_trig)
 {
-  //Precuts we might want to provide
-  auto precuts_data = GetCuts(precutsfilename_data);
-  auto precuts_MC = GetCuts(precutsfilename_MC);
+  ofstream outf;
+  outf.open(outfile);
+  if (!outf)
+  {
+    std::cout << "Cannot open " << outfile << ". Exiting" << std::endl;
+    exit(1);
+  }
+  outf << "Trigger efficiency on " << datadir << std::endl;
+  outf << "----------------------------------------------------------------------" << std::endl;
+  outf << "TIS cuts: " << TIScuts << std::endl;
+  outf << "TOS cuts: " << TOScuts << std::endl;
+  outf << "TISTOS cuts: " << TISTOScuts << std::endl;
+  outf << "Trigger cuts: " << triggercuts << std::endl;
+  outf << "Efficiency: " << eff_trig << std::endl;
+  outf.close();
+}
 
-  //Get chains
-  auto chain_data = GetChain(dirfile_data);
-  auto chain_MC = GetChain(dirfile_MC);
+void TISTOS(std::string datadir, std::string triggerfile, std::string outfile, std::string w_var = "1", std::string treename = "", std::string L0Phys = "B_L0Global", std::string HLT1Phys = "B_Hlt1Phys", std::string HLT2Phys = "B_Hlt2Phys")
+{
+  //Get the data
+  auto chain = GetChain(datadir, treename);
 
-  //Trigger lines used for TISTOS
-  int N_lines = 0;
-  auto trigger_list = ReadVariables(N_lines, trigger_lines);
-  //Clean suffixes
-  trigger_list = CleanTISTOS(trigger_list, N_lines);
-  //Perform TIS and TISTOS Cuts
-  auto trigger_TIS = MakeTIS(trigger_list, N_lines);
-  auto trigger_TOS = MakeTOS(trigger_list, N_lines);
-  auto trigger_TISTOS = MakeTISTOS(trigger_list, N_lines);
+  //Get the trigger cuts
+  auto triggercuts = GetCuts(triggerfile);
 
-  //Part where the output is stored into outfile
-  //We compute trigger efficiency
-  ofstream fout;
-  TUncertainty eff_TIS, N_TOS, N_TIS;
-  double N0, Nw, Nw2;
-  //We'll need the square of the weight for later
-  string w2 = "";
-  if (precuts_MC != "")
-    w2 = precuts_MC + "*" + precuts_MC;
+  //Get TISTOS'ed
+  std::vector<std::string> Phys_list = {L0Phys, HLT1Phys, HLT2Phys};
+  auto TIScuts = MakeTIS(Phys_list);
+  auto TOScuts = MakeTOS(Phys_list);
+  auto TISTOScuts = MakeTISTOS(Phys_list);
 
-  fout.open(outfile.c_str());
-  fout << "TISTOS method applied on tuples defined at " << dirfile_data << " (data) and " << dirfile_MC << " (MC):" << endl
-       << endl;
-  //List trigger lines
-  fout << "         Trigger lines used         " << endl;
-  fout << "------------------------------------" << endl;
-  for (int i = 0; i < N_lines; i++)
-    fout << trigger_list[i] << endl;
+  //Compute the relevant numbers
+  double N_TOS = GetMeanEntries(chain, TOScuts, w_var);
+  double N_TIS = GetMeanEntries(chain, TIScuts, w_var);
+  double N_TISTOS = GetMeanEntries(chain, TISTOScuts, w_var);
+  double N_trig = GetMeanEntries(chain, triggercuts, w_var);
 
-  //Compute efficiency part from data
-  N0 = chain_data->GetEntries(precuts_data.c_str());
-  eff_TIS = GetMean(chain_data, trigger_TISTOS, precuts_data) / GetMean(chain_data, trigger_TOS, precuts_data);
-  eff_TIS = TUncertainty(eff_TIS.GetValue(), sqrt(eff_TIS.GetValue() * (1 - eff_TIS.GetValue()) / N0));
+  double eff_trig = (N_trig / N_TIS) * (N_TISTOS / N_TOS);
 
-  //Compute efficiency part from MC
-  N0 = chain_MC->GetEntries();
-
-  Nw = GetMeanEntries(chain_MC, trigger_TOS, precuts_MC);
-  Nw2 = GetMeanEntries(chain_MC, trigger_TOS, w2);
-  N_TOS = Nw * Nw / Nw2;
-  N_TOS = TUncertainty(N_TOS.GetValue(), sqrt(N_TOS.GetValue() / N0) / 2.); //Factor 2 from maximum binomial error (p=q=0.5)
-
-  Nw = GetMeanEntries(chain_MC, trigger_TIS, precuts_MC);
-  Nw2 = GetMeanEntries(chain_MC, trigger_TIS, w2);
-  N_TIS = Nw * Nw / Nw2;
-  N_TIS = TUncertainty(N_TIS.GetValue(), sqrt(N_TIS.GetValue() / N0) / 2.); //Factor 2 from maximum binomial error (p=q=0.5)
-
-  fout << "Trigger_eff = ";
-  (N_TOS / N_TIS * eff_TIS).Print(fout, "rel");
-  fout << endl;
-
-  fout.close();
-  CloseChain(chain_data);
-  CloseChain(chain_MC);
+  CloseChain(chain);
+  PrintOutput(datadir, outfile, triggercuts, TIScuts, TOScuts, TISTOScuts, eff_trig);
 }
 
 #if !defined(__CLING__)
@@ -85,17 +68,26 @@ int main(int argc, char **argv)
 {
   switch (argc - 1)
   {
+  case 3:
+    TISTOS(*(new std::string(argv[1])), *(new std::string(argv[2])), *(new std::string(argv[3])));
+    break;
   case 4:
-    TISTOS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])));
+    TISTOS(*(new std::string(argv[1])), *(new std::string(argv[2])), *(new std::string(argv[3])), *(new std::string(argv[4])));
     break;
   case 5:
-    TISTOS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+    TISTOS(*(new std::string(argv[1])), *(new std::string(argv[2])), *(new std::string(argv[3])), *(new std::string(argv[4])), *(new std::string(argv[5])));
     break;
   case 6:
-    TISTOS(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
+    TISTOS(*(new std::string(argv[1])), *(new std::string(argv[2])), *(new std::string(argv[3])), *(new std::string(argv[4])), *(new std::string(argv[5])), *(new std::string(argv[6])));
+    break;
+  case 7:
+    TISTOS(*(new std::string(argv[1])), *(new std::string(argv[2])), *(new std::string(argv[3])), *(new std::string(argv[4])), *(new std::string(argv[5])), *(new std::string(argv[6])), *(new std::string(argv[7])));
+    break;
+  case 8:
+    TISTOS(*(new std::string(argv[1])), *(new std::string(argv[2])), *(new std::string(argv[3])), *(new std::string(argv[4])), *(new std::string(argv[5])), *(new std::string(argv[6])), *(new std::string(argv[7])), *(new std::string(argv[8])));
     break;
   default:
-    cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
+    std::cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << std::endl;
     return (1);
     break;
   }
