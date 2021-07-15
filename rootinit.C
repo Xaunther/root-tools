@@ -96,6 +96,7 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L " + path + "PlotVar.C+").c_str());
   gROOT->ProcessLine((".L " + path + "Ratio_NstG.C+").c_str());
   gROOT->ProcessLine((".L " + path + "RenameBranch.C+").c_str());
+  gROOT->ProcessLine((".L " + path + "Reweight1D.C+").c_str());
   gROOT->ProcessLine((".L " + path + "Reweight2D.C+").c_str());
   gROOT->ProcessLine((".L " + path + "ROC_Area.C+").c_str());
   gROOT->ProcessLine((".L " + path + "ScaleYields.C+").c_str());

@@ -11,8 +11,8 @@
 #include "Functions/StringTools.h"
 using namespace std;
 
-void Reweight2D(string vars1, string vars2, string reffile, string applyfile,
-                string binfile1, string binfile2, string outfile, string refw = "", string applyw = "", string wname = "weight")
+void Reweight1D(string vars1, string reffile, string applyfile,
+                string binfile1, string outfile, string refw = "", string applyw = "", string wname = "weight")
 {
   //File open!
   TChain *refchain = GetChain(reffile);
@@ -20,26 +20,21 @@ void Reweight2D(string vars1, string vars2, string reffile, string applyfile,
 
   //Get those names!
   int Nvars1 = 0;
-  int Nvars2 = 0;
   string *varlist1 = SplitString(Nvars1, vars1, ", ");
-  string *varlist2 = SplitString(Nvars2, vars2, ", ");
   //Assign names
   string refvar1 = varlist1[0];
   string applyvar1 = (Nvars1 == 1) ? refvar1 : varlist1[1];
-  string refvar2 = varlist2[0];
-  string applyvar2 = (Nvars2 == 1) ? refvar2 : varlist2[1];
 
   //Get the binning!
-  int NBins1 = 0, NBins2 = 0;
+  int NBins1 = 0;
   double *binning1 = ReadNumbers(NBins1, binfile1);
-  double *binning2 = ReadNumbers(NBins2, binfile2);
 
   //Time to get those histograms filled boi!
   //Yes, var2 goes first, this is how it works in ROOT
   //Don't ask
-  TH2F *refhist = GetHistogram2D(refchain, refvar2 + ":" + refvar1, NBins1 - 1, binning1, NBins2 - 1, binning2, "refhist", refw);
+  TH1F *refhist = GetHistogram(refchain, refvar1, NBins1 - 1, binning1, "refhist", refw);
   refhist->Scale(1 / refhist->GetSumOfWeights());
-  TH2F *applyhist = GetHistogram2D(applychain, applyvar2 + ":" + applyvar1, NBins1 - 1, binning1, NBins2 - 1, binning2, "applyhist", applyw);
+  TH1F *applyhist = GetHistogram(applychain, applyvar1, NBins1 - 1, binning1, "applyhist", applyw);
   applyhist->Scale(1 / applyhist->GetSumOfWeights());
   refhist->Divide(applyhist);
 
@@ -48,10 +43,9 @@ void Reweight2D(string vars1, string vars2, string reffile, string applyfile,
   //The variable might be a formula, so....
   //Define TTreeFormula
   TTreeFormula *formulavar1 = new TTreeFormula(applyvar1.c_str(), applyvar1.c_str(), applychain);
-  TTreeFormula *formulavar2 = new TTreeFormula(applyvar2.c_str(), applyvar2.c_str(), applychain);
 
   //Add new branch
-  double wvalue, werror, value1, value2;
+  double wvalue, werror, value1;
   TFile *file = new TFile(Gridify(outfile).c_str(), "RECREATE");
   TTree *tree = applychain->CloneTree(0);
   tree->Branch(wname.c_str(), &wvalue, (wname + "/D").c_str());
@@ -60,16 +54,14 @@ void Reweight2D(string vars1, string vars2, string reffile, string applyfile,
   //Loop over all events and get value
   for (int i = 0; i < applychain->GetEntries(); i++)
   {
-    int bin1, bin2;
+    int bin1;
     applychain->GetEntry(i);
     tree->GetEntry(i);
     //Insert formula, if any
     value1 = formulavar1->EvalInstance();
-    value2 = formulavar2->EvalInstance();
     bin1 = refhist->GetXaxis()->FindBin(value1);
-    bin2 = refhist->GetYaxis()->FindBin(value2);
-    wvalue = refhist->GetBinContent(bin1, bin2);
-    werror = refhist->GetBinError(bin1, bin2);
+    wvalue = refhist->GetBinContent(bin1);
+    werror = refhist->GetBinError(bin1);
     tree->Fill();
     if (i % (applychain->GetEntries() / 10 + 1) == 0)
     {
@@ -88,17 +80,17 @@ int main(int argc, char **argv)
 {
   switch (argc - 1)
   {
+  case 5:
+    Reweight1D(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])));
+    break;
+  case 6:
+    Reweight1D(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])));
+    break;
   case 7:
-    Reweight2D(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])));
+    Reweight1D(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])));
     break;
   case 8:
-    Reweight2D(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])));
-    break;
-  case 9:
-    Reweight2D(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])));
-    break;
-  case 10:
-    Reweight2D(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])), *(new string(argv[9])), *(new string(argv[10])));
+    Reweight1D(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), *(new string(argv[5])), *(new string(argv[6])), *(new string(argv[7])), *(new string(argv[8])));
     break;
   default:
     cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;

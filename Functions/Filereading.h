@@ -5,6 +5,7 @@
 #define Filereading_h
 
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -16,11 +17,12 @@ struct vartable
 };
 
 int GetNVariables(string);
-string* ReadVariables(int &, string);
-double* ReadNumbers(int &, string);
-string* ReadVariablesWord(int &, string, int);
-vartable* ReadVarTable(int, string);
-double** GetData(string, int &, int);
+string *ReadVariables(int &, string);
+vector<string> ReadVariables(string);
+double *ReadNumbers(int &, string);
+string *ReadVariablesWord(int &, string, int);
+vartable *ReadVarTable(int, string);
+double **GetData(string, int &, int);
 string GetCuts(string);
 string GetCutsVar(string, string, int, int, int);
 void AdvanceLine(ifstream &, string);

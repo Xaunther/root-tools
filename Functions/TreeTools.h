@@ -6,6 +6,7 @@
 #include "TChain.h"
 #include "TH1F.h"
 #include "TH2F.h"
+#include "Functions/TUncertainty.h"
 using namespace std;
 
 TChain *GetChain(string *, int, string, bool = true);
@@ -28,6 +29,9 @@ double GetMean(TTree *, string, string = "1", string = "1");
 double GetMeanEntries(string, string = "", string = "1", string = "1");
 double GetMeanEntries(TChain *, string = "1", string = "1");
 double GetMeanEntries(TTree *, string = "1", string = "1");
+TUncertainty GetEfficiency(string, string, string = "1", string = "");
+TUncertainty GetEfficiency(TChain *, string, string = "1");
+TUncertainty GetEfficiency(TTree *, string, string = "1");
 bool TreeExists(string, string = "");
 void CloseChain(TChain *&);
 void CloseTree(TTree *&);

@@ -7,11 +7,13 @@
 #include "TFile.h"
 #include "TH1F.h"
 #include "TH2F.h"
+#include "TMath.h"
 #include "Functions/TreeTools.h"
 #include "Functions/GetCoincidences.h"
 #include "Functions/Dictreading.h"
 #include "Functions/Filereading.h"
 #include "Functions/StringTools.h"
+#include "Functions/TUncertainty.h"
 using namespace std;
 
 TChain *GetChain(string *filenames, int N_files, string treename, bool verbose)
@@ -292,6 +294,66 @@ double GetMeanEntries(TTree *chain, string cuts, string weight)
     weight = "1";
   }
   return GetMean(chain, "(" + cuts + ")*" + weight);
+}
+
+//Functions to get efficiency with its uncertainty
+TUncertainty GetEfficiency(string filedir, string cuts, string weight, string treename)
+{
+  if (cuts == "")
+    cuts = "1";
+  if (weight == "")
+    weight = "1";
+  if (TreeExists(filedir, treename))
+  {
+    TChain *chain = GetChain(filedir, treename, false);
+    TUncertainty result = GetEfficiency(chain, cuts, weight);
+    delete chain;
+    return result;
+  }
+  else
+    return 0.;
+}
+TUncertainty GetEfficiency(TChain *chain, string cuts, string weight)
+{
+  if (!chain->GetEntries())
+    return 0.;
+  if (cuts == "")
+    cuts = "1";
+  if (weight == "")
+    weight = "1";
+
+  double N_pass, N0, N2;
+  //Get the sum of passing weight
+  chain->Draw(("(" + cuts + ")*" + weight).c_str(), "", "goff");
+  N_pass = chain->GetHistogram()->GetMean();
+  //Get the initial weights (no cuts)
+  chain->Draw(weight.c_str(), "", "goff");
+  N0 = chain->GetHistogram()->GetMean();
+  //Get the sumsq of weights
+  chain->Draw((weight + "*" + weight).c_str(), "", "goff");
+  N2 = chain->GetHistogram()->GetMean();
+  return TUncertainty(N_pass / N0, TMath::Sqrt(N_pass / N0 * (1 - N_pass / N0) / chain->GetEntries() * N2) / N0);
+}
+TUncertainty GetEfficiency(TTree *chain, string cuts, string weight)
+{
+  if (!chain->GetEntries())
+    return 0.;
+  if (cuts == "")
+    cuts = "1";
+  if (weight == "")
+    weight = "1";
+
+  double N_pass, N0, N2;
+  //Get the sum of passing weight
+  chain->Draw(("(" + cuts + ")*" + weight).c_str(), "", "goff");
+  N_pass = chain->GetHistogram()->GetMean();
+  //Get the initial weights (no cuts)
+  chain->Draw(weight.c_str(), "", "goff");
+  N0 = chain->GetHistogram()->GetMean();
+  //Get the sumsq of weights
+  chain->Draw((weight + "*" + weight).c_str(), "", "goff");
+  N2 = chain->GetHistogram()->GetMean();
+  return TUncertainty(N_pass / N0, TMath::Sqrt(N_pass / N0 * (1 - N_pass / N0) / chain->GetEntries() * N2) / N0);
 }
 
 //Function to check if tree with name tuplename exists within file filename.

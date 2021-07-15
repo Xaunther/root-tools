@@ -48,6 +48,16 @@ string *ReadVariables(int &N, string filename)
   return array;
 }
 
+vector<string> ReadVariables(string filename)
+{
+  int N = 0;
+  auto arr = ReadVariables(N, filename);
+  vector<string> v;
+  for (int i = 0; i < N; i++)
+    v.push_back(arr[i]);
+  return v;
+}
+
 double *ReadNumbers(int &N, string filename)
 {
   string *array = ReadVariables(N, filename);
