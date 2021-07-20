@@ -346,11 +346,19 @@ void Names::Init(std::string ananame)
   {
     this->Init("NstG_ppimumu");
   }
+  else if (ananame == "NstG_ppimumu_sPlot")
+  {
+    this->Init("NstG_ppimumu");
+  }
   else if (ananame == "NstG_pKmumu")
   {
     comppdf[1] = "Combinatorial";
   }
   else if (ananame == "NstG_pKmumu_log")
+  {
+    this->Init("NstG_pKmumu");
+  }
+  else if (ananame == "NstG_pKmumu_sPlot")
   {
     this->Init("NstG_pKmumu");
   }
