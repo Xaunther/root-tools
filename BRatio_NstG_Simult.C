@@ -27,28 +27,39 @@ using namespace std;
 double Avg_Trigger_Variation()
 {
 	double eff2011_NstG, eff2012_NstG, eff2011_pKG, eff2012_pKG;
+	auto chain_2011_pKG = GetChain("../Directories/Lb2pKG_2011_2hG_tuples.dir");
+	auto chain_2012_pKG = GetChain("../Directories/Lb2pKG_2hG_tuples.dir");
+	auto chain_2011_NstG = GetChain("../Directories/Lb2NstG_2011_2hG_tuples.dir");
+	auto chain_2012_NstG = GetChain("../Directories/Lb2NstG_2hG_tuples.dir");
+	auto precuts = GetCuts("Variables/PreCuts_2hG.txt");
+
 	//pKG
 	eff2011_pKG = (stod(GetValueFor("pKG_2011_Down_eff", "Systematics/Generation/GenLevelCut_Eff.txt")) + stod(GetValueFor("pKG_2011_Up_eff", "Systematics/Generation/GenLevelCut_Eff.txt"))) / 2.;
 	eff2011_pKG *= (stod(GetValueFor("pKG_2011_Down_eff", "Systematics/Generation/FullEventCut_Eff.txt")) + stod(GetValueFor("pKG_2011_Up_eff", "Systematics/Generation/FullEventCut_Eff.txt"))) / 2.;
 	eff2011_pKG *= (stod(GetValueFor("pKG_2011_Down_eff", "Systematics/DST/Global_Eff.txt")) + stod(GetValueFor("pKG_2011_Up_eff", "Systematics/DST/Global_Eff.txt"))) / 2.;
-	eff2011_pKG *= stod(GetValueFor("Global", "output/PreCutEff_MCMatch_pKG_2011_2hG.txt")) * stod(GetValueFor("Global", "output/PreCutEff_pKG_2011_2hG.txt"));
+	eff2011_pKG *= stod(GetValueFor("Global", "output/PreCutEff_MCMatch_pKG_2011_2hG.txt")) * GetMeanEntries(chain_2011_pKG, precuts);
 	eff2011_pKG *= stod(GetValueFor("Global", "output/CutEff_pKG_2011_2hG.txt")) * stod(GetValueFor("Mean", "Systematics/PID/pKG_2011_PIDEff.txt"));
 	eff2012_pKG = (stod(GetValueFor("pKG_2012_Down_eff", "Systematics/Generation/GenLevelCut_Eff.txt")) + stod(GetValueFor("pKG_2012_Up_eff", "Systematics/Generation/GenLevelCut_Eff.txt"))) / 2.;
 	eff2012_pKG *= (stod(GetValueFor("pKG_2012_Down_eff", "Systematics/Generation/FullEventCut_Eff.txt")) + stod(GetValueFor("pKG_2012_Up_eff", "Systematics/Generation/FullEventCut_Eff.txt"))) / 2.;
 	eff2012_pKG *= (stod(GetValueFor("pKG_2012_Down_eff", "Systematics/DST/Global_Eff.txt")) + stod(GetValueFor("pKG_2012_Up_eff", "Systematics/DST/Global_Eff.txt"))) / 2.;
-	eff2012_pKG *= stod(GetValueFor("Global", "output/PreCutEff_MCMatch_pKG_2hG.txt")) * stod(GetValueFor("Global", "output/PreCutEff_pKG_2hG.txt"));
+	eff2012_pKG *= stod(GetValueFor("Global", "output/PreCutEff_MCMatch_pKG_2hG.txt")) * GetMeanEntries(chain_2012_pKG, precuts);
 	eff2012_pKG *= stod(GetValueFor("Global", "output/CutEff_pKG_2hG.txt")) * stod(GetValueFor("Mean", "Systematics/PID/pKG_PIDEff.txt"));
 	//NstG
 	eff2011_NstG = (stod(GetValueFor("NstG_2011_Down_eff", "Systematics/Generation/GenLevelCut_Eff.txt")) + stod(GetValueFor("NstG_2011_Up_eff", "Systematics/Generation/GenLevelCut_Eff.txt"))) / 2.;
 	eff2011_NstG *= (stod(GetValueFor("NstG_2011_Down_eff", "Systematics/Generation/FullEventCut_Eff.txt")) + stod(GetValueFor("NstG_2011_Up_eff", "Systematics/Generation/FullEventCut_Eff.txt"))) / 2.;
 	eff2011_NstG *= (stod(GetValueFor("NstG_2011_Down_eff", "Systematics/DST/Global_Eff.txt")) + stod(GetValueFor("NstG_2011_Up_eff", "Systematics/DST/Global_Eff.txt"))) / 2.;
-	eff2011_NstG *= stod(GetValueFor("Global", "output/PreCutEff_MCMatch_NstG_2011_2hG.txt")) * stod(GetValueFor("Global", "output/PreCutEff_NstG_2011_2hG.txt"));
+	eff2011_NstG *= stod(GetValueFor("Global", "output/PreCutEff_MCMatch_NstG_2011_2hG.txt")) * GetMeanEntries(chain_2011_NstG, precuts);
 	eff2011_NstG *= stod(GetValueFor("Global", "output/CutEff_NstG_2011_2hG.txt")) * stod(GetValueFor("Mean", "Systematics/PID/NstG_2011_PIDEff.txt"));
 	eff2012_NstG = (stod(GetValueFor("NstG_2012_Down_eff", "Systematics/Generation/GenLevelCut_Eff.txt")) + stod(GetValueFor("NstG_2012_Up_eff", "Systematics/Generation/GenLevelCut_Eff.txt"))) / 2.;
 	eff2012_NstG *= (stod(GetValueFor("NstG_2012_Down_eff", "Systematics/Generation/FullEventCut_Eff.txt")) + stod(GetValueFor("NstG_2012_Up_eff", "Systematics/Generation/FullEventCut_Eff.txt"))) / 2.;
 	eff2012_NstG *= (stod(GetValueFor("NstG_2012_Down_eff", "Systematics/DST/Global_Eff.txt")) + stod(GetValueFor("NstG_2012_Up_eff", "Systematics/DST/Global_Eff.txt"))) / 2.;
-	eff2012_NstG *= stod(GetValueFor("Global", "output/PreCutEff_MCMatch_NstG_2hG.txt")) * stod(GetValueFor("Global", "output/PreCutEff_NstG_2hG.txt"));
+	eff2012_NstG *= stod(GetValueFor("Global", "output/PreCutEff_MCMatch_NstG_2hG.txt")) * GetMeanEntries(chain_2012_NstG, precuts);
 	eff2012_NstG *= stod(GetValueFor("Global", "output/CutEff_NstG_2hG.txt")) * stod(GetValueFor("Mean", "Systematics/PID/NstG_PIDEff.txt"));
+
+	CloseChain(chain_2011_pKG);
+	CloseChain(chain_2012_pKG);
+	CloseChain(chain_2011_NstG);
+	CloseChain(chain_2012_NstG);
 	return abs(1 - (eff2012_NstG / eff2011_NstG) * (eff2011_pKG / eff2012_pKG)) / (1 + 2 * (eff2012_NstG / eff2011_NstG)); //Factor 1/3 to take into account that 2011 is 1/3 of the total lumi
 }
 
