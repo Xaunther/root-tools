@@ -472,7 +472,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   ws_ppiG_mass.push_back(fitf[CBExp](variablename[0], MCtree[3], "Event_PIDCalibEff_global_weight", 0, 0, opts + "_ppiG_KpiGRef")); //KpiG MC Reflected
   cout << "pKG MC Reflected" << endl
        << "-------" << endl;
-  ws_ppiG_mass.push_back(fitf[CBExp](variablename[0], MCtree[4], "Event_PIDCalibEff_global_weight", 0, 0, opts + "_ppiG_pKGRef")); //pKG MC Reflected
+  ws_ppiG_mass.push_back(fitf[DoubleGaussExp](variablename[0], MCtree[4], "Event_PIDCalibEff_global_weight", 0, 0, opts + "_ppiG_pKGRef")); //pKG MC Reflected
 
   //Let's continue with fits to KpiG mass
   cout << "Starting MC fits to KpiG mass" << endl;
@@ -676,10 +676,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   value = ws_ppiG_mass[4]->var(name_list.alphaR[0].c_str())->getValV();
   RooRealVar alphaR_ppiGmass_pKRefGMC(name_list.alphaR[4].c_str(), name_list.alphaR[4].c_str(), value);
   alphaR_ppiGmass_pKRefGMC.setConstant();
-  value = ws_ppiG_mass[4]->var(name_list.n.c_str())->getValV();
-  RooRealVar n_ppiGmass_pKRefGMC(name_list.nL[4].c_str(), name_list.nL[4].c_str(), value);
-  n_ppiGmass_pKRefGMC.setConstant();
-  RooCBExp pdf_ppiGmass_pKRefGMC(name_list.comppdf[4].c_str(), name_list.comppdf[4].c_str(), b_masses[0], mean_ppiGmass_pKRefGMC, sigma_ppiGmass_pKRefGMC, alphaL_ppiGmass_pKRefGMC, n_ppiGmass_pKRefGMC, alphaR_ppiGmass_pKRefGMC);
+  RooDoubleGaussExp pdf_ppiGmass_pKRefGMC(name_list.comppdf[4].c_str(), name_list.comppdf[4].c_str(), b_masses[0], mean_ppiGmass_pKRefGMC, sigma_ppiGmass_pKRefGMC, alphaL_ppiGmass_pKRefGMC, alphaR_ppiGmass_pKRefGMC);
 
   RooRealVar tau_ppiGmass_exp(name_list.exp_par[7].c_str(), name_list.exp_par[7].c_str(), const_list.bkgpar_0, const_list.bkgpar_min, const_list.bkgpar_max);
   RooExponential pdf_ppiGmass_exp(name_list.comppdf[7].c_str(), name_list.comppdf[7].c_str(), b_masses[0], tau_ppiGmass_exp);
