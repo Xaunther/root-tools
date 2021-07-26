@@ -70,7 +70,6 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L " + path + "CutTree.C+").c_str());
   gROOT->ProcessLine((".L " + path + "EffPerBin.C+").c_str());
   gROOT->ProcessLine((".L " + path + "EffStats.C+").c_str());
-  gROOT->ProcessLine((".L " + path + "EntriesTable.C+").c_str());
   gROOT->ProcessLine((".L " + path + "Err_Frac.C+").c_str());
   gROOT->ProcessLine((".L " + path + "ExpYield.C+").c_str());
   gROOT->ProcessLine((".L " + path + "Fit_NstG.C+").c_str());
@@ -91,7 +90,6 @@ void rootinit(std::string path)
   gROOT->ProcessLine((".L " + path + "PIDTable.C+").c_str());
   gROOT->ProcessLine((".L " + path + "plot2D.C+").c_str());
   gROOT->ProcessLine((".L " + path + "PlotCorrVar.C+").c_str());
-  gROOT->ProcessLine((".L " + path + "PlotTable.C+").c_str());
   gROOT->ProcessLine((".L " + path + "PlotUsedVars.C+").c_str());
   gROOT->ProcessLine((".L " + path + "PlotVar.C+").c_str());
   gROOT->ProcessLine((".L " + path + "Ratio_NstG.C+").c_str());

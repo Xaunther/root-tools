@@ -23,6 +23,7 @@ double *ReadNumbers(int &, string);
 string *ReadVariablesWord(int &, string, int);
 vartable *ReadVarTable(int, string);
 double **GetData(string, int &, int);
+std::string *GetColData(string, int &, int);
 string GetCuts(string);
 string GetCutsVar(string, string, int, int, int);
 void AdvanceLine(ifstream &, string);

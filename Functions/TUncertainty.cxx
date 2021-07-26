@@ -7,26 +7,38 @@
 #include <string>
 #include "Functions/TUncertainty.h"
 
+//Return square sum of uncertainties
+
+double TUncertainty::GetTotalUncertainty() const
+{
+	double total = 0;
+	for (auto u : uncertainty)
+	{
+		total += u * u;
+	}
+	return sqrt(total);
+}
+
 //Overloaded operators
 //SUM
-TUncertainty operator+(const double& u1, const TUncertainty& u2)
+TUncertainty operator+(const double &u1, const TUncertainty &u2)
 {
 	TUncertainty _u1(u1);
 	return _u1 + u2;
 }
-TUncertainty operator+(const TUncertainty& u1, const double& u2)
+TUncertainty operator+(const TUncertainty &u1, const double &u2)
 {
 	TUncertainty _u2(u2);
 	return u1 + _u2;
 }
-TUncertainty operator+(const TUncertainty& u1, const TUncertainty& u2)
+TUncertainty operator+(const TUncertainty &u1, const TUncertainty &u2)
 {
 	TUncertainty result;
-	result.value = u1.value + u2.value; //Add values
+	result.value = u1.value + u2.value;														  //Add values
 	for (unsigned int i = 0; i < std::max(u1.uncertainty.size(), u2.uncertainty.size()); i++) //Add errors in quadrature. Careful with sizes
 		if (i < std::min(u1.uncertainty.size(), u2.uncertainty.size()))
 		{
-			result.uncertainty.push_back(sqrt(u1.uncertainty[i]*u1.uncertainty[i] + u2.uncertainty[i]*u2.uncertainty[i]));
+			result.uncertainty.push_back(sqrt(u1.uncertainty[i] * u1.uncertainty[i] + u2.uncertainty[i] * u2.uncertainty[i]));
 		}
 		else if (i < u2.uncertainty.size())
 		{
@@ -39,24 +51,24 @@ TUncertainty operator+(const TUncertainty& u1, const TUncertainty& u2)
 	return result;
 }
 //SUBSTRACTION
-TUncertainty operator-(const double& u1, const TUncertainty& u2)
+TUncertainty operator-(const double &u1, const TUncertainty &u2)
 {
 	TUncertainty _u1(u1);
 	return _u1 - u2;
 }
-TUncertainty operator-(const TUncertainty& u1, const double& u2)
+TUncertainty operator-(const TUncertainty &u1, const double &u2)
 {
 	TUncertainty _u2(u2);
 	return u1 - _u2;
 }
-TUncertainty operator-(const TUncertainty& u1, const TUncertainty& u2)
+TUncertainty operator-(const TUncertainty &u1, const TUncertainty &u2)
 {
 	TUncertainty result;
-	result.value = u1.value - u2.value; //Add values
+	result.value = u1.value - u2.value;														  //Add values
 	for (unsigned int i = 0; i < std::max(u1.uncertainty.size(), u2.uncertainty.size()); i++) //Add errors in quadrature. Careful with sizes
 		if (i < std::min(u1.uncertainty.size(), u2.uncertainty.size()))
 		{
-			result.uncertainty.push_back(sqrt(u1.uncertainty[i]*u1.uncertainty[i] + u2.uncertainty[i]*u2.uncertainty[i]));
+			result.uncertainty.push_back(sqrt(u1.uncertainty[i] * u1.uncertainty[i] + u2.uncertainty[i] * u2.uncertainty[i]));
 		}
 		else if (i < u2.uncertainty.size())
 		{
@@ -69,24 +81,24 @@ TUncertainty operator-(const TUncertainty& u1, const TUncertainty& u2)
 	return result;
 }
 //PRODUCT
-TUncertainty operator*(const double& u1, const TUncertainty& u2)
+TUncertainty operator*(const double &u1, const TUncertainty &u2)
 {
 	TUncertainty _u1(u1);
 	return _u1 * u2;
 }
-TUncertainty operator*(const TUncertainty& u1, const double& u2)
+TUncertainty operator*(const TUncertainty &u1, const double &u2)
 {
 	TUncertainty _u2(u2);
 	return u1 * _u2;
 }
-TUncertainty operator*(const TUncertainty& u1, const TUncertainty& u2)
+TUncertainty operator*(const TUncertainty &u1, const TUncertainty &u2)
 {
 	TUncertainty result;
-	result.value = u1.value * u2.value; //Add values
+	result.value = u1.value * u2.value;														  //Add values
 	for (unsigned int i = 0; i < std::max(u1.uncertainty.size(), u2.uncertainty.size()); i++) //Add errors in quadrature. Careful with sizes
 		if (i < std::min(u1.uncertainty.size(), u2.uncertainty.size()))
 		{
-			result.uncertainty.push_back(result.value * sqrt(u1.uncertainty[i]*u1.uncertainty[i] / u1.value / u1.value + u2.uncertainty[i]*u2.uncertainty[i] / u2.value / u2.value));
+			result.uncertainty.push_back(result.value * sqrt(u1.uncertainty[i] * u1.uncertainty[i] / u1.value / u1.value + u2.uncertainty[i] * u2.uncertainty[i] / u2.value / u2.value));
 		}
 		else if (i < u2.uncertainty.size())
 		{
@@ -99,25 +111,32 @@ TUncertainty operator*(const TUncertainty& u1, const TUncertainty& u2)
 	return result;
 }
 //DIVISION
-TUncertainty operator/(const double& u1, const TUncertainty& u2)
+TUncertainty operator/(const double &u1, const TUncertainty &u2)
 {
 	TUncertainty _u1(u1);
 	return _u1 / u2;
 }
-TUncertainty operator/(const TUncertainty& u1, const double& u2)
+TUncertainty operator/(const TUncertainty &u1, const double &u2)
 {
 	TUncertainty _u2(u2);
 	return u1 / _u2;
 }
-TUncertainty operator/(const TUncertainty& u1, const TUncertainty& u2)
+TUncertainty operator/(const TUncertainty &u1, const TUncertainty &u2)
 {
 	TUncertainty result;
-	if (u2.value != 0.) {result.value = u1.value / u2.value;} //Substract values}
-	else {result.value = 0.; std::cout << "Dividing by zero. Setting result to zero" << std::endl;}
+	if (u2.value != 0.)
+	{
+		result.value = u1.value / u2.value;
+	} //Substract values}
+	else
+	{
+		result.value = 0.;
+		std::cout << "Dividing by zero. Setting result to zero" << std::endl;
+	}
 	for (unsigned int i = 0; i < std::max(u1.uncertainty.size(), u2.uncertainty.size()); i++) //Add errors in quadrature. Careful with sizes
 		if (i < std::min(u1.uncertainty.size(), u2.uncertainty.size()))
 		{
-			result.uncertainty.push_back(result.value * sqrt(u1.uncertainty[i]*u1.uncertainty[i] / u1.value / u1.value + u2.uncertainty[i]*u2.uncertainty[i] / u2.value / u2.value));
+			result.uncertainty.push_back(result.value * sqrt(u1.uncertainty[i] * u1.uncertainty[i] / u1.value / u1.value + u2.uncertainty[i] * u2.uncertainty[i] / u2.value / u2.value));
 		}
 		else if (i < u2.uncertainty.size())
 		{
@@ -136,7 +155,7 @@ void TUncertainty::Print(Option_t *option) const
 	return;
 }
 
-void TUncertainty::Print(std::ostream& ss, Option_t *option)const
+void TUncertainty::Print(std::ostream &ss, Option_t *option) const
 {
 	ss << this->value;
 	for (unsigned int i = 0; i < this->uncertainty.size(); i++)
@@ -166,15 +185,14 @@ void TUncertainty::SaveResult(std::string filename)
 //The magic to show results when using ROOT terminal
 namespace cling
 {
-std::string printValue(TUncertainty *val)
-{
-	std::stringstream printval;
-	printval << val->GetValue();
-	for (unsigned int i = 0; i < val->GetUncertainty().size(); i++)
+	std::string printValue(TUncertainty *val)
 	{
-		printval << " \u00B1 " << val->GetUncertainty()[i];
+		std::stringstream printval;
+		printval << val->GetValue();
+		for (unsigned int i = 0; i < val->GetUncertainty().size(); i++)
+		{
+			printval << " \u00B1 " << val->GetUncertainty()[i];
+		}
+		return printval.str();
 	}
-	return printval.str();
-}
 };
-

@@ -57,14 +57,14 @@ void CutSig(string sigfile, string bkglist, string datafile, string instrfile, s
   int NN = 0; //DUMMY!!
 
   //Read signal chain
-  TChain* sigchain = GetChain(sigfile, sigtree);
+  TChain *sigchain = GetChain(sigfile, sigtree);
   /**********************************************************************/
   //Read bkg chain
   int Nbkg = 0;
   //Need to split in array for bkg
-  string* bkgfile = SplitString(Nbkg, bkglist, " ");
-  string* bkgtree = SplitString(NN, bkgtreelist, " ");
-  TChain** bkgchain = new TChain*[Nbkg];
+  string *bkgfile = SplitString(Nbkg, bkglist, " ");
+  string *bkgtree = SplitString(NN, bkgtreelist, " ");
+  TChain **bkgchain = new TChain *[Nbkg];
   for (int i = 0; i < Nbkg; i++)
   {
     if (i < NN)
@@ -80,15 +80,18 @@ void CutSig(string sigfile, string bkglist, string datafile, string instrfile, s
   delete[] bkgtree;
   /**********************************************************************/
   //Read data chain
-  TChain* datachain = GetChain(datafile, datatree);
+  TChain *datachain = GetChain(datafile, datatree);
   /**********************************************************************/
   //Read precuts
   string precuts = GetCuts(precutsfile);
-  if (precuts == "") {precuts = "(1)";}
+  if (precuts == "")
+  {
+    precuts = "(1)";
+  }
   /**********************************************************************/
   //Read initial bkg yields
   NN = 0;
-  string* bkgyieldfile = SplitString(NN, bkgyieldlist, " ");
+  string *bkgyieldfile = SplitString(NN, bkgyieldlist, " ");
   //Raise error if different
   if (NN != Nbkg)
   {
@@ -98,12 +101,16 @@ void CutSig(string sigfile, string bkglist, string datafile, string instrfile, s
   /**********************************************************************/
   //Read list of bkg weights
   NN = 0;
-  string* _bkgw = SplitString(NN, bkgwlist, " ");
-  string* bkgw = new string[Nbkg]; for (int i = 0; i < NN; i++) {bkgw[i] = _bkgw[i];}
+  string *_bkgw = SplitString(NN, bkgwlist, " ");
+  string *bkgw = new string[Nbkg];
+  for (int i = 0; i < NN; i++)
+  {
+    bkgw[i] = _bkgw[i];
+  }
   delete[] _bkgw;
   /**********************************************************************/
   //Now READ!
-  double* bkgyield0 = new double[Nbkg];
+  double *bkgyield0 = new double[Nbkg];
   for (int i = 0; i < Nbkg; i++)
   {
     NN = 0;
@@ -114,16 +121,16 @@ void CutSig(string sigfile, string bkglist, string datafile, string instrfile, s
   //Read instructions file, has 4 columns
   int N = 0;
   //Read line by line, then split in the different arrays
-  string* cut = ReadVariables(N, instrfile);
-  double* minV = new double[N];
-  double* maxV = new double[N];
-  int* steps = new int[N];
+  string *cut = ReadVariables(N, instrfile);
+  double *minV = new double[N];
+  double *maxV = new double[N];
+  int *steps = new int[N];
   int combs = 1;
   for (int i = 0; i < N; i++)
   {
     //Split in different arrays
     int Ntemp = 0;
-    string* tempst = SplitString(Ntemp, cut[i], " ");
+    string *tempst = SplitString(Ntemp, cut[i], " ");
     cut[i] = tempst[0];
     minV[i] = stod(tempst[1]);
     maxV[i] = stod(tempst[2]);
@@ -163,15 +170,15 @@ void CutSig(string sigfile, string bkglist, string datafile, string instrfile, s
     //Get this cut combination and go writing in the dumpfile
     for (int j = 0; j < N; j++)
     {
-      ss << thiscuts << " * (" << cut[j] << minV[j] + (maxV[j] - minV[j]) / (steps[j] - 1)*(remnant % steps[j]) << ")";
-      dumpf << " * (" << cut[j] << minV[j] + (maxV[j] - minV[j]) / (steps[j] - 1)*(remnant % steps[j]) << ")";
+      ss << thiscuts << " * (" << cut[j] << minV[j] + (maxV[j] - minV[j]) / (steps[j] - 1) * (remnant % steps[j]) << ")";
+      dumpf << " * (" << cut[j] << minV[j] + (maxV[j] - minV[j]) / (steps[j] - 1) * (remnant % steps[j]) << ")";
       thiscuts = ss.str();
       ss.str("");
       remnant = remnant / steps[j];
     }
     /**********************************************************************/
     //Compute efficiency
-    double eff = GetMeanEntries(sigchain, thiscuts, sigw);
+    auto eff = GetEfficiency(sigchain, thiscuts, sigw);
     //Initialize B
     double B = 0;
     for (int j = 0; j < Nbkg; j++)
@@ -188,19 +195,26 @@ void CutSig(string sigfile, string bkglist, string datafile, string instrfile, s
       D = datachain->GetEntries(thiscuts.c_str());
     }
     //Compute Punzi
-    double fom;
+    TUncertainty fom;
     if (sigma / 2. + TMath::Power(B + D, spb_pow) == 0)
     {
-      fom = 0;
+      fom = TUncertainty(0., 0.);
     }
     else
     {
-      fom = eff / (sigma / 2. + TMath::Power(B + D, spb_pow));
+      TUncertainty ff;
+      double fom_err = TMath::Sqrt(D) * spb_pow * TMath::Power(B + D, spb_pow) / D;
+      ff = TUncertainty(TMath::Power(B + D, spb_pow), fom_err);
+      fom = eff / (sigma / 2. + ff);
     }
     /**********************************************************************/
     //Save fom in dumpfile
-    dumpf << " | " << fom << endl;
-    if (fom > bestfom) {bestcomb = i; bestfom = fom;}
+    dumpf << " | " << fom.GetValue() << " +- " << fom.GetTotalUncertainty() << endl;
+    if (fom.GetValue() > bestfom)
+    {
+      bestcomb = i;
+      bestfom = fom.GetValue();
+    }
     DrawProgress(double(i) / combs);
   }
   //Clean progress bar
@@ -213,7 +227,7 @@ void CutSig(string sigfile, string bkglist, string datafile, string instrfile, s
   cutf.open(cutname.c_str());
   for (int j = 0; j < N; j++)
   {
-    cutf << cut[j] << minV[j] + (maxV[j] - minV[j]) / (steps[j] - 1)*(bestcomb % steps[j]) << endl;
+    cutf << cut[j] << minV[j] + (maxV[j] - minV[j]) / (steps[j] - 1) * (bestcomb % steps[j]) << endl;
     bestcomb = bestcomb / steps[j];
   }
   //Close cutfile
@@ -221,7 +235,7 @@ void CutSig(string sigfile, string bkglist, string datafile, string instrfile, s
 }
 
 #if !defined(__CLING__)
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   switch (argc - 1)
   {

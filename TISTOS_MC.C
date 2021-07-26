@@ -41,7 +41,6 @@ void TISTOS_MC(std::string datadir, std::string L0fileTOS, std::string Hlt1fileT
   auto TISTOScuts = JoinCutsAND({TIScuts, TOScuts});
 
   //Compute the relevant numbers
-  double N0 = chain->GetEntries();
   auto N_TIS = GetEfficiency(chain, TIScuts, w_var);
   auto N_TISTOS = GetEfficiency(chain, TISTOScuts, w_var);
   std::cout << "N_TISTOS: ";

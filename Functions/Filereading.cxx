@@ -137,6 +137,28 @@ double **GetData(string filename, int &N, int Ncol)
   return data;
 }
 
+//Column starts at 1!
+std::string *GetColData(string filename, int &N, int Ncol)
+{
+  ifstream input;
+
+  N = GetNVariables(filename);
+  std::string *data = new std::string[N];
+
+  input.open(filename.c_str());
+  for (int i = 0; i < N; i++)
+  {
+    std::string basura;
+    for (int j = 1; j < Ncol; j++)
+      input >> basura;
+    input >> data[i];
+    getline(input, basura);
+  }
+  input.close();
+
+  return data;
+}
+
 string GetCuts(string filename)
 {
   ifstream input;

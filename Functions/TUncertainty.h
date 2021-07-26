@@ -31,6 +31,7 @@ public:
 	//Access elements
 	double GetValue() const { return value; }
 	std::vector<double> GetUncertainty() const { return uncertainty; }
+	double GetTotalUncertainty() const;
 
 	//Operation overload
 	friend TUncertainty operator+(const double &u1, const TUncertainty &u2);
