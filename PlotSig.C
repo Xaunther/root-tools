@@ -30,7 +30,6 @@ void PlotSig(std::string filename, std::string cut, std::string outputname, std:
             y_err[i - 1] = 0;
         else
             y_err[i - 1] = std::stod(y_err_str[i]);
-        ç
     }
 
     //Make the graph
