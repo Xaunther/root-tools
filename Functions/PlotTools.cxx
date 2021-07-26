@@ -123,7 +123,7 @@ void GoodPlot(RooWorkspace *ws, string variablename, string title, string Xtitle
   double bin_size = (const_list.xmax - const_list.xmin) / Nbins;
 
   //Array of colours for the components
-  EColor comp_colours[] = {kRed, kBlue, kYellow, kGreen, kMagenta, kCyan, kBlack, kOrange};
+  EColor comp_colours[] = {kRed, kBlue, kOrange, kGreen, kMagenta, kCyan, kBlack, EColor(kCyan + 3)};
   //Retrieve stuff from workspace
   //Take fit variable from its name
   RooRealVar *B_M = ws->var(variablename.c_str());
