@@ -57,6 +57,7 @@ void CompareList(string filename1, string filename2, string var1, string var2, s
     hist2->SetFillStyle(3005);
 
     hist1->SetTitle(title.c_str());
+    hist1->SetYTitle("Candidates");
 
     //Include unweighted MC, if it's the case
     TLegend *legend;
