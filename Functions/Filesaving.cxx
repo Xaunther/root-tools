@@ -7,6 +7,7 @@
 #include "RooWorkspace.h"
 #include "RooRealVar.h"
 #include "RooArgSet.h"
+#include "RooFitResult.h"
 #include "TIterator.h"
 #include "Functions/Filesaving.h"
 #include "Functions/Dictreading.h"
@@ -14,7 +15,7 @@
 #include "Dictionaries/Names.h"
 using namespace std;
 
-void SaveVariables(string* varnames, int N, string filename)
+void SaveVariables(string *varnames, int N, string filename)
 {
   ofstream f;
   f.open(filename.c_str());
@@ -28,16 +29,26 @@ void SaveVariables(string* varnames, int N, string filename)
 }
 
 //Partially implemented, only for fitopt = DoubleCB
-void SaveLatex(RooWorkspace* ws, FitOption fitopt, bool newfile, string col1, string outfile)
+void SaveLatex(RooWorkspace *ws, FitOption fitopt, bool newfile, string col1, string outfile)
 {
   //Set outfile if no name is given
-  if (outfile == "") {outfile = "LatexTable.tex";}
+  if (outfile == "")
+  {
+    outfile = "LatexTable.tex";
+  }
   //Open file
   ofstream f;
   //Initialize name dictionary
   Names name_list(GetValueFor("Project_name", "Dictionaries/Project_variables.txt"));
 
-  if (newfile) {f.open(outfile.c_str());} else {f.open(outfile.c_str(), ios_base::app);}
+  if (newfile)
+  {
+    f.open(outfile.c_str());
+  }
+  else
+  {
+    f.open(outfile.c_str(), ios_base::app);
+  }
   switch (fitopt)
   {
   case DoubleCB:
@@ -147,16 +158,37 @@ void SaveLatex(RooWorkspace* ws, FitOption fitopt, bool newfile, string col1, st
 }
 
 //Save list of yields in a file
-void SaveRooVars(RooWorkspace* ws, string outname)
+void SaveRooVars(RooWorkspace *ws, string outname, RooFitResult *result)
 {
   ofstream f;
   f.open(outname.c_str());
   RooArgSet varlist = ws->allVars();
-  TIterator* it = varlist.createIterator();
-  RooRealVar* varit;
-  while ((varit = (RooRealVar*)it->Next()))
+  TIterator *it = varlist.createIterator();
+  RooRealVar *varit;
+  while ((varit = (RooRealVar *)it->Next()))
   {
     f << varit->GetName() << " = " << varit->getValV() << " +- " << varit->getError() << endl;
   }
+  //Save covariance matrix if result is given
+  if (result)
+    SaveFitResult(f, result);
   f.close();
+  return;
+}
+
+void SaveFitResult(ofstream &f, RooFitResult *result)
+{
+  unsigned long N_vars = result->floatParsFinal().size();
+  //Print indices with variable name
+  f << endl;
+  for (unsigned long i = 0; i < N_vars; i++)
+    f << i << " | " << result->floatParsFinal()[i].GetName() << endl;
+  f << endl;
+  //Print the matrix
+  for (unsigned long i = 0; i < N_vars; i++)
+  {
+    for (unsigned long j = 0; j <= i; j++)
+      f << "\u03C3_" << i << "," << j << " = " << result->covarianceMatrix()[i][j] << endl;
+  }
+  return;
 }

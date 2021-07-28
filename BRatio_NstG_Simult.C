@@ -77,12 +77,8 @@ void BRatio_NstG_Simult(string outfile)
 	TUncertainty N_ppiG(stod(GetValueFor("f_ppiG_mass_ppiGMC", "SimultaneousFit/NstG_MultiPlot_RooYields.txt")), {stod(GetErrorFor("f_ppiG_mass_ppiGMC", "SimultaneousFit/NstG_MultiPlot_RooYields.txt")),
 																												  0, 0, 0,
 																												  stod(GetValueFor("Uncertainty", "Systematics/Fit/rel_uncertainty.txt")) * stod(GetValueFor("f_ppiG_mass_ppiGMC", "SimultaneousFit/NstG_MultiPlot_RooYields.txt"))});
-	TUncertainty N_pKG = 0;
-	eff1 = TUncertainty(stod(GetValueFor("f_ppiG_mass_pKGMC", "SimultaneousFit/NstG_MultiPlot_RooYields.txt")),
-						stod(GetErrorFor("f_ppiG_mass_pKGMC", "SimultaneousFit/NstG_MultiPlot_RooYields.txt")));
-	eff2 = TUncertainty(stod(GetValueFor("R_pKG_mass_pKGMC", "SimultaneousFit/NstG_MultiPlot_RooYields.txt")),
-						stod(GetErrorFor("R_pKG_mass_pKGMC", "SimultaneousFit/NstG_MultiPlot_RooYields.txt")));
-	N_pKG = eff1 * eff2;
+	TUncertainty N_pKG(stod(GetValueFor("f_pKG_mass_pKGMC", "SimultaneousFit/NstG_Yields.txt")),
+					   stod(GetErrorFor("f_pKG_mass_pKGMC", "SimultaneousFit/NstG_Yields.txt")));
 	//Generator
 	eff1 = TUncertainty(stod(GetValueFor("NstG_2012_Down_eff", "Systematics/Generation/GenLevelCut_Eff.txt")), {0,
 																												stod(GetValueFor("NstG_2012_Down_err", "Systematics/Generation/GenLevelCut_Eff.txt"))});

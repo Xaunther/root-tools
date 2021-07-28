@@ -15,6 +15,7 @@
 #include "RooDataSet.h"
 #include "RooSimultaneous.h"
 #include "RooCategory.h"
+#include "RooFitResult.h"
 #include "TFile.h"
 #include "TError.h"
 #include "Functions/AnalFits.h"
@@ -632,10 +633,9 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
 
   value = ws_ppiG_mass[2]->var(name_list.mean[0].c_str())->getValV();
   RooRealVar mean_ppiGmass_ppiGMC(name_list.mean[2].c_str(), name_list.mean[2].c_str(), value, const_list.xmin, const_list.xmax); //mean_ppiGmass_ppiGMC.setConstant();
-  //Get the width from pKG fit
+  //Free width, tie it to pKG MC width in pKG mass
   value = ws_pKG_mass[1]->var(name_list.width[0].c_str())->getValV();
   RooRealVar sigma_ppiGmass_ppiGMC(name_list.width[2].c_str(), name_list.width[2].c_str(), value, const_list.width_min, const_list.width_max);
-  sigma_ppiGmass_ppiGMC.setConstant();
   value = ws_ppiG_mass[2]->var(name_list.alphaL[0].c_str())->getValV();
   RooRealVar alphaL_ppiGmass_ppiGMC(name_list.alphaL[2].c_str(), name_list.alphaL[2].c_str(), value);
   alphaL_ppiGmass_ppiGMC.setConstant();
@@ -902,8 +902,6 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
 
   value = ws_pKG_mass[1]->var(name_list.mean[0].c_str())->getValV();
   RooRealVar mean_pKGmass_pKGMC(name_list.mean[17].c_str(), name_list.mean[17].c_str(), value, const_list.xmin, const_list.xmax); //mean_pKGmass_pKGMC.setConstant();
-  value = ws_pKG_mass[1]->var(name_list.width[0].c_str())->getValV();
-  RooRealVar sigma_pKGmass_pKGMC(name_list.width[17].c_str(), name_list.width[17].c_str(), value, const_list.width_min, const_list.width_max); //sigma_pKGmass_pKGMC.setConstant();
   value = ws_pKG_mass[1]->var(name_list.alphaL[0].c_str())->getValV();
   RooRealVar alphaL_pKGmass_pKGMC(name_list.alphaL[17].c_str(), name_list.alphaL[17].c_str(), value);
   alphaL_pKGmass_pKGMC.setConstant();
@@ -913,7 +911,7 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   value = ws_pKG_mass[1]->var(name_list.n.c_str())->getValV();
   RooRealVar n_pKGmass_pKGMC(name_list.nL[17].c_str(), name_list.nL[17].c_str(), value);
   n_pKGmass_pKGMC.setConstant();
-  RooCBExp pdf_pKGmass_pKGMC(name_list.comppdf[17].c_str(), name_list.comppdf[17].c_str(), b_masses[2], mean_pKGmass_pKGMC, sigma_pKGmass_pKGMC, alphaL_pKGmass_pKGMC, n_pKGmass_pKGMC, alphaR_pKGmass_pKGMC);
+  RooCBExp pdf_pKGmass_pKGMC(name_list.comppdf[17].c_str(), name_list.comppdf[17].c_str(), b_masses[2], mean_pKGmass_pKGMC, sigma_ppiGmass_ppiGMC, alphaL_pKGmass_pKGMC, n_pKGmass_pKGMC, alphaR_pKGmass_pKGMC);
 
   value = ws_pKG_mass[2]->var(name_list.mean[0].c_str())->getValV();
   RooRealVar mean_pKGmass_ppiGMC(name_list.mean[18].c_str(), name_list.mean[18].c_str(), value);
@@ -1042,13 +1040,13 @@ RooWorkspace *FitLb2NstG_Simult(string *variablename, TTree **tree, string opts)
   gaussconstraints.add(RG_pKG_mass_ppiGMC);
   gaussconstraints.add(RG_pKG_mass_KpiGRefMC);
   gaussconstraints.add(RG_pKG_mass_pKGRefMC);
-  simpdf.fitTo(data, RooFit::ExternalConstraints(gaussconstraints));
+  auto results = simpdf.fitTo(data, RooFit::ExternalConstraints(gaussconstraints), RooFit::Save());
   //Import to workspace the pdfs and the dataset
   ws->import(simpdf);
   ws->import(data);
 
   //Save yields in a file
-  SaveRooVars(ws, const_list.workingdir + "NstG_MultiPlot_RooYields.txt");
+  SaveRooVars(ws, const_list.workingdir + "NstG_MultiPlot_RooYields.txt", results);
   return ws;
 }
 
