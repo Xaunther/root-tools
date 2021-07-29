@@ -16,17 +16,16 @@ using namespace std;
 //This way, Fits contains more general functions and more specific fits can go in a separate file
 
 //Modularized function to define parameter list
-string* Create_Parlist_NstG(FitOption, Names*, Constants*, int, int&);
+string *Create_Parlist_NstG(FitOption, Names *, Constants *, int, int &);
 //Create corresponding pdf component
-RooAbsPdf* Create_FitPDF_NstG(FitOption, string, RooRealVar*, RooAbsReal**);
+RooAbsPdf *Create_FitPDF_NstG(FitOption, string, RooRealVar *, RooAbsReal **);
 //Massfit for Lb2NstG analysis
-RooWorkspace* FitLb2NstG(string, TTree*, string);
-RooWorkspace* FitLb2NstG_Simult(string*, TTree**, string);
-RooWorkspace* FitLb2NstG_Kpi(string, TTree*, string);
-RooWorkspace* FitLb2NstG_pK(string, TTree*, string);
-RooWorkspace* FitLb2ppiJPsi(string, TTree*, RooWorkspace*, string, string*, int, string, FitOption*, int);
-RooWorkspace* FitLb2pKJPsi(string, TTree*, string, string*, int, string);
-RooWorkspace* FitLb2NstG_Kpi_Wrong(string, TTree*, string);
-RooWorkspace* FitLb2NstG_pK_Wrong(string, TTree*, string);
+RooWorkspace *FitLb2NstG(string, TTree *, string);
+RooWorkspace *FitLb2NstG_Kpi(string, TTree *, string);
+RooWorkspace *FitLb2NstG_pK(string, TTree *, string);
+RooWorkspace *FitLb2ppiJPsi(string, TTree *, RooWorkspace *, string, string *, int, string, FitOption *, int);
+RooWorkspace *FitLb2pKJPsi(string, TTree *, string, string *, int, string);
+RooWorkspace *FitLb2NstG_Kpi_Wrong(string, TTree *, string);
+RooWorkspace *FitLb2NstG_pK_Wrong(string, TTree *, string);
 
 #endif

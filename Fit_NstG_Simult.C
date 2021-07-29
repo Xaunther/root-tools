@@ -4,7 +4,7 @@
 #include "TChain.h"
 #include "TFile.h"
 #include "TTree.h"
-#include "Functions/AnalFits.h"
+#include "Functions/SimultaneousFits_NstG.h"
 #include "Functions/TreeTools.h"
 #include "Functions/Filereading.h"
 #include "Functions/PlotTools.h"
