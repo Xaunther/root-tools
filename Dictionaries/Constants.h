@@ -88,6 +88,8 @@ public:
   //Some variable shifts
   double shift1;
   double shift2;
+  double widthshift1;
+  double widthshift2;
 
   //Fit options
   bool SumW2Error;

@@ -338,6 +338,32 @@ void Names::Init(std::string ananame)
   {
     this->Init("NstGamma_maxmu");
   }
+  else if (ananame == "NstGamma_minsigma")
+  {
+    this->Init("NstGamma_Simult");
+    RooYield_suffix = "_minsigma";
+  }
+  else if (ananame == "NstGamma_minsigma_MC")
+  {
+    this->Init("NstGamma_minsigma");
+  }
+  else if (ananame == "NstGamma_maxsigma")
+  {
+    this->Init("NstGamma_Simult");
+    RooYield_suffix = "_maxsigma";
+  }
+  else if (ananame == "NstGamma_maxsigma_MC")
+  {
+    this->Init("NstGamma_maxsigma");
+  }
+  else if (ananame == "NstGamma_minsigma_log")
+  {
+    this->Init("NstGamma_minsigma");
+  }
+  else if (ananame == "NstGamma_maxsigma_log")
+  {
+    this->Init("NstGamma_maxsigma");
+  }
   else if (ananame == "NstG_ppimumu")
   {
     comppdf[1] = "Combinatorial";

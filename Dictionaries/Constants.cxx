@@ -80,6 +80,9 @@ void Constants::FillDefault()
   //Some variable shift
   shift1 = 0.;
   shift2 = 0.;
+  //Some variable shift
+  widthshift1 = 0.;
+  widthshift2 = 0.;
   //Fit options
   SumW2Error = false;
   //Plot options
@@ -580,7 +583,7 @@ void Constants::Init(std::string ananame)
   }
   else if (ananame == "NstGamma_maxmu")
   {
-    this->Init("NstGamma_Simult");
+    this->Init("NstGamma_minmu");
     shift1 = -shift1;
     shift2 = -shift2;
     workingdir = "Systematics/Fit/maxmu/";
@@ -601,6 +604,38 @@ void Constants::Init(std::string ananame)
   else if (ananame == "NstGamma_maxmu_log")
   {
     this->Init("NstGamma_maxmu");
+    logY = true;
+  }
+  else if (ananame == "NstGamma_minsigma")
+  {
+    this->Init("NstGamma_Simult");
+    shift1 = -3.;
+    shift2 = -3.;
+    workingdir = "Systematics/Fit/minsigma/";
+  }
+  else if (ananame == "NstGamma_maxsigma")
+  {
+    this->Init("NstGamma_minsigma");
+    shift1 = -shift1;
+    shift2 = -shift2;
+    workingdir = "Systematics/Fit/maxsigma/";
+  }
+  else if (ananame == "NstGamma_minsigma_MC")
+  {
+    this->Init("NstGamma_minsigma");
+  }
+  else if (ananame == "NstGamma_maxsigma_MC")
+  {
+    this->Init("NstGamma_maxsigma");
+  }
+  else if (ananame == "NstGamma_minsigma_log")
+  {
+    this->Init("NstGamma_minsigma");
+    logY = true;
+  }
+  else if (ananame == "NstGamma_maxsigma_log")
+  {
+    this->Init("NstGamma_maxsigma");
     logY = true;
   }
   else if (ananame == "NstG_ppimumu") //From Lb2ppimumu analysis
