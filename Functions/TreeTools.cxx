@@ -17,7 +17,14 @@
 #include "Functions/TUncertainty.h"
 using namespace std;
 
-unique_ptr<TChain> GetChain2(string *filenames, int N_files, string treename, bool verbose)
+TChain *GetChain()
+{
+  unique_ptr<TChain> chain(new TChain("DecayTree"));
+  chain->Add("/eos/lhcb/user/a/aalfonso/NstGam_data/PID/DataI_2hG.root");
+  chain->GetEntries();
+  return chain.release();
+}
+TChain *GetChain(string *filenames, int N_files, string treename, bool verbose)
 {
   if (verbose)
   {
@@ -32,40 +39,7 @@ unique_ptr<TChain> GetChain2(string *filenames, int N_files, string treename, bo
   }
   //Safecheck to avoid errors when opening trees with 0 entries
   N_files = chain->GetEntries();
-  return chain;
-}
-
-unique_ptr<TChain> GetChain2(string filedir, string tuplename, bool verbose)
-{
-  //Data chain
-  string treename;
-  if (tuplename != "")
-    treename = tuplename;
-  else
-    treename = GetTreeName(filedir);
-
-  int N_files = 0;
-  string *filenames = ReadVariables(N_files, filedir);
-
-  return GetChain2(filenames, N_files, treename, verbose);
-}
-
-TChain *GetChain(string *filenames, int N_files, string treename, bool verbose)
-{
-  if (verbose)
-  {
-    cout << "Reading Tree " << treename << endl;
-  }
-  TChain *chain = new TChain(treename.c_str());
-
-  //Add to chain and get N of entries
-  for (int i = 0; i < N_files; i++)
-  {
-    chain->Add(Gridify(filenames[i]).c_str());
-  }
-  //Safecheck to avoid errors when opening trees with 0 entries
-  N_files = chain->GetEntries();
-  return chain;
+  return chain.release();
 }
 
 TChain *GetChain(string filedir, string tuplename, bool verbose)
