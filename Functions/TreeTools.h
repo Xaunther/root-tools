@@ -2,6 +2,7 @@
 #define TreeTools_h
 
 #include <string>
+#include <memory>
 #include "TTree.h"
 #include "TChain.h"
 #include "TH1F.h"
@@ -9,6 +10,8 @@
 #include "Functions/TUncertainty.h"
 using namespace std;
 
+unique_ptr<TChain> GetChain2(string *, int, string, bool = true);
+unique_ptr<TChain> GetChain2(string, string = "", bool = true);
 TChain *GetChain(string *, int, string, bool = true);
 TChain *GetChain(string, string = "", bool = true);
 TTree *GetTree(string, string = "", bool = true);
