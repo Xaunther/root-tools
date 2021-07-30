@@ -197,6 +197,32 @@ void Names::Init(std::string ananame)
   {
     this->Init("NstGamma_maxmu");
   }
+
+  else if (ananame == "NstGamma_minsigma_ppiG_KpiGRef")
+  {
+    this->Init("NstGamma_minsigma");
+  }
+  else if (ananame == "NstGamma_minsigma_ppiG_pKGRef")
+  {
+    this->Init("NstGamma_minsigma");
+  }
+  else if (ananame == "NstGamma_minsigma_KpiG_pKG")
+  {
+    this->Init("NstGamma_minsigma");
+  }
+  else if (ananame == "NstGamma_maxsigma_ppiG_KpiGRef")
+  {
+    this->Init("NstGamma_maxsigma");
+  }
+  else if (ananame == "NstGamma_maxsigma_ppiG_pKGRef")
+  {
+    this->Init("NstGamma_maxsigma");
+  }
+  else if (ananame == "NstGamma_maxsigma_KpiG_pKG")
+  {
+    this->Init("NstGamma_maxsigma");
+  }
+
   else if (ananame == "KstplusGamma")
   {
   }

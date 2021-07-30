@@ -346,6 +346,30 @@ void Constants::Init(std::string ananame)
   {
     this->Init("NstGamma_Simult_KpiG_pKG");
   }
+  else if (ananame == "NstGamma_minsigma_ppiG_KpiGRef")
+  {
+    this->Init("NstGamma_Simult_ppiG_KpiGRef");
+  }
+  else if (ananame == "NstGamma_minsigma_ppiG_pKGRef")
+  {
+    this->Init("NstGamma_Simult_ppiG_KpiGRef");
+  }
+  else if (ananame == "NstGamma_minsigma_KpiG_pKG")
+  {
+    this->Init("NstGamma_Simult_KpiG_pKG");
+  }
+  else if (ananame == "NstGamma_maxsigma_ppiG_KpiGRef")
+  {
+    this->Init("NstGamma_Simult_ppiG_KpiGRef");
+  }
+  else if (ananame == "NstGamma_maxsigma_ppiG_pKGRef")
+  {
+    this->Init("NstGamma_Simult_ppiG_KpiGRef");
+  }
+  else if (ananame == "NstGamma_maxsigma_KpiG_pKG")
+  {
+    this->Init("NstGamma_Simult_KpiG_pKG");
+  }
   else if (ananame == "KstplusGamma")
   {
     //Double CB parameters
@@ -609,15 +633,15 @@ void Constants::Init(std::string ananame)
   else if (ananame == "NstGamma_minsigma")
   {
     this->Init("NstGamma_Simult");
-    shift1 = -3.;
-    shift2 = -3.;
+    widthshift1 = -3.;
+    widthshift2 = -3.;
     workingdir = "Systematics/Fit/minsigma/";
   }
   else if (ananame == "NstGamma_maxsigma")
   {
     this->Init("NstGamma_minsigma");
-    shift1 = -shift1;
-    shift2 = -shift2;
+    widthshift1 = -shift1;
+    widthshift2 = -shift2;
     workingdir = "Systematics/Fit/maxsigma/";
   }
   else if (ananame == "NstGamma_minsigma_MC")
