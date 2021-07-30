@@ -9,7 +9,6 @@
 #include "Functions/TUncertainty.h"
 using namespace std;
 
-TChain *GetChain();
 TChain *GetChain(string *, int, string, bool = true);
 TChain *GetChain(string, string = "", bool = true);
 TTree *GetTree(string, string = "", bool = true);

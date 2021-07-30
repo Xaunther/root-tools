@@ -17,13 +17,6 @@
 #include "Functions/TUncertainty.h"
 using namespace std;
 
-TChain *GetChain()
-{
-  unique_ptr<TChain> chain(new TChain("DecayTree"));
-  chain->Add("/eos/lhcb/user/a/aalfonso/NstGam_data/PID/DataI_2hG.root");
-  chain->GetEntries();
-  return chain.release();
-}
 TChain *GetChain(string *filenames, int N_files, string treename, bool verbose)
 {
   if (verbose)
