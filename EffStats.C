@@ -23,10 +23,10 @@ void EffStats(string dirfiles, string cutfile, string precutfile = "", string tr
 
 	//Now, get list of dirfiles in array
 	int N = 0;
-	string* dirfile = SplitString(N, dirfiles, " ");
+	string *dirfile = SplitString(N, dirfiles, " ");
 
 	//Now we can open the chains
-	TChain** chain = new TChain*[N];
+	TChain **chain = new TChain *[N];
 	for (int i = 0; i < N; i++)
 	{
 		chain[i] = GetChain(dirfile[i], treename);
@@ -34,25 +34,33 @@ void EffStats(string dirfiles, string cutfile, string precutfile = "", string tr
 
 	//We'll need the square of the weight
 	string w2 = "";
-	if (weight != "") {w2 = weight + "*" + weight;}
+	if (weight != "")
+	{
+		w2 = weight + "*" + weight;
+	}
 
 	//Let us save also the effective initial number of events, N0, and the error in each measurement
-	double* N0 = new double[N];
-	double* err = new double[N];
+	double *N0 = new double[N];
+	double *err = new double[N];
 
 	//Finally, it is time to get the efficiency in each chain, and save it in an array. Final efficiency cannot go below zero, but we'll allow iteration efficiencies to be negative
-	double* eff = new double[N];
+	double *eff = new double[N];
+	//First let's do the efficiency
 	for (int i = 0; i < N; i++)
 	{
 		N0[i] = GetMeanEntries(chain[i], precuts, weight);
 		eff[i] = GetMeanEntries(chain[i], cuts, weight) / N0[i];
-		err[i] = sqrt(max(eff[i], 0.) * (1 - max(eff[i], 0.)) / chain[i]->GetEntries() * GetMeanEntries(chain[i], precuts, w2)) / N0[i];
+	}
+	double mean_eff = max(GetArrayMean(eff, N), 0.);
+	//And finally, the uncertainty
+	for (int i = 0; i < N; i++)
+	{
+		err[i] = sqrt(max(mean_eff, 0.) * (1 - max(mean_eff, 0.)) / chain[i]->GetEntries() * GetMeanEntries(chain[i], precuts, w2)) / N0[i];
 	}
 	//Now we can make some statistics, mainly get the mean and standard deviation of the sample
-	double mean_eff = max(GetArrayMean(eff, N), 0.);
 	double stddev_eff = GetArrayStdDev(eff, N);
 	double stat_error = stddev_eff / sqrt(N);
-	double syst_err = sqrt(GetArraySumSq(err, N)) / N;
+	double syst_err = err[0]; //It's the same for all
 
 	////////////////////////////Save into requested file//////////////////////////
 	ofstream outf;
@@ -68,14 +76,16 @@ void EffStats(string dirfiles, string cutfile, string precutfile = "", string tr
 
 	//Close files and clean memory
 	outf.close();
-	for (int i = 0; i < N; i++) {CloseChain(chain[i]);}
+	for (int i = 0; i < N; i++)
+	{
+		CloseChain(chain[i]);
+	}
 	delete[] eff;
 	delete[] chain;
 }
 
-
 #if !defined(__CLING__)
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
 	switch (argc - 1)
 	{
