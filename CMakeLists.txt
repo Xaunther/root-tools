@@ -4,30 +4,30 @@ cmake_minimum_required(VERSION 3.3.2)
 #Project name
 project(aalfonso-tools)
 
+#Specify C++ standard (14 is the latest that works with root libraries)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+#Several options to tune behaviour
+option(USE_CXX11_ABI "Set D_GLIBCXX_USE_CXX11_ABI flag on/off. For lxplus it must be off" OFF)
+set(BOOST_PATH "/cvmfs/lhcb.cern.ch/lib/lcg/releases/Boost/1.75.0-6a4e8/x86_64-centos7-gcc10-opt/include" CACHE PATH "Specify local boost library other than cvmfs release")
+
 #Set executable directory
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 #Add flags to compile using root libraries
 execute_process(COMMAND root-config --noauxcflags --cflags --libs OUTPUT_VARIABLE CMAKE_CXX_FLAGS)
 string(REGEX REPLACE "\n$" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-#If you're on lxplus and with the default root binary, use D_GLIBCXX_USE_CXX11_ABI=0
-#When using your own build, or a debian distribution, use D_GLIBCXX_USE_CXX11_ABI=1
-string(APPEND CMAKE_CXX_FLAGS " -D_GLIBCXX_USE_CXX11_ABI=0 -Wall -Wextra -lTMVA -lRooFit -lRooFitCore -lRooStats -static-libstdc++")
 
-#Lxplus is fucked up and there are missing links to libraries, these are the ones needed to compile...
-#GSL
-#string(APPEND CMAKE_CXX_FLAGS " -L/cvmfs/lhcb.cern.ch/lib/lcg/releases/GSL/2.5-32fc5/x86_64-centos7-gcc9-opt/lib/ -lgsl -lgslcblas -lm")
-#Davix
-#string(APPEND CMAKE_CXX_FLAGS " -L/cvmfs/lhcb.cern.ch/lib/lcg/releases/Davix/0.7.3-d94fa/x86_64-centos7-gcc9-opt/lib64 -ldavix")
-#tbb
-#string(APPEND CMAKE_CXX_FLAGS " -L/cvmfs/lhcb.cern.ch/lib/lcg/releases/tbb/2020_U1-bbcac/x86_64-centos7-gcc9-opt/lib -ltbb")
-#vdt
-#string(APPEND CMAKE_CXX_FLAGS " -L/cvmfs/lhcb.cern.ch/lib/lcg/releases/vdt/0.4.3-992df/x86_64-centos7-gcc9-opt/lib -lvdt")
+#Some extra flags
+if(USE_CXX11_ABI)
+    string(APPEND CMAKE_CXX_FLAGS " -D_GLIBCXX_USE_CXX11_ABI=1 -Wall -Wextra -lTMVA -lRooFit -lRooFitCore -lRooStats -static-libstdc++")
+else()
+    string(APPEND CMAKE_CXX_FLAGS " -D_GLIBCXX_USE_CXX11_ABI=0 -Wall -Wextra -lTMVA -lRooFit -lRooFitCore -lRooStats -static-libstdc++")
+endif()
 
-#Add Boost Library (Recommended local install folder. Version 1.72.0)
-string(APPEND CMAKE_CXX_FLAGS " -I /usr/local/boost_1_72_0")
-#Add Boost Library (Lxplus releases. Version 1.72.0)
-string(APPEND CMAKE_CXX_FLAGS " -I /cvmfs/lhcb.cern.ch/lib/lcg/releases/Boost/1.72.0-d1982/x86_64-centos7-gcc9-opt/include")
+#Add Boost Library (pick cvmfs release. To use newer version update this path)
+string(APPEND CMAKE_CXX_FLAGS " -I ${BOOST_PATH}")
 
 #Bring the headers, such as Student.h into the project
 include_directories(./)
@@ -175,3 +175,6 @@ target_link_libraries(VarProfile.out aalfonso-dict aalfonso-func "${CMAKE_CXX_FL
 target_link_libraries(Vodka.out aalfonso-dict aalfonso-func "${CMAKE_CXX_FLAGS}")
 target_link_libraries(WriteFromDic.out aalfonso-dict aalfonso-func "${CMAKE_CXX_FLAGS}")
 target_link_libraries(WriteFromWS.out aalfonso-dict aalfonso-func "${CMAKE_CXX_FLAGS}")
+
+#Clean up
+unset(BOOST_PATH CACHE)
