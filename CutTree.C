@@ -14,18 +14,18 @@
 #include "Functions/StringTools.h"
 using namespace std;
 
-void CutTree(string outputfile, string cutsfilename = "", string tupledir = "", string variablefile = "", int fentries = 1, int initentries = 1)
+void CutTree(string outputfile, string cutsfilename = "", string tupledir = "", string variablefile = "", int fentries = 1, int initentries = 1, string treename = "")
 {
   string cuts = GetCuts(cutsfilename);
   cout << cuts << endl;
 
   //Variables Used
   int N_variables = 0;
-  string* variable_list = ReadVariables(N_variables, variablefile);
+  string *variable_list = ReadVariables(N_variables, variablefile);
 
   //Data chain
-  TChain* chain = GetChain(tupledir);
-  TFile* cutfile = new TFile(Gridify(outputfile).c_str(), "recreate");
+  TChain *chain = GetChain(tupledir, treename);
+  TFile *cutfile = new TFile(Gridify(outputfile).c_str(), "recreate");
   if (chain->GetEntries() == 0)
   {
     exit(0);
@@ -41,7 +41,7 @@ void CutTree(string outputfile, string cutsfilename = "", string tupledir = "", 
   }
 
   //Cut chain into new TChain in a temp root file
-  TTree* cuttree = (TTree*)chain->CopyTree(cuts.c_str(), "", long(chain->GetEntries() / double(fentries)), long(double((initentries - 1) * chain->GetEntries()) / fentries));
+  TTree *cuttree = (TTree *)chain->CopyTree(cuts.c_str(), "", long(chain->GetEntries() / double(fentries)), long(double((initentries - 1) * chain->GetEntries()) / fentries));
   cutfile->cd();
   cuttree->Write();
 
@@ -50,7 +50,7 @@ void CutTree(string outputfile, string cutsfilename = "", string tupledir = "", 
 }
 
 #if !defined(__CLING__)
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   switch (argc - 1)
   {
@@ -71,6 +71,9 @@ int main(int argc, char** argv)
     break;
   case 6:
     CutTree(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), stoi(*(new string(argv[5]))), stoi(*(new string(argv[6]))));
+    break;
+  case 7:
+    CutTree(*(new string(argv[1])), *(new string(argv[2])), *(new string(argv[3])), *(new string(argv[4])), stoi(*(new string(argv[5]))), stoi(*(new string(argv[6]))), *(new string(argv[7])));
     break;
   default:
     cout << "Wrong number of arguments (" << argc << ") for " << argv[0] << endl;
